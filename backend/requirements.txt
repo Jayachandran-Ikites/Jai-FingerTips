@@ -7,5 +7,6 @@ MarkupSafe==2.0.1
 flask_cors
 bcrypt
 pymongo
-dotenv
+python-dotenv
 openai
+flask

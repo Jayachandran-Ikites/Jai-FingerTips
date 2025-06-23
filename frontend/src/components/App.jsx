@@ -6,6 +6,8 @@ import Sidebar from "./Sidebar.jsx";
 import NotificationBell from "./NotificationBell.jsx";
 import FeedbackModal from "./FeedbackModal.jsx";
 import PromptEditor from "./PromptEditor.jsx";
+import TagManager from "./TagManager.jsx";
+import { ThemeToggleButton } from "./ThemeToggle.jsx";
 import {
   FiSend,
   FiUser,
@@ -58,8 +60,8 @@ const ConversationItem = ({
     <div
       className={`group relative p-3 rounded-lg cursor-pointer transition-all duration-200 ${
         isActive
-          ? "bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200"
-          : "hover:bg-gray-50 border border-transparent"
+          ? "bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 dark:from-blue-900/20 dark:to-purple-900/20 dark:border-blue-700"
+          : "hover:bg-gray-50 dark:hover:bg-gray-800 border border-transparent"
       } ${disabled ? "opacity-70 pointer-events-none" : ""}`}
     >
       <div
@@ -68,7 +70,7 @@ const ConversationItem = ({
       >
         <FiMessageSquare
           className={`w-4 h-4 flex-shrink-0 ${
-            isActive ? "text-blue-600" : "text-gray-400"
+            isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-500"
           }`}
         />
 
@@ -79,7 +81,7 @@ const ConversationItem = ({
             onChange={(e) => setEditName(e.target.value)}
             onBlur={handleRename}
             onKeyDown={handleKeyPress}
-            className="flex-1 bg-transparent border-b border-blue-300 focus:outline-none text-sm"
+            className="flex-1 bg-transparent border-b border-blue-300 dark:border-blue-600 focus:outline-none text-sm dark:text-white"
             autoFocus
             disabled={disabled}
           />
@@ -87,18 +89,18 @@ const ConversationItem = ({
           <div className="flex-1 min-w-0">
             <h4
               className={`text-sm font-medium truncate ${
-                isActive ? "text-blue-800" : "text-gray-800"
+                isActive ? "text-blue-800 dark:text-blue-200" : "text-gray-800 dark:text-gray-200"
               }`}
             >
               {conversation.title || "Untitled Chat"}
             </h4>
             {conversation.lastMessage && (
-              <p className="text-xs text-gray-500 truncate mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
                 {conversation.lastMessage}
               </p>
             )}
             {conversation.timestamp && (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                 {new Date(conversation.timestamp).toLocaleDateString()}
               </p>
             )}
@@ -112,7 +114,7 @@ const ConversationItem = ({
             e.stopPropagation();
             setIsEditing(true);
           }}
-          className="p-1 rounded hover:bg-white/80 text-gray-500 hover:text-blue-600"
+          className="p-1 rounded hover:bg-white/80 dark:hover:bg-gray-700 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
           title="Rename"
           disabled={disabled}
         >
@@ -125,7 +127,7 @@ const ConversationItem = ({
               onDelete();
             }
           }}
-          className="p-1 rounded hover:bg-white/80 text-gray-500 hover:text-red-600"
+          className="p-1 rounded hover:bg-white/80 dark:hover:bg-gray-700 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
           title="Delete"
           disabled={disabled}
         >
@@ -152,6 +154,7 @@ export default function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [userRole, setUserRole] = useState("user");
+  const [showTagManager, setShowTagManager] = useState(false);
   
   // Feedback and prompt modals
   const [feedbackModal, setFeedbackModal] = useState({ isOpen: false, conversationId: null, messageId: null });
@@ -575,51 +578,64 @@ export default function App() {
 
   if (isVerifying) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-lg">Verifying authentication...</div>
+      <div className="flex items-center justify-center h-screen bg-background">
+        <div className="text-lg text-foreground">Verifying authentication...</div>
       </div>
     );
   }
 
   return (
     <ToastProvider>
-      <div className="flex flex-col h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50">
+      <div className="flex flex-col h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         {/* Decorative background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-gradient-to-br from-purple-200/30 to-blue-200/30 blur-3xl"></div>
-          <div className="absolute top-1/3 -left-24 w-80 h-80 rounded-full bg-gradient-to-tr from-cyan-200/30 to-blue-300/30 blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-gradient-to-r from-purple-200/20 to-pink-200/20 blur-3xl"></div>
+          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-gradient-to-br from-purple-200/30 to-blue-200/30 dark:from-purple-800/20 dark:to-blue-800/20 blur-3xl"></div>
+          <div className="absolute top-1/3 -left-24 w-80 h-80 rounded-full bg-gradient-to-tr from-cyan-200/30 to-blue-300/30 dark:from-cyan-800/20 dark:to-blue-700/20 blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-gradient-to-r from-purple-200/20 to-pink-200/20 dark:from-purple-800/10 dark:to-pink-800/10 blur-3xl"></div>
         </div>
 
         {/* Header */}
-        <header className="py-2 px-4 md:py-4 md:px-6 bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100 sticky top-0 z-30 flex-shrink-0">
+        <header className="py-2 px-4 md:py-4 md:px-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm border-b border-blue-100 dark:border-gray-700 sticky top-0 z-30 flex-shrink-0">
           <div className="flex items-center justify-between">
             {/* Left: Hamburger + Branding */}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className={`p-2 rounded-lg hover:bg-gray-100 transition-colors ${
+                className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
                   sidebarOpen ? "lg:hidden" : ""
                 }`}
               >
-                <FiMenu className="w-5 h-5" />
+                <FiMenu className="w-5 h-5 text-foreground" />
               </button>
               <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-1 md:gap-2">
-                <HiOutlineFingerPrint className="w-6 h-6 md:w-7 md:h-7 text-blue-600" />
+                <HiOutlineFingerPrint className="w-6 h-6 md:w-7 md:h-7 text-blue-600 dark:text-blue-400" />
                 <span>FingerTips</span>
               </h1>
             </div>
 
-            {/* Right: Prompt Editor + Notifications + Admin + Logout */}
+            {/* Right: Theme Toggle + Tag Manager + Prompt Editor + Notifications + Admin + Logout */}
             <div className="flex items-center gap-3">
+              <ThemeToggleButton />
+              
+              {/* Tag Manager Button - Only show for admin and reviewers */}
+              {(userRole === "admin" || userRole === "reviewer") && convId && (
+                <button
+                  onClick={() => setShowTagManager(!showTagManager)}
+                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  title="Tag Manager"
+                >
+                  <FiSettings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                </button>
+              )}
+
               {/* Prompt Editor Button - Only show for power users and admins */}
               {(userRole === "power_user" || userRole === "admin") && (
                 <button
                   onClick={() => setPromptEditorOpen(true)}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                   title="Prompt Editor"
                 >
-                  <FiSettings className="w-5 h-5 text-gray-600" />
+                  <FiSettings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                 </button>
               )}
 
@@ -629,10 +645,10 @@ export default function App() {
               {(userRole === "admin" || userRole === "reviewer") && (
                 <button
                   onClick={() => navigate("/admin")}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                   title="Admin Panel"
                 >
-                  <FiSettings className="w-5 h-5 text-gray-600" />
+                  <FiSettings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                 </button>
               )}
 
@@ -690,33 +706,43 @@ export default function App() {
               sidebarOpen ? "lg:ml-0" : "lg:ml-0"
             }`}
           >
+            {/* Tag Manager Panel */}
+            {showTagManager && (userRole === "admin" || userRole === "reviewer") && (
+              <div className="absolute right-3 md:right-6 top-2 w-[calc(100%-24px)] sm:w-80 z-20">
+                <TagManager
+                  conversationId={convId}
+                  onTagsChange={(tags) => console.log("Tags updated:", tags)}
+                />
+              </div>
+            )}
+
             {/* Info panel */}
             {showInfo && (
-              <div className="absolute right-3 md:right-6 top-2 w-[calc(100%-24px)] sm:w-80 bg-white/90 backdrop-blur-sm border border-blue-100 rounded-xl shadow-lg p-4 z-20 animate-fadeIn">
+              <div className="absolute right-3 md:right-6 top-2 w-[calc(100%-24px)] sm:w-80 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-blue-100 dark:border-gray-700 rounded-xl shadow-lg p-4 z-20 animate-fadeIn">
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-semibold text-blue-800">
+                  <h3 className="font-semibold text-blue-800 dark:text-blue-200">
                     About FingerTips
                   </h3>
                   <button
                     onClick={() => setShowInfo(false)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                   >
                     ✕
                   </button>
                 </div>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                   FingerTips provides instant, pathway-based answers to your
                   clinical queries, putting medical knowledge at your FingerTips.
                 </p>
-                <div className="text-xs text-gray-500">Version 1.0.0</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Version 1.0.0</div>
               </div>
             )}
 
             {/* Chat content */}
             <main className="flex-1 overflow-hidden px-3 md:px-6 pt-3 md:pt-6 pb-[20px]">
-              <div className="h-full overflow-y-auto rounded-xl md:rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 p-3 md:p-6">
+              <div className="h-full overflow-y-auto rounded-xl md:rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border border-gray-200 dark:border-gray-700 p-3 md:p-6">
                 {isLoadingMessages ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center p-3 md:p-6 text-gray-500">
+                  <div className="h-full flex flex-col items-center justify-center text-center p-3 md:p-6 text-gray-500 dark:text-gray-400">
                     <div className="flex space-x-2 items-center">
                       <div className="w-3 h-3 rounded-full bg-blue-300 animate-bounce"></div>
                       <div className="w-3 h-3 rounded-full bg-purple-300 animate-bounce"></div>
@@ -725,12 +751,12 @@ export default function App() {
                     <p className="mt-4">Loading messages...</p>
                   </div>
                 ) : history.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center p-3 md:p-6 text-gray-500">
-                    <HiOutlineLightBulb className="w-12 h-12 text-blue-500 mb-4" />
-                    <h3 className="text-lg md:text-xl font-medium text-gray-800 mb-2">
+                  <div className="h-full flex flex-col items-center justify-center text-center p-3 md:p-6 text-gray-500 dark:text-gray-400">
+                    <HiOutlineLightBulb className="w-12 h-12 text-blue-500 dark:text-blue-400 mb-4" />
+                    <h3 className="text-lg md:text-xl font-medium text-gray-800 dark:text-gray-200 mb-2">
                       Welcome to FingerTips
                     </h3>
-                    <p className="max-w-md text-gray-500 mb-4 text-sm">
+                    <p className="max-w-md text-gray-500 dark:text-gray-400 mb-4 text-sm">
                       Ask any medical or clinical question to get pathway-based
                       answers at your fingertips.
                     </p>
@@ -753,7 +779,7 @@ export default function App() {
                             className={`h-8 w-8 md:h-10 md:w-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                               msg.role === "user"
                                 ? "bg-gradient-to-br from-blue-500 to-purple-500 text-white"
-                                : "bg-gradient-to-br from-blue-100 to-cyan-200 text-blue-700"
+                                : "bg-gradient-to-br from-blue-100 to-cyan-200 dark:from-blue-800 dark:to-cyan-700 text-blue-700 dark:text-blue-200"
                             }`}
                           >
                             {msg.role === "user" ? (
@@ -766,14 +792,14 @@ export default function App() {
                             className={`rounded-xl md:rounded-2xl px-3 py-2 md:px-4 md:py-3 shadow-sm ${
                               msg.role === "user"
                                 ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                                : "bg-white border border-gray-100"
+                                : "bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600"
                             }`}
                           >
                             <div
                               className={`prose prose-xs md:prose-sm max-w-none ${
                                 msg.role === "user"
                                   ? "text-white"
-                                  : "text-gray-800"
+                                  : "text-gray-800 dark:text-gray-200"
                               }`}
                             >
                               {msg.type === "audio" ? (
@@ -793,17 +819,17 @@ export default function App() {
                             
                             {/* Feedback buttons for assistant messages */}
                             {msg.role === "assistant" && msg.id && (
-                              <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-100">
+                              <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-100 dark:border-gray-600">
                                 <button
                                   onClick={() => handleFeedback(msg.id, "positive")}
-                                  className="p-1 rounded hover:bg-green-50 text-gray-400 hover:text-green-600 transition-colors"
+                                  className="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-gray-400 dark:text-gray-500 hover:text-green-600 dark:hover:text-green-400 transition-colors"
                                   title="Good response"
                                 >
                                   <FiThumbsUp className="w-4 h-4" />
                                 </button>
                                 <button
                                   onClick={() => handleFeedback(msg.id, "negative")}
-                                  className="p-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
+                                  className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                                   title="Poor response"
                                 >
                                   <FiThumbsDown className="w-4 h-4" />
@@ -817,10 +843,10 @@ export default function App() {
                     {isLoading && (
                       <div className="flex justify-start animate-fadeIn">
                         <div className="flex gap-2 md:gap-3 max-w-[85%]">
-                          <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-blue-100 to-cyan-200 text-blue-700 flex items-center justify-center">
+                          <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-blue-100 to-cyan-200 dark:from-blue-800 dark:to-cyan-700 text-blue-700 dark:text-blue-200 flex items-center justify-center">
                             <HiOutlineFingerPrint className="w-4 h-4 md:w-5 md:h-5" />
                           </div>
-                          <div className="rounded-xl px-4 py-2 bg-white border border-gray-100 shadow-sm">
+                          <div className="rounded-xl px-4 py-2 bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 shadow-sm">
                             <div className="flex space-x-2 items-center h-4 md:h-5">
                               <div className="w-2 h-2 rounded-full bg-blue-300 animate-bounce"></div>
                               <div className="w-2 h-2 rounded-full bg-purple-300 animate-bounce"></div>
@@ -837,9 +863,9 @@ export default function App() {
             </main>
 
             {/* Fixed input area */}
-            <div className="flex-shrink-0 bg-gradient-to-t from-blue-50/90 to-blue-50/70 backdrop-blur-sm py-2 md:py-3">
+            <div className="flex-shrink-0 bg-gradient-to-t from-blue-50/90 to-blue-50/70 dark:from-gray-800/90 dark:to-gray-800/70 backdrop-blur-sm py-2 md:py-3">
               <div className="px-3 md:px-6">
-                <div className="relative rounded-xl md:rounded-2xl shadow-lg bg-white/90 backdrop-blur-sm border border-blue-100 p-1.5 md:p-2">
+                <div className="relative rounded-xl md:rounded-2xl shadow-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-blue-100 dark:border-gray-600 p-1.5 md:p-2">
                   <form onSubmit={sendMessage} className="relative">
                     <input
                       ref={inputRef}
@@ -847,7 +873,7 @@ export default function App() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Type your clinical question..."
-                      className="w-full px-3 py-3 md:px-4 md:py-4 pr-12 md:pr-16 bg-transparent rounded-lg md:rounded-xl focus:outline-none transition-all text-sm md:text-base"
+                      className="w-full px-3 py-3 md:px-4 md:py-4 pr-12 md:pr-16 bg-transparent rounded-lg md:rounded-xl focus:outline-none transition-all text-sm md:text-base text-foreground placeholder:text-muted-foreground"
                       disabled={isLoading || isRecording || isLoadingMessages}
                     />
                     <div className="absolute right-1.5 md:right-2 top-1/2 -translate-y-1/2 flex items-center">
@@ -861,7 +887,7 @@ export default function App() {
                       </button>
                     </div>
                   </form>
-                  <p className="text-[10px] md:text-xs text-center mt-1 md:mt-2 text-gray-500">
+                  <p className="text-[10px] md:text-xs text-center mt-1 md:mt-2 text-gray-500 dark:text-gray-400">
                     FingerTips provides medical information but is not a
                     substitute for professional medical advice.
                   </p>
