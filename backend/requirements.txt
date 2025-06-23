@@ -1,0 +1,11 @@
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+PyJWT==1.7.1
+flask_jwt_extended
+MarkupSafe==2.0.1
+flask_cors
+bcrypt
+pymongo
+dotenv
+openai
