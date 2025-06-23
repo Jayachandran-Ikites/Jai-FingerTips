@@ -2,9 +2,12 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson import ObjectId
 from flask import Blueprint, request, jsonify, current_app
 from datetime import datetime
+import time
 from .main import answer_medical_query, generate_conversation_title
 from ..auth.utils import verify_token
 from ..database import get_db 
+from ..models.analytics import track_response_latency, track_query_cost
+from ..models.prompt import get_user_active_prompt, get_default_system_prompt
 
 chat_bp = Blueprint("chat", __name__)
 
@@ -26,6 +29,9 @@ def chat():
 
     db = get_db()
     conversations = db["conversations"]
+
+    # Track start time for latency measurement
+    start_time = time.time()
 
     # Create or load conversation
     if not conversation_id:
@@ -50,30 +56,72 @@ def chat():
             for m in convo.get("messages", [])
         ]
 
-    bot_reply = answer_medical_query(user_message, history)
+    # Get user's custom prompt if they're a power user
+    user_prompt = get_user_active_prompt(user_id)
+    if user_prompt:
+        # Use custom prompt for power users
+        custom_history = [{"role": "system", "content": user_prompt["prompt_text"]}] + history
+        bot_reply = answer_medical_query(user_message, custom_history)
+    else:
+        # Use default system prompt
+        bot_reply = answer_medical_query(user_message, history)
+
+    # Track end time and calculate latency
+    end_time = time.time()
+    
+    # Estimate token count (rough approximation: 1 token ≈ 4 characters)
+    estimated_tokens = (len(user_message) + len(bot_reply)) // 4
+
+    # Generate unique message IDs
+    user_message_id = str(ObjectId())
+    bot_message_id = str(ObjectId())
 
     # Save messages
     conversations.update_one(
         {"_id": ObjectId(conversation_id)},
         {
             "$push": {"messages": {"$each": [
-                {"sender": "user", "text": user_message, "timestamp": datetime.utcnow()},
-                {"sender": "bot",  "text": bot_reply,    "timestamp": datetime.utcnow()}
+                {
+                    "id": user_message_id,
+                    "sender": "user", 
+                    "text": user_message, 
+                    "timestamp": datetime.utcnow()
+                },
+                {
+                    "id": bot_message_id,
+                    "sender": "bot",  
+                    "text": bot_reply,    
+                    "timestamp": datetime.utcnow()
+                }
             ]}},
             "$set": {"updated_at": datetime.utcnow()}
         }
     )
 
+    # Track analytics
+    try:
+        track_response_latency(conversation_id, bot_message_id, start_time, end_time, estimated_tokens)
+        track_query_cost(conversation_id, bot_message_id, estimated_tokens)
+    except Exception as e:
+        print(f"Analytics tracking error: {e}")
+
     updated = conversations.find_one({"_id": ObjectId(conversation_id)})
     history_resp = [
-        {"role": "user" if m["sender"] == "user" else "assistant", "content": m["text"], "timestamp": m["timestamp"].isoformat()}
+        {
+            "role": "user" if m["sender"] == "user" else "assistant", 
+            "content": m["text"], 
+            "timestamp": m["timestamp"].isoformat(),
+            "id": m.get("id", str(ObjectId()))
+        }
         for m in updated.get("messages", [])
     ]
 
     return jsonify({
         "reply": bot_reply,
         "conversation_id": str(conversation_id),
-        "history": history_resp
+        "history": history_resp,
+        "latency_ms": round((end_time - start_time) * 1000, 2),
+        "estimated_tokens": estimated_tokens
     })
 
 
@@ -164,7 +212,8 @@ def get_conversation_messages(conversation_id):
         history.append({
             "role": "user" if msg["sender"] == "user" else "assistant",
             "content": msg["text"],
-            "timestamp": msg["timestamp"].isoformat() if msg["timestamp"] else None
+            "timestamp": msg["timestamp"].isoformat() if msg["timestamp"] else None,
+            "id": msg.get("id", str(ObjectId()))
         })
     
     return jsonify({
