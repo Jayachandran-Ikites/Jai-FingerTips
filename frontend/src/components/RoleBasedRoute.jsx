@@ -31,6 +31,7 @@ const RoleBasedRoute = ({ children, allowedRoles = [] }) => {
         
         if (isMounted) {
           if (res.status === 200 && res.data.success) {
+            console.log("Token verified successfully:", res.data);
             const role = res.data.user_role || "user";
             setUserRole(role);
             
