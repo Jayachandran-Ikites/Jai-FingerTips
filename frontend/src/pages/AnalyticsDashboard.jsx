@@ -198,8 +198,8 @@ const AnalyticsDashboard = () => {
                   <FiTrendingUp className="w-6 h-6 text-purple-600" />
                 </div>
               </div>
-            </Card>
-          )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Charts */}
