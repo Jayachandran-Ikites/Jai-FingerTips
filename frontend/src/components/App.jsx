@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FiMenu, FiThumbsUp, FiThumbsDown, FiSettings } from "react-icons/fi";
 import Sidebar from "./Sidebar.jsx";
-import NotificationBell from "./NotificationBell.jsx";
+import EnhancedNotificationBell from "./EnhancedNotificationBell.jsx";
 import FeedbackModal from "./FeedbackModal.jsx";
 import PromptEditor from "./PromptEditor.jsx";
 import TagManager from "./TagManager.jsx";
@@ -359,7 +359,7 @@ export default function App() {
   };
 
   // Handle conversation selection - FIXED
-  const handleSelectConversation = async (conversationData) => {
+  const handleSelectConversation =  async (conversationData) => {
     try {
       const conversationId = conversationData?.conversation_id;
 
@@ -639,7 +639,7 @@ export default function App() {
                 </button>
               )}
 
-              <NotificationBell />
+              <EnhancedNotificationBell />
               
               {/* Admin Panel Button - Only show for admin users */}
               {(userRole === "admin" || userRole === "reviewer") && (
@@ -677,7 +677,7 @@ export default function App() {
                     console.error("Logout error:", err);
                   }
                 }}
-                className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-medium shadow hover:from-blue-600 hover:to-purple-600 transition"
+                className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-medium shadow hover:shadow-lg transform hover:scale-105 transition-all duration-200"
               >
                 Logout
               </button>
