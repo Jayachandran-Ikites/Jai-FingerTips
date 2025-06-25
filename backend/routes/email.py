@@ -6,8 +6,8 @@ from ..database import get_db
 from ..models.user import get_user_by_email, get_user_by_id
 import secrets
 import smtplib
-from email.mime.text import MimeText
-from email.mime.multipart import MimeMultipart
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import os
 import logging
 
@@ -26,13 +26,13 @@ def send_email(to_email, subject, html_content):
             logging.error("SMTP credentials not configured")
             return False
         
-        msg = MimeMultipart()
+        msg = MIMEMultipart()
         msg['From'] = from_email
         msg['To'] = to_email
         msg['Subject'] = subject
-        
-        msg.attach(MimeText(html_content, 'html'))
-        
+
+        msg.attach(MIMEText(html_content, 'html'))
+
         server = smtplib.SMTP(smtp_server, smtp_port)
         server.starttls()
         server.login(smtp_username, smtp_password)

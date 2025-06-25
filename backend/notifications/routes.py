@@ -1,3 +1,4 @@
+from venv import logger
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 from bson import ObjectId
@@ -9,6 +10,7 @@ notifications_bp = Blueprint("notifications", __name__)
 
 @notifications_bp.route("/notifications", methods=["GET"])
 def get_user_notifications():
+    logger.info("Fetching user notifications")
     """Get notifications for the current user"""
     auth_header = request.headers.get("Authorization")
     if not auth_header:

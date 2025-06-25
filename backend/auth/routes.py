@@ -2,6 +2,7 @@ from flask import Blueprint, request, Flask, jsonify, make_response
 from ..models.user import create_user, get_user_by_email, verify_password, create_google_user, get_user_by_google_id
 from ..auth.utils import generate_token
 from ..auth.utils import verify_token
+from ..admin.routes import get_user_role
 from ..config import SECRET_KEY
 import jwt
 from jwt import ExpiredSignatureError, InvalidTokenError
@@ -9,7 +10,8 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 import os
 import time
-from dotenv import load_dotenv      
+from dotenv import load_dotenv  
+   
 
 load_dotenv() 
 
@@ -239,8 +241,11 @@ def verify():
     try:
         # Use the updated verify_token function with leeway
         user_id = verify_token(token)
+        
         if user_id:
-            response = jsonify({"success": True, "user_id": user_id})
+            response = jsonify(
+                {"success": True, "user_id": user_id, "user_role": get_user_role(user_id)}
+            )
             for key, value in get_cors_headers(origin).items():
                 response.headers[key] = value
             return response, 200

@@ -14,6 +14,13 @@ def is_admin(user_id):
     user = users.find_one({"_id": ObjectId(user_id)})
     return user and user.get("role") == "admin"
 
+def get_user_role(user_id):
+    """Check if user is admin"""
+    db = get_db()
+    users = db["users"]
+    user = users.find_one({"_id": ObjectId(user_id)})
+    return user and user.get("role")
+
 def admin_required(f):
     """Decorator to require admin access"""
     def decorated_function(*args, **kwargs):
@@ -249,14 +256,15 @@ def get_conversations(admin_user_id):
         
         # Enrich with user data
         for conv in conv_list:
+            user = users.find_one({"_id": conv["user_id"]})
             conv["_id"] = str(conv["_id"])
             conv["user_id"] = str(conv["user_id"])
             
             # Get user info
-            user = users.find_one({"_id": conv["user_id"]}, {"email": 1, "name": 1})
+            print("USER",user)
             conv["user"] = {
-                "email": user.get("email", "Unknown") if user else "Unknown",
-                "name": user.get("name", "") if user else ""
+                # "email": user.get("email", "Unknown") if user else "Unknown",
+                "name": user.get("name", "Unknown") if user else "Unknown",
             }
             
             # Count messages

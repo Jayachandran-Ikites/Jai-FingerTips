@@ -17,24 +17,23 @@ const api = axios.create({
 });
 
 const NotificationBell = () => {
-  const { user } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user?.token) {
+    if (token) {
       loadNotifications();
       // Poll for new notifications every 30 seconds
       const interval = setInterval(loadNotifications, 30000);
       return () => clearInterval(interval);
     }
-  }, [user]);
+  }, [token]);
 
   const loadNotifications = async () => {
     try {
-      const token = localStorage.getItem("token");
       const response = await api.get("/notifications", {
         headers: { Authorization: `Bearer ${token}` },
         params: { limit: 10 },
@@ -125,7 +124,7 @@ const NotificationBell = () => {
     }
   };
 
-  if (!user?.token) return null;
+  if (!token) return null;
 
   return (
     <div className="relative">
