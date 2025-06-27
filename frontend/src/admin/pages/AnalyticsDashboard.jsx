@@ -14,6 +14,7 @@ import {
 import { HiOutlineFingerPrint } from "react-icons/hi";
 import { Card, CardHeader, CardTitle, CardContent } from "../../user/components/ui/card";
 import { Button } from "../../user/components/ui/button";
+import { ToastProvider, useToast } from "../../user/components/ui/toast";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 
 const api = axios.create({
@@ -21,9 +22,10 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-const AnalyticsDashboard = () => {
+const AnalyticsDashboardContent = () => {
   const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState(null);
 
@@ -48,6 +50,7 @@ const AnalyticsDashboard = () => {
       if (error.response?.status === 403) {
         navigate("/chat");
       }
+      toast.error("Failed to load analytics data");
     } finally {
       setLoading(false);
     }
@@ -69,8 +72,10 @@ const AnalyticsDashboard = () => {
       a.download = response.data.filename;
       a.click();
       window.URL.revokeObjectURL(url);
+      toast.success(`${type} data exported successfully`);
     } catch (error) {
       console.error("Error exporting data:", error);
+      toast.error("Failed to export data");
     }
   };
 
@@ -277,6 +282,15 @@ const AnalyticsDashboard = () => {
         </Card>
       </div>
     </div>
+  );
+};
+
+// Main component that wraps the content with ToastProvider
+const AnalyticsDashboard = () => {
+  return (
+    <ToastProvider>
+      <AnalyticsDashboardContent />
+    </ToastProvider>
   );
 };
 

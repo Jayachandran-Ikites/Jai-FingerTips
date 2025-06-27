@@ -24,14 +24,15 @@ import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { useToast } from "../components/ui/toast";
+import { ToastProvider, useToast } from "../components/ui/toast";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { "Content-Type": "application/json" },
 });
 
-const AllNotifications = () => {
+// Create a wrapper component that uses the toast hook
+const AllNotificationsContent = () => {
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -381,6 +382,15 @@ const AllNotifications = () => {
         )}
       </div>
     </div>
+  );
+};
+
+// Main component that wraps the content with ToastProvider
+const AllNotifications = () => {
+  return (
+    <ToastProvider>
+      <AllNotificationsContent />
+    </ToastProvider>
   );
 };
 

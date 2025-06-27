@@ -16,14 +16,14 @@ import { Card, CardHeader, CardTitle, CardContent } from "../../user/components/
 import { Button } from "../../user/components/ui/button";
 import { Badge } from "../../user/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../user/components/ui/select";
-import { useToast } from "../../user/components/ui/toast";
+import { ToastProvider, useToast } from "../../user/components/ui/toast";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { "Content-Type": "application/json" },
 });
 
-const FeedbackManagement = () => {
+const FeedbackManagementContent = () => {
   const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -346,6 +346,15 @@ const FeedbackManagement = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+// Main component that wraps the content with ToastProvider
+const FeedbackManagement = () => {
+  return (
+    <ToastProvider>
+      <FeedbackManagementContent />
+    </ToastProvider>
   );
 };
 

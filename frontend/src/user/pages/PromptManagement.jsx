@@ -18,14 +18,14 @@ import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card"
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { Badge } from "../components/ui/badge";
-import { useToast } from "../components/ui/toast";
+import { ToastProvider, useToast } from "../components/ui/toast";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { "Content-Type": "application/json" },
 });
 
-const PromptManagement = () => {
+const PromptManagementContent = () => {
   const { token, user } = useContext(AuthContext);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -413,6 +413,15 @@ const PromptManagement = () => {
         </Card>
       </div>
     </div>
+  );
+};
+
+// Main component that wraps the content with ToastProvider
+const PromptManagement = () => {
+  return (
+    <ToastProvider>
+      <PromptManagementContent />
+    </ToastProvider>
   );
 };
 

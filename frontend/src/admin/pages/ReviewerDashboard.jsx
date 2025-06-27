@@ -20,14 +20,14 @@ import { Input } from "../../user/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "../../user/components/ui/card";
 import { Badge } from "../../user/components/ui/badge";
 import { Textarea } from "../../user/components/ui/textarea";
-import { useToast } from "../../user/components/ui/toast";
+import { ToastProvider, useToast } from "../../user/components/ui/toast";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { "Content-Type": "application/json" },
 });
 
-const ReviewerDashboard = () => {
+const ReviewerDashboardContent = () => {
   const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -393,6 +393,15 @@ const ReviewerDashboard = () => {
         </div>
       )}
     </div>
+  );
+};
+
+// Main component that wraps the content with ToastProvider
+const ReviewerDashboard = () => {
+  return (
+    <ToastProvider>
+      <ReviewerDashboardContent />
+    </ToastProvider>
   );
 };
 
