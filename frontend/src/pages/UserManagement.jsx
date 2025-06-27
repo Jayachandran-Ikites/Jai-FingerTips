@@ -74,7 +74,7 @@ const UserManagement = () => {
   const handleRoleUpdate = async (userId, newRole) => {
     try {
       const token = localStorage.getItem("token");
-      await api.patch(`/admin/users/${userId}/role`, 
+      await api.post(`/admin/users/${userId}/role`, 
         { role: newRole },
         { headers: { Authorization: `Bearer ${token}` } }
       );

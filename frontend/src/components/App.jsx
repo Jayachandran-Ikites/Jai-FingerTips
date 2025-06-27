@@ -615,7 +615,7 @@ export default function App() {
 
             {/* Right: Theme Toggle + Tag Manager + Prompt Editor + Notifications + Admin + Logout */}
             <div className="flex items-center gap-3">
-              <ThemeToggleButton />
+              {/* <ThemeToggleButton /> */}
               
               {/* Tag Manager Button - Only show for admin and reviewers */}
               {(userRole === "admin" || userRole === "reviewer") && convId && (

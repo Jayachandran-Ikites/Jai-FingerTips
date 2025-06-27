@@ -61,8 +61,9 @@ def get_user_notifications():
         logging.error(f"Get user notifications error: {e}")
         return jsonify({"error": "Failed to fetch notifications"}), 500
 
-@notifications_bp.route("/notifications/<notification_id>/read", methods=["PATCH"])
+@notifications_bp.route("/notifications/<notification_id>/read", methods=["POST"])
 def mark_notification_read(notification_id):
+    print("TEST")
     """Mark a notification as read"""
     auth_header = request.headers.get("Authorization")
     if not auth_header:
@@ -90,7 +91,7 @@ def mark_notification_read(notification_id):
         logging.error(f"Mark notification read error: {e}")
         return jsonify({"error": "Failed to mark notification as read"}), 500
 
-@notifications_bp.route("/notifications/read-all", methods=["PATCH"])
+@notifications_bp.route("/notifications/read-all", methods=["POST"])
 def mark_all_notifications_read():
     """Mark all notifications as read for the current user"""
     auth_header = request.headers.get("Authorization")

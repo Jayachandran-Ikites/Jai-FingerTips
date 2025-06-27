@@ -26,7 +26,7 @@ import {
   FiLogOut,
   FiChevronLeft,
   FiChevronRight,
-  FiBarChart3,
+  // FiBarChart3,
   FiPieChart,
   FiActivity,
 } from "react-icons/fi";
@@ -36,6 +36,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card"
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import AdminAnalytics from "../components/AdminAnalytics";
+import MarkdownRenderer from "../components/MarkdownRenderer.jsx";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -114,6 +115,7 @@ const EnhancedAdminDashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
         params: { page, limit: 20, search },
       });
+      console.log("Loaded users:", response.data);
       setUsers(response.data.users);
       setTotalPages(response.data.pages);
       setCurrentPage(page);
@@ -214,7 +216,7 @@ const EnhancedAdminDashboard = () => {
   const handleUserRoleUpdate = async (userId, newRole) => {
     try {
       const token = localStorage.getItem("token");
-      await api.patch(`/admin/users/${userId}/role`, 
+      await api.post(`/admin/users/${userId}/role`, 
         { role: newRole },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -330,7 +332,7 @@ const EnhancedAdminDashboard = () => {
               Dashboard
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
-              <FiBarChart3 className="w-4 h-4" />
+              {/* <FiBarChart3 className="w-4 h-4" /> */}
               Analytics
             </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
@@ -1143,7 +1145,8 @@ const ConversationDetailsModal = ({ conversation, onClose }) => {
                         : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                     }`}
                   >
-                    <p className="text-sm">{message.text}</p>
+                    {/* <p className="text-sm">{message.text}</p> */}
+                     <MarkdownRenderer content={message.text} />
                     <p className={`text-xs mt-2 ${
                       message.sender === "user" ? "text-blue-100" : "text-gray-500 dark:text-gray-400"
                     }`}>

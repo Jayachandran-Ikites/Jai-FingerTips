@@ -8,8 +8,6 @@ from .routes.feedback import feedback_bp
 from .routes.reviews import reviews_bp
 from .routes.analytics import analytics_bp
 from .routes.prompts import prompts_bp
-from .routes.email import email_bp
-from .routes.tags import tags_bp
 import os
 from dotenv import load_dotenv
 
@@ -39,8 +37,7 @@ app.register_blueprint(feedback_bp, url_prefix=os.getenv("BASE_URL"))
 app.register_blueprint(reviews_bp, url_prefix=os.getenv("BASE_URL"))
 app.register_blueprint(analytics_bp, url_prefix=os.getenv("BASE_URL"))
 app.register_blueprint(prompts_bp, url_prefix=os.getenv("BASE_URL"))
-app.register_blueprint(email_bp, url_prefix=os.getenv("BASE_URL"))
-app.register_blueprint(tags_bp, url_prefix=os.getenv("BASE_URL"))
+
 
 # Health check route
 @app.route(os.getenv("BASE_URL") + "/health", methods=["GET"])

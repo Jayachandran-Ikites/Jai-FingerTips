@@ -49,7 +49,7 @@ const NotificationBell = () => {
   const markAsRead = async (notificationId) => {
     try {
       const token = localStorage.getItem("token");
-      await api.patch(`/notifications/${notificationId}/read`, {}, {
+      await api.post(`/notifications/${notificationId}/read`, {read:true}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       
@@ -69,9 +69,9 @@ const NotificationBell = () => {
 
   const markAllAsRead = async () => {
     try {
-      setLoading(true);
+      setLoading(true); 
       const token = localStorage.getItem("token");
-      await api.patch("/notifications/read-all", {}, {
+      await api.post("/notifications/read-all", {read:true}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       

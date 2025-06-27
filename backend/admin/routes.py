@@ -441,15 +441,15 @@ def get_notifications(admin_user_id):
         logging.error(f"Get notifications error: {e}")
         return jsonify({"error": "Failed to fetch notifications"}), 500
 
-@admin_bp.route("/users/<user_id>/role", methods=["PATCH"])
+@admin_bp.route("/users/<user_id>/role", methods=["POST"])
 @admin_required
 def update_user_role(admin_user_id, user_id):
     """Update user role"""
     try:
         data = request.get_json()
         new_role = data.get("role")
-        
-        if new_role not in ["user", "admin"]:
+
+        if new_role not in ["user","power_user","reviewer", "admin"]:
             return jsonify({"error": "Invalid role"}), 400
         
         db = get_db()
