@@ -1,4 +1,3 @@
-// src/AppRouter.jsx
 import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
@@ -7,21 +6,23 @@ import {
   Navigate
 } from "react-router-dom";
 
-import App from "./components/App.jsx";
-import Auth from "./pages/Auth.jsx";
-import AdminDashboard from "./pages/AdminDashboard.jsx";
-import ReviewerDashboard from "./pages/ReviewerDashboard.jsx";
-import AnalyticsDashboard from "./pages/AnalyticsDashboard.jsx";
-import UserManagement from "./pages/UserManagement.jsx";
-import FeedbackManagement from "./pages/FeedbackManagement.jsx";
-import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
-import ForgotPassword from "./pages/ForgotPassword.jsx";
-import ResetPassword from "./pages/ResetPassword.jsx";
-import VerifyEmail from "./pages/VerifyEmail.jsx";
-import PrivateRoute from "./components/PrivateRoute.jsx";
-import RoleBasedRoute from "./components/RoleBasedRoute.jsx";
-import { AuthContext } from "./context/AuthContext.jsx";
-import { ThemeProvider } from "./components/ui/theme-provider.jsx";
+import App from "./user/pages/App.jsx";
+import Auth from "./user/pages/Auth.jsx";
+import AdminDashboard from "./admin/pages/AdminDashboard.jsx";
+import ReviewerDashboard from "./admin/pages/ReviewerDashboard.jsx";
+import AnalyticsDashboard from "./admin/pages/AnalyticsDashboard.jsx";
+import UserManagement from "./admin/pages/UserManagement.jsx";
+import FeedbackManagement from "./admin/pages/FeedbackManagement.jsx";
+import PrivacyPolicy from "./user/pages/PrivacyPolicy.jsx";
+import ForgotPassword from "./user/pages/ForgotPassword.jsx";
+import ResetPassword from "./user/pages/ResetPassword.jsx";
+import VerifyEmail from "./user/pages/VerifyEmail.jsx";
+import AllNotifications from "./user/pages/AllNotifications.jsx";
+import PromptManagement from "./user/pages/PromptManagement.jsx";
+import PrivateRoute from "./user/components/PrivateRoute.jsx";
+import RoleBasedRoute from "./user/components/RoleBasedRoute.jsx";
+import { AuthContext } from "./user/context/AuthContext.jsx";
+import { ThemeProvider } from "./user/components/ui/theme-provider.jsx";
 
 const AppRouter = () => {
   const { loading, user } = useContext(AuthContext);
@@ -70,6 +71,26 @@ const AppRouter = () => {
             element={
               <PrivateRoute>
                 <App />
+              </PrivateRoute>
+            }
+          />
+          
+          {/* Notifications Page */}
+          <Route
+            path="/notifications"
+            element={
+              <PrivateRoute>
+                <AllNotifications />
+              </PrivateRoute>
+            }
+          />
+          
+          {/* Prompt Management Page */}
+          <Route
+            path="/prompts"
+            element={
+              <PrivateRoute>
+                <PromptManagement />
               </PrivateRoute>
             }
           />
