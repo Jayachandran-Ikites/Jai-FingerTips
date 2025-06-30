@@ -66,21 +66,62 @@ def create_review(reviewer_id):
         return jsonify({"error": "Failed to create review"}), 500
 
 @reviews_bp.route("/reviews/conversation/<conversation_id>", methods=["GET"])
-@require_reviewer_or_admin
-def get_conversation_reviews(reviewer_id, conversation_id):
+def get_conversation_reviews(conversation_id):
     """Get all review comments for a conversation"""
     try:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            return jsonify({"error": "Missing token"}), 401
+        
+        token = auth_header.split(" ")[1]
+        user_id = verify_token(token)
+        if not user_id:
+            return jsonify({"error": "Invalid or expired token"}), 403
+        
+        # Check if user is admin, reviewer, or the conversation owner
+        db = get_db()
+        users = db["users"]
+        conversations = db["conversations"]
+        
+        user = users.find_one({"_id": ObjectId(user_id)})
+        user_role = user.get("role", "user")
+        
+        # If not admin or reviewer, check if user owns the conversation
+        if user_role not in ["admin", "reviewer"]:
+            conversation = conversations.find_one({
+                "_id": ObjectId(conversation_id),
+                "user_id": ObjectId(user_id)
+            })
+            if not conversation:
+                return jsonify({"error": "Access denied"}), 403
+        
         reviews = get_reviews_by_conversation(conversation_id)
         
         # Format review data
+        formatted_reviews = []
         for review in reviews:
-            review["_id"] = str(review["_id"])
-            review["reviewer_id"] = str(review["reviewer_id"])
-            review["conversation_id"] = str(review["conversation_id"])
-            review["created_at"] = review["created_at"].isoformat()
-            review["updated_at"] = review["updated_at"].isoformat()
+            formatted_review = {
+                "_id": str(review["_id"]),
+                "reviewer_id": str(review["reviewer_id"]),
+                "conversation_id": str(review["conversation_id"]),
+                "message_id": review["message_id"],
+                "comment": review["comment"],
+                "rating": review.get("rating"),
+                "created_at": review["created_at"].isoformat(),
+                "updated_at": review["updated_at"].isoformat(),
+                "reviewer_name": review.get("reviewer_name", ""),
+            }
+            
+            # Add reviewer info if available
+            if "reviewer" in review:
+                formatted_review["reviewer"] = {
+                    "email": review["reviewer"].get("email", ""),
+                    "name": review["reviewer"].get("name", "")
+                }
+            
+            formatted_reviews.append(formatted_review)
         
-        return jsonify({"reviews": reviews})
+        return jsonify({"reviews": formatted_reviews})
         
     except Exception as e:
         logging.error(f"Get conversation reviews error: {e}")

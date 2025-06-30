@@ -75,6 +75,7 @@ const ReviewerDashboardContent = () => {
       navigate("/auth");
       return;
     }
+    
     loadConversations();
     loadUsers();
   }, [token, navigate]);
@@ -593,7 +594,7 @@ const ReviewerDashboardContent = () => {
                               <div className="flex items-center justify-between mb-1">
                                 <div className="flex items-center gap-2">
                                   <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                                    Reviewer: {item.reviewer?.name || item.reviewer?.email || "Unknown"}
+                                    Reviewer: {item.reviewer_name || item.reviewer?.name || item.reviewer?.email || "Unknown"}
                                   </Badge>
                                   {item.rating > 0 && (
                                     <div className="flex">

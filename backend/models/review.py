@@ -19,7 +19,7 @@ def create_review_comment(reviewer_id, conversation_id, message_id, comment, rat
         "conversation_id": ObjectId(conversation_id),
         "message_id": message_id,
         "comment": comment,
-        "rating": rating,  # Optional rating from reviewer
+        "rating": rating,  # Optional rating
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow()
     }
@@ -43,7 +43,7 @@ def get_reviews_by_conversation(conversation_id):
                 "as": "reviewer"
             }
         },
-        {"$unwind": "$reviewer"},
+        {"$unwind": {"path": "$reviewer", "preserveNullAndEmptyArrays": True}},
         {
             "$project": {
                 "message_id": 1,
@@ -51,6 +51,7 @@ def get_reviews_by_conversation(conversation_id):
                 "rating": 1,
                 "created_at": 1,
                 "updated_at": 1,
+                "reviewer_id": 1,
                 "reviewer_name": 1,
                 "reviewer.email": 1,
                 "reviewer.name": 1
@@ -80,7 +81,7 @@ def get_reviewer_activity(reviewer_id, start_date=None, end_date=None):
                 "as": "conversation"
             }
         },
-        {"$unwind": "$conversation"},
+        {"$unwind": {"path": "$conversation", "preserveNullAndEmptyArrays": True}},
         {
             "$project": {
                 "comment": 1,
