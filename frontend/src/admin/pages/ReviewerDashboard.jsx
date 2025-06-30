@@ -55,6 +55,7 @@ const ReviewerDashboardContent = () => {
   const [feedback, setFeedback] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [activeTab, setActiveTab] = useState("conversations");
+  const [showReviewForm, setShowReviewForm] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -99,6 +100,14 @@ const ReviewerDashboardContent = () => {
       
       // Load reviews for this conversation
       loadConversationReviews(conversationId);
+      
+      // Reset review form
+      setReviewForm({
+        messageId: "",
+        comment: "",
+        rating: 0,
+      });
+      setShowReviewForm(false);
     } catch (error) {
       console.error("Error loading conversation details:", error);
       toast.error("Failed to load conversation details");
@@ -152,6 +161,7 @@ const ReviewerDashboardContent = () => {
 
       toast.success("Review submitted successfully");
       setReviewForm({ messageId: "", comment: "", rating: 0 });
+      setShowReviewForm(false);
       
       // Reload reviews
       loadConversationReviews(selectedConversation._id);
@@ -431,7 +441,7 @@ const ReviewerDashboardContent = () => {
                                     comment: "",
                                     rating: 0,
                                   });
-                                  document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
+                                  setShowReviewForm(true);
                                 }}
                               >
                                 <FiEdit3 className="w-3 h-3 mr-1" />
@@ -493,57 +503,67 @@ const ReviewerDashboardContent = () => {
                 </div>
                 
                 {/* Review Form */}
-                <div id="reviewForm" className="mt-8 bg-white rounded-lg border border-gray-200 p-4">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Add Review</h3>
-                  <form onSubmit={handleReviewSubmit} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Rating (optional)
-                      </label>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            onClick={() => setReviewForm(prev => ({ ...prev, rating: star }))}
-                            className="p-1"
-                          >
-                            <FiStar
-                              className={`w-6 h-6 ${
-                                star <= reviewForm.rating
-                                  ? "fill-yellow-400 text-yellow-400"
-                                  : "text-gray-300"
-                              }`}
-                            />
-                          </button>
-                        ))}
+                {showReviewForm && (
+                  <div id="reviewForm" className="mt-8 bg-white rounded-lg border border-gray-200 p-4">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">Add Review</h3>
+                    <form onSubmit={handleReviewSubmit} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Rating (optional)
+                        </label>
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              type="button"
+                              onClick={() => setReviewForm(prev => ({ ...prev, rating: star }))}
+                              className="p-1"
+                            >
+                              <FiStar
+                                className={`w-6 h-6 ${
+                                  star <= reviewForm.rating
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Comment
-                      </label>
-                      <Textarea
-                        value={reviewForm.comment}
-                        onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
-                        placeholder="Enter your review comment..."
-                        rows={4}
-                        required
-                      />
-                    </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Comment
+                        </label>
+                        <Textarea
+                          value={reviewForm.comment}
+                          onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
+                          placeholder="Enter your review comment..."
+                          rows={4}
+                          required
+                        />
+                      </div>
 
-                    <div className="flex gap-3">
-                      <Button
-                        type="submit"
-                        variant="gradient"
-                      >
-                        <FiSend className="w-4 h-4 mr-2" />
-                        Submit Review
-                      </Button>
-                    </div>
-                  </form>
-                </div>
+                      <div className="flex gap-3">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setShowReviewForm(false)}
+                        >
+                          <FiX className="w-4 h-4 mr-2" />
+                          Cancel
+                        </Button>
+                        <Button
+                          type="submit"
+                          variant="gradient"
+                        >
+                          <FiSend className="w-4 h-4 mr-2" />
+                          Submit Review
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex items-center justify-center h-full text-gray-500">
