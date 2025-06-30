@@ -28,6 +28,13 @@ import {
   FiChevronRight,
   FiPieChart,
   FiActivity,
+  FiHome,
+  FiMenu,
+  FiBarChart2,
+  FiUserCheck,
+  FiFileText,
+  FiTag,
+  FiList,
 } from "react-icons/fi";
 import { HiOutlineFingerPrint } from "react-icons/hi";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../user/components/ui/tabs";
@@ -59,6 +66,7 @@ const EnhancedAdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Notification form state
   const [notificationForm, setNotificationForm] = useState({
@@ -285,80 +293,164 @@ const EnhancedAdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100 sticky top-0 z-30">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <HiOutlineFingerPrint className="w-8 h-8 text-blue-600" />
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex">
+      {/* Sidebar */}
+      <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white/90 backdrop-blur-sm shadow-lg border-r border-blue-100 transition-all duration-300 flex flex-col h-screen sticky top-0`}>
+        {/* Logo */}
+        <div className="p-4 border-b border-blue-100 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <HiOutlineFingerPrint className="w-8 h-8 text-blue-600" />
+            {sidebarOpen && (
+              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Admin Panel
+              </h1>
+            )}
+          </div>
+          <button 
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-1 rounded-lg hover:bg-gray-100 text-gray-500"
+          >
+            <FiMenu className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex-1 overflow-y-auto py-4">
+          <nav className="px-2 space-y-1">
+            <NavItem 
+              icon={FiBarChart2} 
+              label="Dashboard" 
+              isActive={activeTab === "dashboard"} 
+              onClick={() => handleTabChange("dashboard")} 
+              expanded={sidebarOpen}
+            />
+            <NavItem 
+              icon={FiPieChart} 
+              label="Analytics" 
+              isActive={activeTab === "analytics"} 
+              onClick={() => handleTabChange("analytics")} 
+              expanded={sidebarOpen}
+            />
+            <NavItem 
+              icon={FiUsers} 
+              label="Users" 
+              isActive={activeTab === "users"} 
+              onClick={() => handleTabChange("users")} 
+              expanded={sidebarOpen}
+            />
+            <NavItem 
+              icon={FiMessageSquare} 
+              label="Conversations" 
+              isActive={activeTab === "conversations"} 
+              onClick={() => handleTabChange("conversations")} 
+              expanded={sidebarOpen}
+            />
+            <NavItem 
+              icon={FiBell} 
+              label="Notifications" 
+              isActive={activeTab === "notifications"} 
+              onClick={() => handleTabChange("notifications")} 
+              expanded={sidebarOpen}
+            />
+            
+            <div className="pt-4 mt-4 border-t border-gray-200">
+              <NavItem 
+                icon={FiUserCheck} 
+                label="Reviewer Panel" 
+                onClick={() => navigate("/reviewer")} 
+                expanded={sidebarOpen}
+              />
+              <NavItem 
+                icon={FiFileText} 
+                label="Feedback" 
+                onClick={() => navigate("/admin/feedback")} 
+                expanded={sidebarOpen}
+              />
+              <NavItem 
+                icon={FiTag} 
+                label="Tags" 
+                onClick={() => navigate("/admin/tags")} 
+                expanded={sidebarOpen}
+              />
+              <NavItem 
+                icon={FiSettings} 
+                label="Settings" 
+                onClick={() => navigate("/admin/settings")} 
+                expanded={sidebarOpen}
+              />
+            </div>
+          </nav>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-blue-100">
+          <div className="flex flex-col gap-2">
+            <NavItem 
+              icon={FiHome} 
+              label="Back to Chat" 
+              onClick={() => navigate("/chat")} 
+              expanded={sidebarOpen}
+            />
+            <NavItem 
+              icon={FiLogOut} 
+              label="Logout" 
+              onClick={() => {
+                logout();
+                navigate("/auth");
+              }} 
+              expanded={sidebarOpen}
+              className="text-red-600 hover:bg-red-50"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        {/* Header */}
+        <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100 sticky top-0 z-30">
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  Admin Dashboard
+                  {activeTab === "dashboard" && "Dashboard Overview"}
+                  {activeTab === "analytics" && "Analytics Dashboard"}
+                  {activeTab === "users" && "User Management"}
+                  {activeTab === "conversations" && "Conversations"}
+                  {activeTab === "notifications" && "Notifications"}
                 </h1>
                 <p className="text-sm text-gray-600">FingerTips Management Panel</p>
               </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate("/chat")}
-                className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              >
-                Back to Chat
-              </button>
-              <button
-                onClick={() => {
-                  logout();
-                  navigate("/auth");
-                }}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all"
-              >
-                <FiLogOut className="w-4 h-4" />
-                Logout
-              </button>
+              
+              <div className="flex items-center gap-4">
+                {activeTab === "notifications" && (
+                  <Button
+                    onClick={() => setShowNotificationModal(true)}
+                    variant="gradient"
+                    className="flex items-center gap-2"
+                  >
+                    <FiSend className="w-4 h-4" />
+                    Send Notification
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <div className="p-6">
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:grid-cols-5">
-            <TabsTrigger value="dashboard" className="flex items-center gap-2">
-              <FiTrendingUp className="w-4 h-4" />
-              Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2">
-              <FiPieChart className="w-4 h-4" />
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-2">
-              <FiUsers className="w-4 h-4" />
-              Users
-            </TabsTrigger>
-            <TabsTrigger value="conversations" className="flex items-center gap-2">
-              <FiMessageSquare className="w-4 h-4" />
-              Conversations
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
-              <FiBell className="w-4 h-4" />
-              Notifications
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="dashboard">
+        <div className="p-6">
+          {activeTab === "dashboard" && (
             <DashboardOverview 
               stats={dashboardStats} 
               onSendNotification={() => setShowNotificationModal(true)}
             />
-          </TabsContent>
+          )}
 
-          <TabsContent value="analytics">
+          {activeTab === "analytics" && (
             <AdminAnalytics />
-          </TabsContent>
+          )}
           
-          <TabsContent value="users">
+          {activeTab === "users" && (
             <UsersManagement
               users={users}
               searchTerm={searchTerm}
@@ -371,9 +463,9 @@ const EnhancedAdminDashboard = () => {
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
-          </TabsContent>
+          )}
           
-          <TabsContent value="conversations">
+          {activeTab === "conversations" && (
             <ConversationsManagement
               conversations={conversations}
               onViewConversation={viewConversationDetails}
@@ -381,9 +473,9 @@ const EnhancedAdminDashboard = () => {
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
-          </TabsContent>
+          )}
           
-          <TabsContent value="notifications">
+          {activeTab === "notifications" && (
             <NotificationsManagement
               notifications={notifications}
               onSendNotification={() => setShowNotificationModal(true)}
@@ -391,8 +483,8 @@ const EnhancedAdminDashboard = () => {
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
-          </TabsContent>
-        </Tabs>
+          )}
+        </div>
       </div>
 
       {/* Modals */}
@@ -420,6 +512,25 @@ const EnhancedAdminDashboard = () => {
         />
       )}
     </div>
+  );
+};
+
+// Navigation Item Component
+const NavItem = ({ icon: Icon, label, isActive, onClick, expanded, className = "" }) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center px-3 py-3 rounded-lg transition-colors ${
+        isActive 
+          ? "bg-blue-50 text-blue-700" 
+          : `text-gray-700 hover:bg-gray-100 ${className}`
+      }`}
+    >
+      <Icon className={`w-5 h-5 ${isActive ? "text-blue-600" : ""}`} />
+      {expanded && (
+        <span className="ml-3 text-sm font-medium">{label}</span>
+      )}
+    </button>
   );
 };
 
