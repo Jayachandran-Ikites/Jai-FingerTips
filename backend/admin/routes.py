@@ -207,9 +207,9 @@ def get_user_details(admin_user_id, user_id):
         # Format data
         user["_id"] = str(user["_id"])
         if "created_at" in user:
-            user["created_at"] = datetime.fromtimestamp(user["created_at"]).isoformat()
+            user["created_at"] = user["created_at"]
         if "updated_at" in user:
-            user["updated_at"] = datetime.fromtimestamp(user["updated_at"]).isoformat()
+            user["updated_at"] = user["updated_at"]
         
         for conv in user_conversations:
             conv["_id"] = str(conv["_id"])
@@ -230,13 +230,26 @@ def get_user_details(admin_user_id, user_id):
         return jsonify({"error": "Failed to fetch user details"}), 500
 
 @admin_bp.route("/conversations", methods=["GET"])
-@admin_required
-def get_conversations(admin_user_id):
+def get_conversations():
     """Get all conversations with pagination"""
     try:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            return jsonify({"error": "Missing token"}), 401
+        
+        token = auth_header.split(" ")[1]
+        user_id = verify_token(token)
+        if not user_id:
+            return jsonify({"error": "Invalid or expired token"}), 403
+        
+        # Check if user is admin or reviewer
+        user_role = get_user_role(user_id)
+        if user_role not in ["admin", "reviewer"]:
+            return jsonify({"error": "Admin or reviewer access required"}), 403
+        
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 20))
-        user_id = request.args.get("user_id")
+        user_id_filter = request.args.get("user_id")
         
         db = get_db()
         conversations = db["conversations"]
@@ -244,8 +257,8 @@ def get_conversations(admin_user_id):
         
         # Build query
         query = {}
-        if user_id:
-            query["user_id"] = ObjectId(user_id)
+        if user_id_filter:
+            query["user_id"] = ObjectId(user_id_filter)
         
         # Get total count
         total = conversations.count_documents(query)
@@ -290,10 +303,23 @@ def get_conversations(admin_user_id):
         return jsonify({"error": "Failed to fetch conversations"}), 500
 
 @admin_bp.route("/conversations/<conversation_id>", methods=["GET"])
-@admin_required
-def get_conversation_details(admin_user_id, conversation_id):
+def get_conversation_details(conversation_id):
     """Get detailed conversation information"""
     try:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            return jsonify({"error": "Missing token"}), 401
+        
+        token = auth_header.split(" ")[1]
+        user_id = verify_token(token)
+        if not user_id:
+            return jsonify({"error": "Invalid or expired token"}), 403
+        
+        # Check if user is admin or reviewer
+        user_role = get_user_role(user_id)
+        if user_role not in ["admin", "reviewer"]:
+            return jsonify({"error": "Admin or reviewer access required"}), 403
+        
         db = get_db()
         conversations = db["conversations"]
         users = db["users"]
