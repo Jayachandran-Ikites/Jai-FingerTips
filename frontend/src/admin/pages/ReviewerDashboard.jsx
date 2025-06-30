@@ -16,6 +16,11 @@ import {
   FiMenu,
   FiActivity,
   FiList,
+  FiChevronRight,
+  FiChevronLeft,
+  FiCheck,
+  FiX,
+  FiSend,
 } from "react-icons/fi";
 import { HiOutlineFingerPrint } from "react-icons/hi";
 import { Button } from "../../user/components/ui/button";
@@ -41,13 +46,15 @@ const ReviewerDashboardContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewForm, setReviewForm] = useState({
     messageId: "",
     comment: "",
     rating: 0,
   });
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [feedback, setFeedback] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [activeTab, setActiveTab] = useState("conversations");
 
   useEffect(() => {
     if (!token) {
@@ -86,9 +93,41 @@ const ReviewerDashboardContent = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSelectedConversation(response.data);
+      
+      // Load feedback for this conversation
+      loadConversationFeedback(conversationId);
+      
+      // Load reviews for this conversation
+      loadConversationReviews(conversationId);
     } catch (error) {
       console.error("Error loading conversation details:", error);
       toast.error("Failed to load conversation details");
+    }
+  };
+  
+  const loadConversationFeedback = async (conversationId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get(`/feedback/${conversationId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setFeedback(response.data.feedback || []);
+    } catch (error) {
+      console.error("Error loading conversation feedback:", error);
+      setFeedback([]);
+    }
+  };
+  
+  const loadConversationReviews = async (conversationId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get(`/reviews/conversation/${conversationId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setReviews(response.data.reviews || []);
+    } catch (error) {
+      console.error("Error loading conversation reviews:", error);
+      setReviews([]);
     }
   };
 
@@ -112,8 +151,10 @@ const ReviewerDashboardContent = () => {
       });
 
       toast.success("Review submitted successfully");
-      setShowReviewModal(false);
       setReviewForm({ messageId: "", comment: "", rating: 0 });
+      
+      // Reload reviews
+      loadConversationReviews(selectedConversation._id);
     } catch (error) {
       console.error("Error submitting review:", error);
       toast.error("Failed to submit review");
@@ -124,8 +165,27 @@ const ReviewerDashboardContent = () => {
     e.preventDefault();
     loadConversations(1, searchTerm);
   };
+  
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <FiStar
+        key={i}
+        className={`w-4 h-4 ${
+          i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+        }`}
+      />
+    ));
+  };
+  
+  const getFeedbackForMessage = (messageId) => {
+    return feedback.filter(item => item.message_id === messageId);
+  };
+  
+  const getReviewsForMessage = (messageId) => {
+    return reviews.filter(item => item.message_id === messageId);
+  };
 
-  if (loading) {
+  if (loading && !selectedConversation) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex items-center justify-center">
         <div className="text-center">
@@ -168,22 +228,22 @@ const ReviewerDashboardContent = () => {
             <NavItem 
               icon={FiMessageSquare} 
               label="Conversations" 
-              isActive={true} 
-              onClick={() => {}} 
+              isActive={activeTab === "conversations"} 
+              onClick={() => setActiveTab("conversations")} 
               expanded={sidebarOpen}
             />
             <NavItem 
               icon={FiActivity} 
               label="Analytics" 
-              isActive={false} 
+              isActive={activeTab === "analytics"} 
               onClick={() => navigate("/admin/analytics")} 
               expanded={sidebarOpen}
             />
             <NavItem 
               icon={FiList} 
               label="Feedback" 
-              isActive={false} 
-              onClick={() => navigate("/admin/feedback")} 
+              isActive={activeTab === "feedback"} 
+              onClick={() => setActiveTab("feedback")} 
               expanded={sidebarOpen}
             />
           </nav>
@@ -240,66 +300,66 @@ const ReviewerDashboardContent = () => {
           </div>
         </header>
 
-        <div className="flex">
+        <div className="flex h-[calc(100vh-73px)]">
           {/* Conversations List */}
-          <div className="w-1/2 p-6 border-r border-blue-100">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-800">Conversations</h2>
-              </div>
-
-              <div className="space-y-3">
+          <div className="w-1/3 border-r border-blue-100 overflow-y-auto">
+            <div className="p-4">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Conversations</h2>
+              
+              <div className="space-y-2">
                 {conversations.map((conv) => (
-                  <Card
+                  <div
                     key={conv._id}
-                    className={`cursor-pointer transition-all hover:shadow-md ${
-                      selectedConversation?._id === conv._id ? "ring-2 ring-blue-500" : ""
+                    className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                      selectedConversation?._id === conv._id 
+                        ? "border-blue-500 bg-blue-50" 
+                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                     }`}
                     onClick={() => viewConversationDetails(conv._id)}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-medium text-gray-800 truncate">
-                          {conv.title || "Untitled Chat"}
-                        </h3>
-                        <Badge variant="secondary">
-                          {conv.message_count} messages
-                        </Badge>
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="font-medium text-gray-800 truncate">
+                        {conv.title || "Untitled Chat"}
+                      </h3>
+                      <Badge variant="secondary">
+                        {conv.message_count} messages
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <FiUser className="w-3 h-3" />
+                        {conv.user.name || "Unknown"}
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <div className="flex items-center gap-1">
-                          <FiUser className="w-3 h-3" />
-                          {conv.user.name || conv.user.email}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <FiClock className="w-3 h-3" />
-                          {new Date(conv.updated_at).toLocaleDateString()}
-                        </div>
+                      <div className="flex items-center gap-1">
+                        <FiClock className="w-3 h-3" />
+                        {new Date(conv.updated_at).toLocaleDateString()}
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 ))}
               </div>
-
+              
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2 mt-4">
                   <Button
                     variant="outline"
+                    size="sm"
                     onClick={() => loadConversations(currentPage - 1, searchTerm)}
                     disabled={currentPage === 1}
                   >
-                    Previous
+                    <FiChevronLeft className="w-4 h-4" />
                   </Button>
-                  <span className="px-4 py-2 text-sm text-gray-600">
+                  <span className="text-sm text-gray-600">
                     Page {currentPage} of {totalPages}
                   </span>
                   <Button
                     variant="outline"
+                    size="sm"
                     onClick={() => loadConversations(currentPage + 1, searchTerm)}
                     disabled={currentPage === totalPages}
                   >
-                    Next
+                    <FiChevronRight className="w-4 h-4" />
                   </Button>
                 </div>
               )}
@@ -307,13 +367,14 @@ const ReviewerDashboardContent = () => {
           </div>
 
           {/* Conversation Details */}
-          <div className="w-1/2 p-6">
+          <div className="w-2/3 overflow-y-auto">
             {selectedConversation ? (
-              <div className="space-y-6">
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-gray-200">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <div className="p-4">
+                {/* Conversation Info */}
+                <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-2">
                     {selectedConversation.title || "Untitled Chat"}
-                  </h3>
+                  </h2>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <span className="text-gray-600">User:</span>
@@ -335,12 +396,11 @@ const ReviewerDashboardContent = () => {
                 </div>
 
                 {/* Messages */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-800">Messages</h4>
-                  <div className="space-y-4 max-h-96 overflow-y-auto">
-                    {selectedConversation.messages?.map((message, index) => (
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">Messages</h3>
+                <div className="space-y-6">
+                  {selectedConversation.messages?.map((message, index) => (
+                    <div key={index} className="space-y-2">
                       <div
-                        key={index}
                         className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
                       >
                         <div className="max-w-[80%]">
@@ -371,22 +431,122 @@ const ReviewerDashboardContent = () => {
                                     comment: "",
                                     rating: 0,
                                   });
-                                  setShowReviewModal(true);
+                                  document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
                                 }}
                               >
                                 <FiEdit3 className="w-3 h-3 mr-1" />
-                                Review
+                                Add Review
                               </Button>
                             </div>
                           )}
                         </div>
                       </div>
-                    ))}
-                  </div>
+                      
+                      {/* Feedback and Reviews for this message */}
+                      {(message.id || message._id) && (
+                        <div className="ml-8 space-y-2">
+                          {/* User Feedback */}
+                          {getFeedbackForMessage(message.id || message._id).map((item, idx) => (
+                            <div key={`feedback-${idx}`} className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+                              <div className="flex items-center justify-between mb-1">
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="info">User Feedback</Badge>
+                                  <div className="flex">
+                                    {renderStars(item.rating)}
+                                  </div>
+                                </div>
+                                <span className="text-xs text-gray-500">
+                                  {new Date(item.created_at).toLocaleString()}
+                                </span>
+                              </div>
+                              {item.comment && (
+                                <p className="text-sm text-gray-700 mt-1">{item.comment}</p>
+                              )}
+                            </div>
+                          ))}
+                          
+                          {/* Reviewer Comments */}
+                          {getReviewsForMessage(message.id || message._id).map((item, idx) => (
+                            <div key={`review-${idx}`} className="bg-purple-50 rounded-lg p-3 border border-purple-100">
+                              <div className="flex items-center justify-between mb-1">
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                                    Reviewer: {item.reviewer?.name || item.reviewer?.email || "Unknown"}
+                                  </Badge>
+                                  {item.rating > 0 && (
+                                    <div className="flex">
+                                      {renderStars(item.rating)}
+                                    </div>
+                                  )}
+                                </div>
+                                <span className="text-xs text-gray-500">
+                                  {new Date(item.created_at).toLocaleString()}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-700 mt-1">{item.comment}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Review Form */}
+                <div id="reviewForm" className="mt-8 bg-white rounded-lg border border-gray-200 p-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Add Review</h3>
+                  <form onSubmit={handleReviewSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Rating (optional)
+                      </label>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setReviewForm(prev => ({ ...prev, rating: star }))}
+                            className="p-1"
+                          >
+                            <FiStar
+                              className={`w-6 h-6 ${
+                                star <= reviewForm.rating
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-300"
+                              }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Comment
+                      </label>
+                      <Textarea
+                        value={reviewForm.comment}
+                        onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
+                        placeholder="Enter your review comment..."
+                        rows={4}
+                        required
+                      />
+                    </div>
+
+                    <div className="flex gap-3">
+                      <Button
+                        type="submit"
+                        variant="gradient"
+                      >
+                        <FiSend className="w-4 h-4 mr-2" />
+                        Submit Review
+                      </Button>
+                    </div>
+                  </form>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center h-64 text-gray-500">
+              <div className="flex items-center justify-center h-full text-gray-500">
                 <div className="text-center">
                   <FiMessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>Select a conversation to view details</p>
@@ -396,80 +556,6 @@ const ReviewerDashboardContent = () => {
           </div>
         </div>
       </div>
-
-      {/* Review Modal */}
-      {showReviewModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">Add Review</h2>
-              <button
-                onClick={() => setShowReviewModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                ×
-              </button>
-            </div>
-
-            <form onSubmit={handleReviewSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rating (optional)
-                </label>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setReviewForm(prev => ({ ...prev, rating: star }))}
-                      className="p-1"
-                    >
-                      <FiStar
-                        className={`w-6 h-6 ${
-                          star <= reviewForm.rating
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Comment
-                </label>
-                <Textarea
-                  value={reviewForm.comment}
-                  onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
-                  placeholder="Enter your review comment..."
-                  rows={4}
-                  required
-                />
-              </div>
-
-              <div className="flex gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowReviewModal(false)}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  variant="gradient"
-                  className="flex-1"
-                >
-                  Submit Review
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
