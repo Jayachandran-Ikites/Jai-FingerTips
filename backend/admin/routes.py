@@ -250,6 +250,8 @@ def get_conversations():
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 20))
         user_id_filter = request.args.get("user_id")
+        date_filter = request.args.get("date")
+        search = request.args.get("search", "")
         
         db = get_db()
         conversations = db["conversations"]
@@ -259,6 +261,14 @@ def get_conversations():
         query = {}
         if user_id_filter:
             query["user_id"] = ObjectId(user_id_filter)
+        
+        if date_filter:
+            date_obj = datetime.fromisoformat(date_filter)
+            next_day = date_obj + timedelta(days=1)
+            query["created_at"] = {"$gte": date_obj, "$lt": next_day}
+        
+        if search:
+            query["title"] = {"$regex": search, "$options": "i"}
         
         # Get total count
         total = conversations.count_documents(query)
@@ -376,6 +386,11 @@ def send_notification(admin_user_id):
         notifications = db["notifications"]
         users = db["users"]
         
+        # Get admin info
+        admin = users.find_one({"_id": ObjectId(admin_user_id)})
+        admin_name = admin.get("name", "") if admin else ""
+        admin_email = admin.get("email", "") if admin else ""
+        
         # Determine target users
         if target_type == "all":
             user_list = list(users.find({}, {"_id": 1}))
@@ -397,7 +412,8 @@ def send_notification(admin_user_id):
                 "type": notification_type,
                 "read": False,
                 "created_at": datetime.utcnow(),
-                "created_by": ObjectId(admin_user_id)
+                "created_by": ObjectId(admin_user_id),
+                "created_by_name": admin_name or admin_email  # Store admin name
             })
         
         if notification_docs:

@@ -6,9 +6,16 @@ def create_review_comment(reviewer_id, conversation_id, message_id, comment, rat
     """Create a review comment for a specific message"""
     db = get_db()
     reviews_collection = db["reviews"]
+    users_collection = db["users"]
+    
+    # Get reviewer info to store name
+    reviewer = users_collection.find_one({"_id": ObjectId(reviewer_id)})
+    reviewer_name = reviewer.get("name", "") if reviewer else ""
+    reviewer_email = reviewer.get("email", "") if reviewer else ""
     
     review = {
         "reviewer_id": ObjectId(reviewer_id),
+        "reviewer_name": reviewer_name or reviewer_email,  # Store reviewer name or email
         "conversation_id": ObjectId(conversation_id),
         "message_id": message_id,
         "comment": comment,
@@ -44,6 +51,7 @@ def get_reviews_by_conversation(conversation_id):
                 "rating": 1,
                 "created_at": 1,
                 "updated_at": 1,
+                "reviewer_name": 1,
                 "reviewer.email": 1,
                 "reviewer.name": 1
             }
@@ -78,6 +86,7 @@ def get_reviewer_activity(reviewer_id, start_date=None, end_date=None):
                 "comment": 1,
                 "rating": 1,
                 "created_at": 1,
+                "reviewer_name": 1,
                 "conversation.title": 1,
                 "conversation.user_id": 1
             }

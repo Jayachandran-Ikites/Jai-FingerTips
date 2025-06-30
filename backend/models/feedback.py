@@ -7,9 +7,16 @@ def create_feedback(user_id, conversation_id, message_id, rating, comment=None):
     """Create feedback for a specific message"""
     db = get_db()
     feedback_collection = db["feedback"]
+    users_collection = db["users"]
+    
+    # Get user info to store name
+    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user_name = user.get("name", "") if user else ""
+    user_email = user.get("email", "") if user else ""
     
     feedback = {
         "user_id": ObjectId(user_id),
+        "user_name": user_name or user_email,  # Store user name or email
         "conversation_id": ObjectId(conversation_id),
         "message_id": message_id,
         "rating": rating,  # 1-5 stars

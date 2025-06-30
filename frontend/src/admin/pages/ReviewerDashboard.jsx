@@ -21,6 +21,7 @@ import {
   FiCheck,
   FiX,
   FiSend,
+  FiCalendar,
 } from "react-icons/fi";
 import { HiOutlineFingerPrint } from "react-icons/hi";
 import { Button } from "../../user/components/ui/button";
@@ -30,6 +31,13 @@ import { Badge } from "../../user/components/ui/badge";
 import { Textarea } from "../../user/components/ui/textarea";
 import { ToastProvider, useToast } from "../../user/components/ui/toast";
 import MarkdownRenderer from "../../user/components/MarkdownRenderer.jsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../user/components/ui/select";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -56,6 +64,11 @@ const ReviewerDashboardContent = () => {
   const [reviews, setReviews] = useState([]);
   const [activeTab, setActiveTab] = useState("conversations");
   const [showReviewForm, setShowReviewForm] = useState(false);
+  
+  // New filter states
+  const [userFilter, setUserFilter] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     if (!token) {
@@ -63,16 +76,50 @@ const ReviewerDashboardContent = () => {
       return;
     }
     loadConversations();
+    loadUsers();
   }, [token, navigate]);
 
-  const loadConversations = async (page = 1, search = "") => {
+  const loadUsers = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get("/admin/users", {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { limit: 100 }, // Get a large number of users for filtering
+      });
+      setUsers(response.data.users || []);
+    } catch (error) {
+      console.error("Error loading users:", error);
+    }
+  };
+
+  const loadConversations = async (page = 1, filters = {}) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
+      
+      // Build query parameters
+      const params = { 
+        page, 
+        limit: 20,
+        search: searchTerm,
+        ...filters
+      };
+      
+      // Add user_id filter if specified
+      if (userFilter) {
+        params.user_id = userFilter;
+      }
+      
+      // Add date filter if specified
+      if (dateFilter) {
+        params.date = dateFilter;
+      }
+      
       const response = await api.get("/admin/conversations", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { page, limit: 20, search },
+        params
       });
+      
       setConversations(response.data.conversations);
       setTotalPages(response.data.pages);
       setCurrentPage(page);
@@ -173,7 +220,11 @@ const ReviewerDashboardContent = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    loadConversations(1, searchTerm);
+    loadConversations(1, { search: searchTerm });
+  };
+  
+  const handleFilterChange = () => {
+    loadConversations(1, { user_id: userFilter, date: dateFilter });
   };
   
   const renderStars = (rating) => {
@@ -310,7 +361,67 @@ const ReviewerDashboardContent = () => {
           </div>
         </header>
 
-        <div className="flex h-[calc(100vh-73px)]">
+        {/* Filters */}
+        <div className="bg-white/60 border-b border-blue-100 px-6 py-3">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <FiFilter className="text-gray-500" />
+              <span className="text-sm text-gray-600">Filters:</span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Select 
+                value={userFilter} 
+                onValueChange={(value) => {
+                  setUserFilter(value);
+                  handleFilterChange();
+                }}
+              >
+                <SelectTrigger className="w-48 h-9">
+                  <SelectValue placeholder="Filter by user" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All users</SelectItem>
+                  {users.map(user => (
+                    <SelectItem key={user._id} value={user._id}>
+                      {user.name || user.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => {
+                  setDateFilter(e.target.value);
+                  handleFilterChange();
+                }}
+                className="w-40 h-9"
+              />
+            </div>
+            
+            {(userFilter || dateFilter) && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setUserFilter("");
+                  setDateFilter("");
+                  loadConversations(1);
+                }}
+                className="text-xs"
+              >
+                <FiX className="w-3 h-3 mr-1" />
+                Clear filters
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex h-[calc(100vh-145px)]">
           {/* Conversations List */}
           <div className="w-1/3 border-r border-blue-100 overflow-y-auto">
             <div className="p-4">
@@ -355,7 +466,7 @@ const ReviewerDashboardContent = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => loadConversations(currentPage - 1, searchTerm)}
+                    onClick={() => loadConversations(currentPage - 1, { user_id: userFilter, date: dateFilter })}
                     disabled={currentPage === 1}
                   >
                     <FiChevronLeft className="w-4 h-4" />
@@ -366,7 +477,7 @@ const ReviewerDashboardContent = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => loadConversations(currentPage + 1, searchTerm)}
+                    onClick={() => loadConversations(currentPage + 1, { user_id: userFilter, date: dateFilter })}
                     disabled={currentPage === totalPages}
                   >
                     <FiChevronRight className="w-4 h-4" />
@@ -461,6 +572,7 @@ const ReviewerDashboardContent = () => {
                               <div className="flex items-center justify-between mb-1">
                                 <div className="flex items-center gap-2">
                                   <Badge variant="info">User Feedback</Badge>
+                                  <span className="text-sm font-medium">{item.user_name || "User"}</span>
                                   <div className="flex">
                                     {renderStars(item.rating)}
                                   </div>
