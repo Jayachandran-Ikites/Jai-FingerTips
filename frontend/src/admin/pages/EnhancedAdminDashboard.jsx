@@ -479,7 +479,7 @@ const DashboardOverview = ({ stats, onSendNotification }) => {
             key={index}
             className="hover:shadow-lg transition-all duration-200 bg-white/80 backdrop-blur-sm"
           >
-            <CardContent className="p-6">
+            <CardContent className="p-6 pt-6" >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">{stat.title}</p>

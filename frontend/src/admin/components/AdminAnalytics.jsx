@@ -33,6 +33,7 @@ import {
 } from "recharts";
 import axios from "axios";
 
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { "Content-Type": "application/json" },
@@ -334,6 +335,102 @@ const AdminAnalytics = () => {
           </CardContent>
         </Card>
       </div>
+        {/* Feedback Distribution */}
+      {analytics?.feedback_stats?.rating_distribution && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Rating Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={Object.entries(analytics.feedback_stats.rating_distribution).map(([rating, count]) => ({
+                      name: `${rating} Stars`,
+                      value: count,
+                      rating: parseInt(rating)
+                    }))}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {Object.entries(analytics.feedback_stats.rating_distribution).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FiClock className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium">Response Time</span>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-blue-600">
+                      {analytics?.latency_stats?.avg_latency?.toFixed(0)}ms
+                    </p>
+                    <p className="text-xs text-gray-500">Average</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FiDollarSign className="w-5 h-5 text-green-600" />
+                    <span className="font-medium">Cost Efficiency</span>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-green-600">
+                      {formatCurrency(analytics?.cost_stats?.avg_cost_per_query || 0)}
+                    </p>
+                    <p className="text-xs text-gray-500">Per Query</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-yellow-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FiStar className="w-5 h-5 text-yellow-600" />
+                    <span className="font-medium">User Satisfaction</span>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-yellow-600">
+                      {analytics?.feedback_stats?.avg_rating?.toFixed(1) || 0}/5
+                    </p>
+                    <p className="text-xs text-gray-500">Average Rating</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FiUsers className="w-5 h-5 text-purple-600" />
+                    <span className="font-medium">Total Queries</span>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-purple-600">
+                      {analytics?.latency_stats?.total_requests?.toLocaleString() || 0}
+                    </p>
+                    <p className="text-xs text-gray-500">Last {timeRange} days</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Export Section */}
       <Card>

@@ -21,6 +21,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "../../user/components/
 import { Badge } from "../../user/components/ui/badge";
 import { Textarea } from "../../user/components/ui/textarea";
 import { ToastProvider, useToast } from "../../user/components/ui/toast";
+import MarkdownRenderer from "../../user/components/MarkdownRenderer.jsx";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -274,7 +275,8 @@ const ReviewerDashboardContent = () => {
                               : "bg-white border border-gray-200"
                           }`}
                         >
-                          <p className="text-sm">{message.text}</p>
+                          {/* <p className="text-sm">{message.text}</p> */}
+                          <MarkdownRenderer content={message.text} />
                           <p className={`text-xs mt-2 ${
                             message.sender === "user" ? "text-blue-100" : "text-gray-500"
                           }`}>

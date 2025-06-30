@@ -22,14 +22,14 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!email.trim()) {
       toast.error("Email is required");
       return;
     }
 
     setIsLoading(true);
-    
+
     try {
       await api.post("/auth/forgot-password", { email });
       setIsSubmitted(true);
@@ -53,15 +53,15 @@ const ForgotPassword = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
             <FiCheck className="w-8 h-8 text-green-600" />
           </div>
-          
+
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
             Check Your Email
           </h1>
-          
+
           <p className="text-gray-600 mb-6">
             We've sent a password reset link to <strong>{email}</strong>
           </p>
-          
+
           <div className="space-y-3">
             <Button
               onClick={() => navigate("/auth")}
@@ -70,7 +70,7 @@ const ForgotPassword = () => {
             >
               Back to Sign In
             </Button>
-            
+
             <Button
               onClick={() => {
                 setIsSubmitted(false);
@@ -109,7 +109,8 @@ const ForgotPassword = () => {
             Forgot Password
           </h1>
           <p className="text-gray-600 text-sm">
-            Enter your email address and we'll send you a link to reset your password
+            Enter your email address and we'll send you a link to reset your
+            password
           </p>
         </div>
 
