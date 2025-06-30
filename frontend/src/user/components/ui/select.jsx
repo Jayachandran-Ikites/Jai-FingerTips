@@ -66,13 +66,8 @@ const SelectTrigger = ({ className = "", children, isOpen, onClick, selectedValu
   );
 };
 
-const SelectValue = ({ placeholder, selectedValue, children }) => {
-  // Find the selected item's label
-  const selectedLabel = React.Children.toArray(children).find(
-    child => child.props?.value === selectedValue
-  )?.props?.children || placeholder;
-
-  return <span>{selectedLabel}</span>;
+const SelectValue = ({ placeholder, children }) => {
+  return <span>{children || placeholder}</span>;
 };
 
 const SelectContent = ({ className = "", children, isOpen, selectedValue, onValueChange, ...props }) => {
@@ -80,14 +75,14 @@ const SelectContent = ({ className = "", children, isOpen, selectedValue, onValu
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-          className={`absolute top-full left-0 z-50 w-full mt-1 rounded-md border bg-popover text-popover-foreground shadow-md ${className}`}
+          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{ duration: 0.15 }}
+          className={`absolute top-full left-0 z-50 w-full mt-1 rounded-md border bg-popover text-popover-foreground shadow-md overflow-hidden ${className}`}
           {...props}
         >
-          <div className="p-1">
+          <div className="p-1 max-h-60 overflow-auto">
             {React.Children.map(children, (child) => {
               if (child.type === SelectItem) {
                 return React.cloneElement(child, { 
