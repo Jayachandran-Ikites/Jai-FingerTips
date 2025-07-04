@@ -42,6 +42,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../user/components/
 import { Card, CardHeader, CardTitle, CardContent } from "../../user/components/ui/card";
 import { Button } from "../../user/components/ui/button";
 import { Badge } from "../../user/components/ui/badge";
+import { useToast } from "../../user/components/ui/toast";
 import AdminAnalytics from "../components/AdminAnalytics";
 import DynamicCharts from "../components/DynamicCharts";
 import MarkdownRenderer from "../../user/components/MarkdownRenderer.jsx";
@@ -57,6 +58,7 @@ const api = axios.create({
 const EnhancedAdminDashboard = () => {
   const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [loading, setLoading] = useState(true);
   const [dashboardStats, setDashboardStats] = useState(null);
@@ -146,12 +148,16 @@ const EnhancedAdminDashboard = () => {
     }
   }, []);
 
-  const loadConversations = async (page = 1) => {
+  const loadConversations = async (page = 1, filters = {}) => {
     try {
       const token = localStorage.getItem("token");
       const response = await api.get("/admin/conversations", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { page, limit: 20 },
+        params: { 
+          page, 
+          limit: 20,
+          ...filters
+        },
       });
       setConversations(response.data.conversations);
       setTotalPages(response.data.pages);
@@ -161,12 +167,16 @@ const EnhancedAdminDashboard = () => {
     }
   };
 
-  const loadNotifications = async (page = 1) => {
+  const loadNotifications = async (page = 1, filters = {}) => {
     try {
       const token = localStorage.getItem("token");
       const response = await api.get("/admin/notifications", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { page, limit: 20 },
+        params: { 
+          page, 
+          limit: 20,
+          ...filters
+        },
       });
       setNotifications(response.data.notifications);
       setTotalPages(response.data.pages);
@@ -229,10 +239,10 @@ const EnhancedAdminDashboard = () => {
         loadNotifications();
       }
       
-      alert("Notification sent successfully!");
+      toast.success("Notification sent successfully!");
     } catch (error) {
       console.error("Error sending notification:", error);
-      alert("Failed to send notification");
+      toast.error("Failed to send notification");
     }
   };
 
@@ -245,10 +255,10 @@ const EnhancedAdminDashboard = () => {
       );
       
       loadUsers(currentPage, debouncedSearchTerm);
-      alert("User role updated successfully!");
+      toast.success("User role updated successfully!");
     } catch (error) {
       console.error("Error updating user role:", error);
-      alert("Failed to update user role");
+      toast.error("Failed to update user role");
     }
   };
 
@@ -261,10 +271,10 @@ const EnhancedAdminDashboard = () => {
       );
       
       loadUsers(currentPage, debouncedSearchTerm);
-      alert("User status updated successfully!");
+      toast.success("User status updated successfully!");
     } catch (error) {
       console.error("Error updating user status:", error);
-      alert("Failed to update user status");
+      toast.error("Failed to update user status");
     }
   };
 
@@ -754,7 +764,7 @@ const UsersManagement = ({
 const Pagination = ({ currentPage, totalPages, onPageChange, loading }) => {
   if (totalPages <= 1) return null;
 
-  if( loading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex items-center justify-center">
         <div className="text-center">

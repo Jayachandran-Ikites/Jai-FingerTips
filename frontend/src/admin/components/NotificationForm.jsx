@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FiX, FiSearch, FiUsers, FiUser, FiUserCheck } from "react-icons/fi";
 import { Button } from "../../user/components/ui/button";
 import { Input } from "../../user/components/ui/input";
+import { useToast } from "../../user/components/ui/toast";
 import axios from "axios";
 
 const api = axios.create({
@@ -15,6 +16,7 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadUsers();
@@ -54,6 +56,7 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
       setUsers(response.data.users || []);
     } catch (error) {
       console.error("Error loading users:", error);
+      toast.error("Failed to load users");
     } finally {
       setLoading(false);
     }
