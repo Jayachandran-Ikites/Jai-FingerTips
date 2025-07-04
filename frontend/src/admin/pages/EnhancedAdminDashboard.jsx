@@ -44,6 +44,8 @@ import { Badge } from "../../user/components/ui/badge";
 import AdminAnalytics from "../components/AdminAnalytics";
 import DynamicCharts from "../components/DynamicCharts";
 import MarkdownRenderer from "../../user/components/MarkdownRenderer.jsx";
+import NotificationsManagement from "../components/NotificationsManagement";
+import NotificationForm from "../components/NotificationForm";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -500,10 +502,9 @@ const EnhancedAdminDashboard = () => {
 
       {/* Modals */}
       {showNotificationModal && (
-        <NotificationModal
+        <NotificationForm
           form={notificationForm}
           setForm={setNotificationForm}
-          users={users}
           onSubmit={handleSendNotification}
           onClose={() => setShowNotificationModal(false)}
         />
@@ -850,110 +851,6 @@ const ConversationsManagement = ({
   );
 };
 
-// Notifications Management Component
-const NotificationsManagement = ({
-  notifications,
-  onSendNotification,
-  currentPage,
-  totalPages,
-  onPageChange,
-  loading
-}) => {
-  const getNotificationIcon = (type) => {
-    switch (type) {
-      case "success": return FiCheckCircle;
-      case "warning": return FiAlertCircle;
-      case "error": return FiXCircle;
-      default: return FiInfo;
-    }
-  };
-
-  const getNotificationColor = (type) => {
-    switch (type) {
-      case "success": return "text-green-600 bg-green-100";
-      case "warning": return "text-yellow-600 bg-yellow-100";
-      case "error": return "text-red-600 bg-red-100";
-      default: return "text-blue-600 bg-blue-100";
-    }
-  };
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Notifications Management
-        </h2>
-        <Button
-          onClick={onSendNotification}
-          variant="gradient"
-          className="flex items-center gap-2"
-        >
-          <FiPlus className="w-4 h-4" />
-          Send Notification
-        </Button>
-      </div>
-
-      <div className="space-y-4">
-        {notifications.map((notification) => {
-          const Icon = getNotificationIcon(notification.type);
-          const colorClass = getNotificationColor(notification.type);
-
-          return (
-            <Card
-              key={notification._id}
-              className="bg-white/80 backdrop-blur-sm hover:shadow-md transition-all"
-            >
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className={`p-2 rounded-lg ${colorClass}`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        {notification.title}
-                      </h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <span>{notification.read ? "Read" : "Unread"}</span>
-                        <span>•</span>
-                        <span>
-                          {new Date(
-                            notification.created_at
-                          ).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-600 mb-3">{notification.message}</p>
-
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span>To: {notification.user.email}</span>
-                      <span>•</span>
-                      <span>From: {notification.creator.email}</span>
-                      <span>•</span>
-                      <Badge variant="secondary" className={colorClass}>
-                        {notification.type}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={onPageChange}
-        loading={loading}
-      />
-    </div>
-  );
-};
-
 // Pagination Component
 const Pagination = ({ currentPage, totalPages, onPageChange, loading }) => {
   if (totalPages <= 1) return null;
@@ -996,139 +893,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange, loading }) => {
       >
         <FiChevronRight className="w-4 h-4" />
       </Button>
-    </div>
-  );
-};
-
-// Modal components
-const NotificationModal = ({ form, setForm, users, onSubmit, onClose }) => {
-  const [selectedUsers, setSelectedUsers] = useState([]);
-
-  const handleUserSelection = (userId) => {
-    const newSelection = selectedUsers.includes(userId)
-      ? selectedUsers.filter(id => id !== userId)
-      : [...selectedUsers, userId];
-    
-    setSelectedUsers(newSelection);
-    setForm({ ...form, target_users: newSelection });
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-800">Send Notification</h2>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <FiX className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        <form onSubmit={onSubmit} className="p-6 space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title
-            </label>
-            <input
-              type="text"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Message
-            </label>
-            <textarea
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-              rows={4}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Type
-            </label>
-            <select
-              value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-            >
-              <option value="info">Info</option>
-              <option value="success">Success</option>
-              <option value="warning">Warning</option>
-              <option value="error">Error</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Target
-            </label>
-            <select
-              value={form.target_type}
-              onChange={(e) => setForm({ ...form, target_type: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-            >
-              <option value="all">All Users</option>
-              <option value="single">Single User</option>
-              <option value="multiple">Multiple Users</option>
-            </select>
-          </div>
-
-          {(form.target_type === "single" || form.target_type === "multiple") && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select Users
-              </label>
-              <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-2 bg-white">
-                {users.map((user) => (
-                  <label
-                    key={user._id}
-                    className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
-                  >
-                    <input
-                      type={form.target_type === "single" ? "radio" : "checkbox"}
-                      name="selectedUser"
-                      checked={selectedUsers.includes(user._id)}
-                      onChange={() => handleUserSelection(user._id)}
-                    />
-                    <span className="text-sm text-gray-900">{user.email}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-3 pt-4">
-            <Button
-              type="button"
-              onClick={onClose}
-              variant="outline"
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="gradient"
-              className="flex-1"
-            >
-              Send Notification
-            </Button>
-          </div>
-        </form>
-      </div>
     </div>
   );
 };
