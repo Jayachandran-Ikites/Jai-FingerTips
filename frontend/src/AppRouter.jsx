@@ -28,6 +28,7 @@ import AllNotifications from "./user/pages/AllNotifications.jsx";
 import PromptManagement from "./user/pages/PromptManagement.jsx";
 import RoleBasedRoute from "./user/components/RoleBasedRoute.jsx";
 import { ThemeProvider } from "./user/components/ui/theme-provider.jsx";
+import ConversationDetailPage from "./admin/components/ConversationDetailPage.jsx";
 
 const AppRouter = () => {
   const { loading, user } = useContext(AuthContext);
@@ -154,6 +155,15 @@ const AppRouter = () => {
           element={
             <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
               <FeedbackManagement />
+            </RoleBasedRoute>
+          }
+        />
+        {/* Conversation Detail Page */}
+        <Route
+          path="/admin/conversations/:conversationId"
+          element={
+            <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
+              <ConversationDetailPage />
             </RoleBasedRoute>
           }
         />

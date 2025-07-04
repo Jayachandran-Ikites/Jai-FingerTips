@@ -35,6 +35,7 @@ import {
   FiFileText,
   FiTag,
   FiList,
+  FiExternalLink,
 } from "react-icons/fi";
 import { HiOutlineFingerPrint } from "react-icons/hi";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../user/components/ui/tabs";
@@ -46,6 +47,7 @@ import DynamicCharts from "../components/DynamicCharts";
 import MarkdownRenderer from "../../user/components/MarkdownRenderer.jsx";
 import NotificationsManagement from "../components/NotificationsManagement";
 import NotificationForm from "../components/NotificationForm";
+import ConversationsManagement from "../components/ConversationsManagement";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -280,16 +282,7 @@ const EnhancedAdminDashboard = () => {
   };
 
   const viewConversationDetails = async (conversationId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await api.get(`/admin/conversations/${conversationId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSelectedConversation(response.data);
-      setShowConversationModal(true);
-    } catch (error) {
-      console.error("Error loading conversation details:", error);
-    }
+    navigate(`/admin/conversations/${conversationId}`);
   };
 
   if (loading) {
@@ -385,18 +378,6 @@ const EnhancedAdminDashboard = () => {
                 onClick={() => navigate("/admin/feedback")}
                 expanded={sidebarOpen}
               />
-              {/* <NavItem
-                icon={FiTag}
-                label="Tags"
-                onClick={() => navigate("/admin/tags")}
-                expanded={sidebarOpen}
-              />
-              <NavItem
-                icon={FiSettings}
-                label="Settings"
-                onClick={() => navigate("/admin/settings")}
-                expanded={sidebarOpen}
-              /> */}
             </div>
           </nav>
         </div>
@@ -525,13 +506,6 @@ const EnhancedAdminDashboard = () => {
         <UserDetailsModal
           user={selectedUser}
           onClose={() => setShowUserModal(false)}
-        />
-      )}
-
-      {showConversationModal && selectedConversation && (
-        <ConversationDetailsModal
-          conversation={selectedConversation}
-          onClose={() => setShowConversationModal(false)}
         />
       )}
     </div>
@@ -776,119 +750,6 @@ const UsersManagement = ({
   );
 };
 
-// Conversations Management Component
-const ConversationsManagement = ({
-  conversations,
-  onViewConversation,
-  currentPage,
-  totalPages,
-  onPageChange,
-  loading
-}) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-
-  // Debounce search term
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">Conversations Management</h2>
-        
-        <div className="flex gap-2">
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search conversations..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-            />
-          </div>
-        </div>
-      </div>
-
-      <Card className="bg-white/80 backdrop-blur-sm">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    User
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Messages
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Updated
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {conversations.map((conv) => (
-                  <tr key={conv._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {conv.title || "Untitled Chat"}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{conv.user?.name || "Unknown"}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {conv.message_count}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(conv.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(conv.updated_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <Button
-                        onClick={() => onViewConversation(conv._id)}
-                        variant="ghost"
-                        size="sm"
-                      >
-                        <FiEye className="w-4 h-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={onPageChange}
-        loading={loading}
-      />
-    </div>
-  );
-};
-
 // Pagination Component
 const Pagination = ({ currentPage, totalPages, onPageChange, loading }) => {
   if (totalPages <= 1) return null;
@@ -1010,82 +871,6 @@ const UserDetailsModal = ({ user, onClose }) => {
                   <p className="text-sm text-gray-600 mt-1">
                     Created {new Date(conv.created_at).toLocaleDateString()}
                   </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Conversation Details Modal Component
-const ConversationDetailsModal = ({ conversation, onClose }) => {
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-800">Conversation Details</h2>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <FiX className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        <div className="p-6 space-y-6">
-          {/* Conversation Info */}
-          <div className="bg-gray-50 rounded-xl p-6">
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              {conversation.title || "Untitled Chat"}
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <p className="text-sm text-gray-600">User</p>
-                <p className="font-medium text-gray-900">{conversation.user?.email || "Unknown"}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Messages</p>
-                <p className="font-medium text-gray-900">{conversation.messages?.length || 0}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Created</p>
-                <p className="font-medium text-gray-900">{new Date(conversation.created_at).toLocaleDateString()}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Updated</p>
-                <p className="font-medium text-gray-900">{new Date(conversation.updated_at).toLocaleDateString()}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Messages */}
-          <div>
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">Messages</h4>
-            <div className="space-y-4 max-h-96 overflow-y-auto">
-              {conversation.messages?.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[70%] p-4 rounded-lg ${
-                      message.sender === "user"
-                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                     <MarkdownRenderer content={message.text} />
-                    <p className={`text-xs mt-2 ${
-                      message.sender === "user" ? "text-blue-100" : "text-gray-500"
-                    }`}>
-                      {new Date(message.timestamp).toLocaleString()}
-                    </p>
-                  </div>
                 </div>
               ))}
             </div>
