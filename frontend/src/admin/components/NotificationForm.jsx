@@ -13,6 +13,7 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   useEffect(() => {
@@ -26,13 +27,29 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
     }));
   }, [selectedUsers, setForm]);
 
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Apply search when debounced term changes
+  useEffect(() => {
+    if (debouncedSearchTerm !== "") {
+      loadUsers();
+    }
+  }, [debouncedSearchTerm]);
+
   const loadUsers = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await api.get("/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { limit: 100, search: searchTerm }
+        params: { limit: 100, search: debouncedSearchTerm }
       });
       setUsers(response.data.users || []);
     } catch (error) {
@@ -40,11 +57,6 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    loadUsers();
   };
 
   const handleUserSelection = (userId) => {
@@ -146,7 +158,7 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
                 </div>
               </div>
               
-              <form onSubmit={handleSearch} className="flex gap-2 mb-3">
+              <div className="flex gap-2 mb-3">
                 <Input
                   type="text"
                   placeholder="Search users..."
@@ -154,10 +166,15 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="flex-1"
                 />
-                <Button type="submit" variant="outline" size="sm">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={loadUsers}
+                >
                   <FiSearch className="w-4 h-4" />
                 </Button>
-              </form>
+              </div>
               
               <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-lg p-2 bg-white">
                 {loading ? (

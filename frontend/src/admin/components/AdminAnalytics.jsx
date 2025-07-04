@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
   FiTrendingUp,
@@ -44,18 +44,29 @@ const AdminAnalytics = () => {
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("30");
   const [activeMetric, setActiveMetric] = useState("latency");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
   useEffect(() => {
     loadAnalytics();
   }, [timeRange]);
 
-  const loadAnalytics = async () => {
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  const loadAnalytics = useCallback(async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await api.get("/analytics/dashboard", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { days: timeRange },
+        params: { days: timeRange, search: debouncedSearchTerm },
       });
       setAnalytics(response.data);
     } catch (error) {
@@ -63,7 +74,7 @@ const AdminAnalytics = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [timeRange, debouncedSearchTerm]);
 
   const exportData = async (type) => {
     try {
@@ -290,11 +301,23 @@ const AdminAnalytics = () => {
                 <XAxis 
                   dataKey="_id" 
                   tick={{ fontSize: 12 }}
-                  tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                  tickFormatter={(value) => {
+                    try {
+                      return new Date(value).toLocaleDateString();
+                    } catch (e) {
+                      return value;
+                    }
+                  }}
                 />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip 
-                  labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                  labelFormatter={(value) => {
+                    try {
+                      return new Date(value).toLocaleDateString();
+                    } catch (e) {
+                      return value;
+                    }
+                  }}
                   formatter={(value) => [`${value?.toFixed(2)}ms`, 'Avg Latency']}
                 />
                 <Area 
@@ -324,11 +347,23 @@ const AdminAnalytics = () => {
                 <XAxis 
                   dataKey="_id" 
                   tick={{ fontSize: 12 }}
-                  tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                  tickFormatter={(value) => {
+                    try {
+                      return new Date(value).toLocaleDateString();
+                    } catch (e) {
+                      return value;
+                    }
+                  }}
                 />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip 
-                  labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                  labelFormatter={(value) => {
+                    try {
+                      return new Date(value).toLocaleDateString();
+                    } catch (e) {
+                      return value;
+                    }
+                  }}
                   formatter={(value) => [value, 'Queries']}
                 />
                 <Bar dataKey="request_count" fill="#8B5CF6" radius={[4, 4, 0, 0]} />

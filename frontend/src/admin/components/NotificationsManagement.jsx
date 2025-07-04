@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
   FiPlus,
@@ -54,6 +54,7 @@ const NotificationsManagement = ({
   const [userFilter, setUserFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
 
@@ -65,6 +66,22 @@ const NotificationsManagement = ({
   useEffect(() => {
     loadUsers();
   }, []);
+
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Apply search when debounced term changes
+  useEffect(() => {
+    if (debouncedSearchTerm !== "") {
+      handleFilterChange();
+    }
+  }, [debouncedSearchTerm]);
 
   const loadUsers = async () => {
     try {
@@ -90,7 +107,7 @@ const NotificationsManagement = ({
           limit: 20,
           user_id: userFilter || undefined,
           type: typeFilter || undefined,
-          search: searchTerm || undefined
+          search: debouncedSearchTerm || undefined
         },
       });
       setNotifications(response.data.notifications || []);
@@ -125,17 +142,20 @@ const NotificationsManagement = ({
     }
   };
 
-  const handleFilterChange = () => {
+  const handleFilterChange = useCallback(() => {
     setPage(1);
     loadNotifications();
-  };
+  }, [userFilter, typeFilter, debouncedSearchTerm]);
 
   const handleClearFilters = () => {
     setUserFilter("");
     setTypeFilter("");
     setSearchTerm("");
+    setDebouncedSearchTerm("");
     setPage(1);
-    loadNotifications();
+    setTimeout(() => {
+      loadNotifications();
+    }, 0);
   };
 
   const getNotificationIcon = (type) => {
@@ -362,8 +382,9 @@ const NotificationsManagement = ({
         <div className="flex items-center justify-center gap-2">
           <Button
             onClick={() => {
-              setPage(Math.max(1, page - 1));
-              onPageChange(Math.max(1, page - 1));
+              const newPage = Math.max(1, page - 1);
+              setPage(newPage);
+              onPageChange(newPage);
             }}
             disabled={page === 1 || loading}
             variant="outline"
@@ -376,8 +397,9 @@ const NotificationsManagement = ({
           </span>
           <Button
             onClick={() => {
-              setPage(Math.min(totalPages, page + 1));
-              onPageChange(Math.min(totalPages, page + 1));
+              const newPage = Math.min(totalPages, page + 1);
+              setPage(newPage);
+              onPageChange(newPage);
             }}
             disabled={page === totalPages || loading}
             variant="outline"

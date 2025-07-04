@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../user/context/AuthContext.jsx";
@@ -67,6 +67,7 @@ const EnhancedAdminDashboard = () => {
   const [showUserModal, setShowUserModal] = useState(false);
   const [showConversationModal, setShowConversationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -80,6 +81,15 @@ const EnhancedAdminDashboard = () => {
     target_type: "all",
     target_users: [],
   });
+
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   useEffect(() => {
     if (!token) {
@@ -119,7 +129,7 @@ const EnhancedAdminDashboard = () => {
     }
   };
 
-  const loadUsers = async (page = 1, search = "") => {
+  const loadUsers = useCallback(async (page = 1, search = "") => {
     try {
       const token = localStorage.getItem("token");
       const response = await api.get("/admin/users", {
@@ -132,7 +142,7 @@ const EnhancedAdminDashboard = () => {
     } catch (error) {
       console.error("Error loading users:", error);
     }
-  };
+  }, []);
 
   const loadConversations = async (page = 1) => {
     try {
@@ -168,6 +178,7 @@ const EnhancedAdminDashboard = () => {
     setActiveTab(tab);
     setCurrentPage(1);
     setSearchTerm("");
+    setDebouncedSearchTerm("");
     
     if (tab === "users") {
       loadUsers();
@@ -181,13 +192,13 @@ const EnhancedAdminDashboard = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (activeTab === "users") {
-      loadUsers(1, searchTerm);
+      loadUsers(1, debouncedSearchTerm);
     }
   };
 
   const handlePageChange = (page) => {
     if (activeTab === "users") {
-      loadUsers(page, searchTerm);
+      loadUsers(page, debouncedSearchTerm);
     } else if (activeTab === "conversations") {
       loadConversations(page);
     } else if (activeTab === "notifications") {
@@ -231,7 +242,7 @@ const EnhancedAdminDashboard = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      loadUsers(currentPage, searchTerm);
+      loadUsers(currentPage, debouncedSearchTerm);
       alert("User role updated successfully!");
     } catch (error) {
       console.error("Error updating user role:", error);
@@ -247,7 +258,7 @@ const EnhancedAdminDashboard = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      loadUsers(currentPage, searchTerm);
+      loadUsers(currentPage, debouncedSearchTerm);
       alert("User status updated successfully!");
     } catch (error) {
       console.error("Error updating user status:", error);
@@ -774,9 +785,36 @@ const ConversationsManagement = ({
   onPageChange,
   loading
 }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">Conversations Management</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-800">Conversations Management</h2>
+        
+        <div className="flex gap-2">
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search conversations..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+            />
+          </div>
+        </div>
+      </div>
 
       <Card className="bg-white/80 backdrop-blur-sm">
         <CardContent className="p-0">
@@ -813,7 +851,7 @@ const ConversationsManagement = ({
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{conv.user.name}</div>
+                      <div className="text-sm text-gray-900">{conv.user?.name || "Unknown"}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {conv.message_count}
@@ -901,7 +939,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, loading }) => {
 const UserDetailsModal = ({ user, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-800">User Details</h2>
@@ -1008,7 +1046,7 @@ const ConversationDetailsModal = ({ conversation, onClose }) => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <p className="text-sm text-gray-600">User</p>
-                <p className="font-medium text-gray-900">{conversation.user.email}</p>
+                <p className="font-medium text-gray-900">{conversation.user?.email || "Unknown"}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Messages</p>

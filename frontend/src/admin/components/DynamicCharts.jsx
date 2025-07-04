@@ -40,7 +40,12 @@ const DynamicCharts = ({ data, timeRange, onTimeRangeChange }) => {
 
   // Format date for display in tooltip
   const formatDate = (dateStr) => {
-    return new Date(dateStr).toLocaleDateString();
+    if (!dateStr) return "";
+    try {
+      return new Date(dateStr).toLocaleDateString();
+    } catch (e) {
+      return dateStr;
+    }
   };
 
   // Get the appropriate data key based on selected data type
@@ -184,8 +189,12 @@ const DynamicCharts = ({ data, timeRange, onTimeRangeChange }) => {
                 dataKey="date" 
                 tick={{ fontSize: 12 }}
                 tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return `${date.getMonth() + 1}/${date.getDate()}`;
+                  try {
+                    const date = new Date(value);
+                    return `${date.getMonth() + 1}/${date.getDate()}`;
+                  } catch (e) {
+                    return value;
+                  }
                 }}
               />
               <YAxis tick={{ fontSize: 12 }} />
@@ -209,8 +218,12 @@ const DynamicCharts = ({ data, timeRange, onTimeRangeChange }) => {
                 dataKey="date" 
                 tick={{ fontSize: 12 }}
                 tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return `${date.getMonth() + 1}/${date.getDate()}`;
+                  try {
+                    const date = new Date(value);
+                    return `${date.getMonth() + 1}/${date.getDate()}`;
+                  } catch (e) {
+                    return value;
+                  }
                 }}
               />
               <YAxis tick={{ fontSize: 12 }} />
@@ -228,8 +241,12 @@ const DynamicCharts = ({ data, timeRange, onTimeRangeChange }) => {
                 dataKey="date" 
                 tick={{ fontSize: 12 }}
                 tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return `${date.getMonth() + 1}/${date.getDate()}`;
+                  try {
+                    const date = new Date(value);
+                    return `${date.getMonth() + 1}/${date.getDate()}`;
+                  } catch (e) {
+                    return value;
+                  }
                 }}
               />
               <YAxis tick={{ fontSize: 12 }} />
