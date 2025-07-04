@@ -260,7 +260,11 @@ const AllNotificationsContent = () => {
                   }}
                 >
                   <SelectTrigger className="w-80 px-5 gap-3">
-                    <SelectValue placeholder={filter === "all" ? "All notifications" : "Unread only"} />
+                    <SelectValue
+                      placeholder={
+                        filter === "all" ? "All notifications" : "Unread only"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All notifications</SelectItem>
@@ -392,7 +396,8 @@ const AllNotificationsContent = () => {
                               "bg-opacity-20 "
                             )}
                           >
-                            {notification.type.charAt(0).toUpperCase() + notification.type.slice(1)}
+                            {notification.type.charAt(0).toUpperCase() +
+                              notification.type.slice(1)}
                           </Badge>
                         </div>
                       </div>
@@ -405,32 +410,40 @@ const AllNotificationsContent = () => {
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2">
-            <Button
-              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-              disabled={currentPage === 1 || loading}
-              variant="outline"
-              size="sm"
-            >
-              <FiChevronLeft className="w-4 h-4" />
-            </Button>
+        {loading ? (
+          <>
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2">
+                <Button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                  }
+                  disabled={currentPage === 1 || loading}
+                  variant="outline"
+                  size="sm"
+                >
+                  <FiChevronLeft className="w-4 h-4" />
+                </Button>
 
-            <span className="px-4 py-2 text-sm text-gray-600">
-              Page {currentPage} of {totalPages}
-            </span>
+                <span className="px-4 py-2 text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
 
-            <Button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-              }
-              disabled={currentPage === totalPages || loading}
-              variant="outline"
-              size="sm"
-            >
-              <FiChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
+                <Button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                  }
+                  disabled={currentPage === totalPages || loading}
+                  variant="outline"
+                  size="sm"
+                >
+                  <FiChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+          </>
+        ) : (
+          <></>
         )}
       </div>
     </div>

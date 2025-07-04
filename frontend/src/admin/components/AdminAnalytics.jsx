@@ -32,6 +32,7 @@ import {
   Area,
 } from "recharts";
 import axios from "axios";
+import AdminLoader from "./AdminLoader";
 
 
 const api = axios.create({
@@ -108,11 +109,20 @@ const AdminAnalytics = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-32 bg-gray-200 rounded-lg animate-pulse" />
-        ))}
+      // <div className="space-y-6">
+      //   {[...Array(4)].map((_, i) => (
+      //     <div key={i} className="h-32 bg-gray-200 rounded-lg animate-pulse" />
+      //   ))}
+      // </div>
+      <div className="flex items-center justify-center h-screen w-full">
+        <div className="flex space-x-2 items-center">
+          <div className="w-3 h-3 rounded-full bg-blue-300 animate-bounce"></div>
+          <div className="w-3 h-3 rounded-full bg-purple-300 animate-bounce delay-100"></div>
+          <div className="w-3 h-3 rounded-full bg-cyan-300 animate-bounce delay-200"></div>
+        </div>
       </div>
+
+      // <AdminLoader />
     );
   }
 

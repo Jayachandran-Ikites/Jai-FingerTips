@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import axios from "axios";
+import AdminLoader from "../../admin/components/AdminLoader.jsx";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -64,16 +65,17 @@ const RoleBasedRoute = ({ children, allowedRoles = [] }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50">
-        <div className="text-center">
-          <div className="flex space-x-2 items-center justify-center mb-4">
-            <div className="w-3 h-3 rounded-full bg-blue-300 animate-bounce"></div>
-            <div className="w-3 h-3 rounded-full bg-purple-300 animate-bounce"></div>
-            <div className="w-3 h-3 rounded-full bg-cyan-300 animate-bounce"></div>
-          </div>
-          <p className="text-gray-600">Checking permissions...</p>
-        </div>
-      </div>
+      // <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50">
+      //   <div className="text-center">
+      //     <div className="flex space-x-2 items-center justify-center mb-4">
+      //       <div className="w-3 h-3 rounded-full bg-blue-300 animate-bounce"></div>
+      //       <div className="w-3 h-3 rounded-full bg-purple-300 animate-bounce"></div>
+      //       <div className="w-3 h-3 rounded-full bg-cyan-300 animate-bounce"></div>
+      //     </div>
+      //     <p className="text-gray-600">Checking permissions...</p>
+      //   </div>
+      // </div>
+      <AdminLoader text="Checking permissions..." />
     );
   }
 

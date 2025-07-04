@@ -236,9 +236,10 @@ const ReviewerDashboardContent = () => {
     loadConversations(1, { search: searchTerm });
   };
 
-  const handleFilterChange = () => {
-    loadConversations(1, { user_id: userFilter, date: dateFilter });
-  };
+
+  useEffect(() => {
+    loadConversations(1, { user_id: userFilter });
+  }, [userFilter]);
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -364,24 +365,7 @@ const ReviewerDashboardContent = () => {
                   Review and comment on conversations
                 </p>
               </div>
-
-              <form onSubmit={handleSearch} className="flex gap-2">
-                <Input
-                  placeholder="Search conversations..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-64"
-                />
-                <Button type="submit" variant="outline">
-                  <FiSearch className="w-4 h-4" />
-                </Button>
-              </form>
-            </div>
-          </div>
-        </header>
-
-        {/* Filters */}
-        <div className="bg-white/60 border-b border-blue-100 px-6 py-3">
+<div className="border-b border-blue-100 px-6 py-3">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
               <FiFilter className="text-gray-500" />
@@ -393,10 +377,9 @@ const ReviewerDashboardContent = () => {
                 value={userFilter}
                 onValueChange={(value) => {
                   setUserFilter(value);
-                  handleFilterChange();
                 }}
               >
-                <SelectTrigger className="w-48 h-9 gap-5 px-10">
+                <SelectTrigger className="w-48 h-9 gap-5 px-10 bg-[#fefeff]">
                   <SelectValue placeholder="Filter by user">
                     {userFilter
                       ? users.find((u) => u._id === userFilter)?.name ||
@@ -421,13 +404,13 @@ const ReviewerDashboardContent = () => {
                 value={dateFilter}
                 onChange={(e) => {
                   setDateFilter(e.target.value);
-                  handleFilterChange();
+                  
                 }}
                 className="w-40 h-9"
               />
             </div> */}
 
-            {(userFilter || dateFilter) && (
+            {/* {(userFilter || dateFilter) && (
               <Button
                 variant="outline"
                 size="sm"
@@ -441,9 +424,27 @@ const ReviewerDashboardContent = () => {
                 <FiX className="w-3 h-3 mr-1" />
                 Clear filters
               </Button>
-            )}
+            )} */}
           </div>
         </div>
+              {/* <form onSubmit={handleSearch} className="flex gap-2">
+                <Input
+                  placeholder="Search conversations..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-64"
+                />
+                <Button type="submit" variant="outline">
+                  <FiSearch className="w-4 h-4" />
+                </Button>
+              </form> */}
+            </div>
+          </div>
+          
+        </header>
+
+        {/* Filters */}
+       
 
         <div className="flex h-[calc(100vh-145px)]">
           {/* Conversations List */}
@@ -487,38 +488,44 @@ const ReviewerDashboardContent = () => {
               </div>
 
               {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      loadConversations(currentPage - 1, {
-                        user_id: userFilter,
-                        date: dateFilter,
-                      })
-                    }
-                    disabled={currentPage === 1}
-                  >
-                    <FiChevronLeft className="w-4 h-4" />
-                  </Button>
-                  <span className="text-sm text-gray-600">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      loadConversations(currentPage + 1, {
-                        user_id: userFilter,
-                        date: dateFilter,
-                      })
-                    }
-                    disabled={currentPage === totalPages}
-                  >
-                    <FiChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
+              {loading ? (
+                <>
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-2 mt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          loadConversations(currentPage - 1, {
+                            user_id: userFilter,
+                            date: dateFilter,
+                          })
+                        }
+                        disabled={currentPage === 1}
+                      >
+                        <FiChevronLeft className="w-4 h-4" />
+                      </Button>
+                      <span className="text-sm text-gray-600">
+                        Page {currentPage} of {totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          loadConversations(currentPage + 1, {
+                            user_id: userFilter,
+                            date: dateFilter,
+                          })
+                        }
+                        disabled={currentPage === totalPages}
+                      >
+                        <FiChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}{" "}
+                </>
+              ) : (
+                <></>
               )}
             </div>
           </div>
@@ -663,7 +670,6 @@ const ReviewerDashboardContent = () => {
                               >
                                 <div className="flex items-center justify-between mb-1">
                                   <div className="flex items-center gap-2">
-                                   
                                     <span className="text-sm font-medium">
                                       {item.reviewer_name ||
                                         item.reviewer?.name ||

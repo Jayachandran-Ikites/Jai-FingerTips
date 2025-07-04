@@ -49,6 +49,7 @@ import MarkdownRenderer from "../../user/components/MarkdownRenderer.jsx";
 import NotificationsManagement from "../components/NotificationsManagement";
 import NotificationForm from "../components/NotificationForm";
 import ConversationsManagement from "../components/ConversationsManagement";
+import AdminLoader from "../components/AdminLoader.jsx";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -112,7 +113,7 @@ const EnhancedAdminDashboardContent = () => {
     }
     
     loadDashboardData();
-  }, [token, navigate, timeRange]);
+  }, [token, navigate]);
 
   const loadDashboardData = async () => {
     try {
@@ -307,16 +308,17 @@ const EnhancedAdminDashboardContent = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="flex space-x-2 items-center justify-center mb-4">
-            <div className="w-3 h-3 rounded-full bg-blue-300 animate-bounce"></div>
-            <div className="w-3 h-3 rounded-full bg-purple-300 animate-bounce"></div>
-            <div className="w-3 h-3 rounded-full bg-cyan-300 animate-bounce"></div>
-          </div>
-          <p className="text-gray-600">Loading admin dashboard...</p>
-        </div>
-      </div>
+      // <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex items-center justify-center">
+      //   <div className="text-center">
+      //     <div className="flex space-x-2 items-center justify-center mb-4">
+      //       <div className="w-3 h-3 rounded-full bg-blue-300 animate-bounce"></div>
+      //       <div className="w-3 h-3 rounded-full bg-purple-300 animate-bounce"></div>
+      //       <div className="w-3 h-3 rounded-full bg-cyan-300 animate-bounce"></div>
+      //     </div>
+      //     <p className="text-gray-600">Loading admin dashboard...</p>
+      //   </div>
+      // </div>
+      <AdminLoader text="Loading admin dashboard..." />
     );
   }
 

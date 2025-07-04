@@ -26,6 +26,7 @@ import {
 import { useToast } from "../../user/components/ui/toast";
 import axios from "axios";
 import NotificationForm from "./NotificationForm";
+import { use } from "react";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -79,11 +80,11 @@ const NotificationsManagement = ({
   }, [searchTerm]);
 
   // Apply search when debounced term changes
-  useEffect(() => {
-    if (debouncedSearchTerm !== "") {
-      handleFilterChange();
-    }
-  }, [debouncedSearchTerm]);
+  // useEffect(() => {
+  //   if (debouncedSearchTerm !== "") {
+     
+  //   }
+  // }, [debouncedSearchTerm]);
 
   const loadUsers = async () => {
     try {
@@ -149,9 +150,21 @@ const NotificationsManagement = ({
   };
 
   const handleFilterChange = useCallback(() => {
-    setPage(1);
+   
     loadNotifications();
   }, [userFilter, typeFilter, debouncedSearchTerm]);
+
+  useEffect(() => {
+    loadNotifications();  
+    setPage(1);
+  }, [userFilter, typeFilter, debouncedSearchTerm]);
+
+  useEffect(() => {
+    if (currentPage) {
+      setPage(currentPage);
+    }
+  }, [currentPage]);
+
 
   const handleClearFilters = () => {
     setUserFilter("");
@@ -210,7 +223,7 @@ const NotificationsManagement = ({
                 value={userFilter}
                 onValueChange={(value) => {
                   setUserFilter(value);
-                  handleFilterChange();
+               
                 }}
               >
                 <SelectTrigger className="w-full">
@@ -241,7 +254,7 @@ const NotificationsManagement = ({
                 value={typeFilter}
                 onValueChange={(value) => {
                   setTypeFilter(value);
-                  handleFilterChange();
+                  
                 }}
               >
                 <SelectTrigger>
@@ -261,7 +274,7 @@ const NotificationsManagement = ({
               </Select>
             </div>
 
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Search
               </label>
@@ -273,11 +286,11 @@ const NotificationsManagement = ({
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="flex-1"
                 />
-                <Button onClick={handleFilterChange} variant="outline">
+                <Button  variant="outline">
                   <FiSearch className="w-4 h-4" />
                 </Button>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {(userFilter || typeFilter || searchTerm) && (
@@ -409,6 +422,7 @@ const NotificationsManagement = ({
       </div>
 
       {/* Pagination */}
+      {loading ? <>
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
           <Button
@@ -440,12 +454,13 @@ const NotificationsManagement = ({
           </Button>
         </div>
       )}
+      </>:<></>}
 
       {/* Notification Modal */}
       {showNotificationModal && (
         <NotificationForm
-          form={notificationForm}
-          setForm={setNotificationForm}
+        form={notificationForm}
+        setForm={setNotificationForm}
           onSubmit={handleSendNotification}
           onClose={() => setShowNotificationModal(false)}
         />

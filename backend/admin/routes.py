@@ -438,7 +438,8 @@ def get_notifications(admin_user_id):
     try:
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 20))
-        
+        user_id = request.args.get("user_id", "")  # Optional filter by user ID
+        type = request.args.get("type", "")  # Optional filter by type
         db = get_db()
         notifications = db["notifications"]
         users = db["users"]
@@ -473,6 +474,19 @@ def get_notifications(admin_user_id):
             # Format date
             if "created_at" in notif:
                 notif["created_at"] = notif["created_at"].isoformat()
+        
+        # Filter by user ID if provided
+        if user_id:
+            notif_list = [n for n in notif_list if n["user_id"] == user_id]
+            total = len(notif_list)  # Update total count after filtering
+        else:
+            total = notifications.count_documents({})
+        # Return paginated response
+        
+        if type:
+            notif_list = [n for n in notif_list if n["type"] == type]
+            total = len(notif_list)
+            
         
         return jsonify({
             "notifications": notif_list,

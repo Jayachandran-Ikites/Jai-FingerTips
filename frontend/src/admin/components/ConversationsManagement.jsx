@@ -39,12 +39,15 @@ const ConversationsManagement = ({
 }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [conversations, setConversations] = useState(initialConversations || []);
+  const [conversations, setConversations] = useState(
+    initialConversations || []
+  );
   const [loading, setLoading] = useState(initialLoading || false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [userFilter, setUserFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  const [currentTotalPages, setCurrentTotalPages] = useState(totalPages || 1);
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(currentPage || 1);
 
@@ -63,16 +66,16 @@ const ConversationsManagement = ({
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
     }, 500);
-    
+
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
   // Apply search when debounced term changes
-  useEffect(() => {
-    if (debouncedSearchTerm !== "") {
-      handleFilterChange();
-    }
-  }, [debouncedSearchTerm]);
+  // useEffect(() => {
+  //   if (debouncedSearchTerm !== "") {
+  //     // handleFilterChange();
+  //   }
+  // }, [debouncedSearchTerm]);
 
   const loadUsers = async () => {
     try {
@@ -93,15 +96,16 @@ const ConversationsManagement = ({
       const token = localStorage.getItem("token");
       const response = await api.get("/admin/conversations", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { 
+        params: {
           page,
           limit: 20,
           user_id: userFilter || undefined,
           date: dateFilter || undefined,
-          search: debouncedSearchTerm || undefined
+          search: debouncedSearchTerm || undefined,
         },
       });
       setConversations(response.data.conversations || []);
+      setCurrentTotalPages(response.data.pages || 1);
       setLoading(false);
     } catch (error) {
       console.error("Error loading conversations:", error);
@@ -109,20 +113,27 @@ const ConversationsManagement = ({
     }
   };
 
-  const handleFilterChange = useCallback(() => {
-    setPage(1);
+
+  // Whenever page changes, load conversations
+  useEffect(() => {
     loadConversations();
+    setPage(1);
   }, [userFilter, dateFilter, debouncedSearchTerm]);
+
+  useEffect(() => {
+    loadConversations();
+    setPage(page || 1);
+  }, [page]);
 
   const handleClearFilters = () => {
     setUserFilter("");
     setDateFilter("");
     setSearchTerm("");
-    setDebouncedSearchTerm("");
-    setPage(1);
-    setTimeout(() => {
-      loadConversations();
-    }, 0);
+    // setDebouncedSearchTerm("");
+    // setPage(1);
+    // // setTimeout(() => {
+    //   loadConversations();
+    // // }, 0);
   };
 
   const handleViewConversation = (conversationId) => {
@@ -136,7 +147,7 @@ const ConversationsManagement = ({
           Conversations Management
         </h2>
 
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <div className="relative">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -147,7 +158,7 @@ const ConversationsManagement = ({
               className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
             />
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Filters */}
@@ -162,7 +173,6 @@ const ConversationsManagement = ({
                 value={userFilter}
                 onValueChange={(value) => {
                   setUserFilter(value);
-                  handleFilterChange();
                 }}
               >
                 <SelectTrigger className="w-full">
@@ -194,7 +204,6 @@ const ConversationsManagement = ({
                 value={dateFilter}
                 onChange={(e) => {
                   setDateFilter(e.target.value);
-                  handleFilterChange();
                 }}
               />
             </div>
@@ -308,36 +317,42 @@ const ConversationsManagement = ({
       </Card>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            onClick={() => {
-              const newPage = Math.max(1, page - 1);
-              setPage(newPage);
-              onPageChange(newPage);
-            }}
-            disabled={page === 1 || loading}
-            variant="outline"
-            size="sm"
-          >
-            Previous
-          </Button>
-          <span className="px-4 py-2 text-sm text-gray-600">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            onClick={() => {
-              const newPage = Math.min(totalPages, page + 1);
-              setPage(newPage);
-              onPageChange(newPage);
-            }}
-            disabled={page === totalPages || loading}
-            variant="outline"
-            size="sm"
-          >
-            Next
-          </Button>
-        </div>
+      {loading ? (
+        <>
+          {currentTotalPages > 1 && (
+            <div className="flex items-center justify-center gap-2">
+              <Button
+                onClick={() => {
+                  const newPage = Math.max(1, page - 1);
+                  setPage(newPage);
+                  onPageChange(newPage);
+                }}
+                disabled={page === 1 || loading}
+                variant="outline"
+                size="sm"
+              >
+                Previous
+              </Button>
+              <span className="px-4 py-2 text-sm text-gray-600">
+                Page {page} of {currentTotalPages}
+              </span>
+              <Button
+                onClick={() => {
+                  const newPage = Math.min(currentTotalPages, page + 1);
+                  setPage(newPage);
+                  onPageChange(newPage);
+                }}
+                disabled={page === currentTotalPages || loading}
+                variant="outline"
+                size="sm"
+              >
+                Next
+              </Button>
+            </div>
+          )}{" "}
+        </>
+      ) : (
+        <></>
       )}
     </div>
   );

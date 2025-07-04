@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -16,6 +16,7 @@ import { Button } from "../../user/components/ui/button";
 import { Badge } from "../../user/components/ui/badge";
 import { ToastProvider, useToast } from "../../user/components/ui/toast";
 import MarkdownRenderer from "../../user/components/MarkdownRenderer.jsx";
+import AdminLoader from "./AdminLoader.jsx";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -30,6 +31,11 @@ const ConversationDetailPageContent = () => {
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const bottomRef = useRef(null);
+  const containerRef = useRef(null);
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [conversation]);
 
   useEffect(() => {
     if (!conversationId) {
@@ -52,26 +58,26 @@ const ConversationDetailPageContent = () => {
       setConversation(conversationResponse.data);
       
       // Load feedback for this conversation
-      try {
-        const feedbackResponse = await api.get(`/feedback/${conversationId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setFeedback(feedbackResponse.data.feedback || []);
-      } catch (error) {
-        console.error("Error loading feedback:", error);
-        setFeedback([]);
-      }
+      // try {
+      //   const feedbackResponse = await api.get(`/feedback/${conversationId}`, {
+      //     headers: { Authorization: `Bearer ${token}` },
+      //   });
+      //   setFeedback(feedbackResponse.data.feedback || []);
+      // } catch (error) {
+      //   console.error("Error loading feedback:", error);
+      //   setFeedback([]);
+      // }
       
       // Load reviews for this conversation
-      try {
-        const reviewsResponse = await api.get(`/reviews/conversation/${conversationId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setReviews(reviewsResponse.data.reviews || []);
-      } catch (error) {
-        console.error("Error loading reviews:", error);
-        setReviews([]);
-      }
+      // try {
+      //   const reviewsResponse = await api.get(`/reviews/conversation/${conversationId}`, {
+      //     headers: { Authorization: `Bearer ${token}` },
+      //   });
+      //   setReviews(reviewsResponse.data.reviews || []);
+      // } catch (error) {
+      //   console.error("Error loading reviews:", error);
+      //   setReviews([]);
+      // }
     } catch (error) {
       console.error("Error loading conversation details:", error);
       toast.error("Failed to load conversation details");
@@ -102,16 +108,17 @@ const ConversationDetailPageContent = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="flex space-x-2 items-center justify-center mb-4">
-            <div className="w-3 h-3 rounded-full bg-blue-300 animate-bounce"></div>
-            <div className="w-3 h-3 rounded-full bg-purple-300 animate-bounce"></div>
-            <div className="w-3 h-3 rounded-full bg-cyan-300 animate-bounce"></div>
-          </div>
-          <p className="text-gray-600">Loading conversation details...</p>
-        </div>
-      </div>
+      // <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex items-center justify-center">
+      //   <div className="text-center">
+      //     <div className="flex space-x-2 items-center justify-center mb-4">
+      //       <div className="w-3 h-3 rounded-full bg-blue-300 animate-bounce"></div>
+      //       <div className="w-3 h-3 rounded-full bg-purple-300 animate-bounce"></div>
+      //       <div className="w-3 h-3 rounded-full bg-cyan-300 animate-bounce"></div>
+      //     </div>
+      //     <p className="text-gray-600">Loading conversation details...</p>
+      //   </div>
+      // </div>
+      <AdminLoader text="Loading conversation details..." />
     );
   }
 
@@ -171,26 +178,36 @@ const ConversationDetailPageContent = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Title</h3>
-                <p className="text-lg font-semibold text-gray-900">{conversation.title || "Untitled Chat"}</p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {conversation.title || "Untitled Chat"}
+                </p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">User</h3>
-                <p className="text-lg font-semibold text-gray-900">{conversation.user?.email || "Unknown"}</p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {conversation.user?.name ||
+                    conversation.user?.email ||
+                    "Unknown"}
+                </p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Created</h3>
-                <p className="text-lg font-semibold text-gray-900">{new Date(conversation.created_at).toLocaleDateString()}</p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {new Date(conversation.created_at).toLocaleDateString()}
+                </p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Messages</h3>
-                <p className="text-lg font-semibold text-gray-900">{conversation.messages?.length || 0}</p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {conversation.messages?.length || 0}
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Messages */}
-        <Card className="bg-white/80 backdrop-blur-sm">
+        {/* <Card className="bg-white/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Messages</CardTitle>
           </CardHeader>
@@ -227,10 +244,10 @@ const ConversationDetailPageContent = () => {
                     </div>
                   </div>
 
-                  {/* Feedback and Reviews for this message */}
+              
                   {(message.id || message._id) && (
                     <div className="ml-8 space-y-2">
-                      {/* User Feedback */}
+            
                       {getFeedbackForMessage(message.id || message._id).map(
                         (item, idx) => (
                           <div
@@ -260,7 +277,7 @@ const ConversationDetailPageContent = () => {
                         )
                       )}
 
-                      {/* Reviewer Comments */}
+                    
                       {getReviewsForMessage(message.id || message._id).map(
                         (item, idx) => (
                           <div
@@ -304,7 +321,67 @@ const ConversationDetailPageContent = () => {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
+        <main className="flex-1 overflow-auto px-3 md:px-6 pt-3 md:pt-6 pb-[20px]">
+          <div className="space-y-4 md:space-y-6" ref={containerRef}>
+            {conversation.messages.map((msg, i) => (
+              <div
+                key={i}
+                className={`flex ${
+                  msg.sender === "user"
+                    ? "justify-end"
+                    : "justify-start pb-[3rem]"
+                } animate-fadeIn`}
+              >
+                <div
+                  className={`flex gap-2 md:gap-3 max-w-[85%] ${
+                    msg.sender === "user" ? "flex-row-reverse" : ""
+                  }`}
+                >
+                  <div
+                    className={`h-8 w-8 md:h-10 md:w-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      msg.sender === "user"
+                        ? "bg-gradient-to-br from-blue-500 to-purple-500 text-white"
+                        : "bg-gradient-to-br from-blue-100 to-cyan-200 text-blue-700"
+                    }`}
+                  >
+                    {msg.sender === "user" ? (
+                      <FiUser className="w-4 h-4 md:w-5 md:h-5" />
+                    ) : (
+                      <HiOutlineFingerPrint className="w-4 h-4 md:w-5 md:h-5" />
+                    )}
+                  </div>
+                  <div
+                    className={`relative rounded-xl md:rounded-2xl px-3 py-2 md:px-4 md:py-3 shadow-sm max-w-[calc(100%-3rem)] ${
+                      msg.sender === "user"
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                        : "bg-white border border-gray-100"
+                    }`}
+                  >
+                    <div
+                      className={`prose prose-xs md:prose-sm max-w-none ${
+                        msg.sender === "user" ? "text-white" : "text-gray-800"
+                      }`}
+                    >
+                      {msg.type === "audio" ? (
+                        <audio
+                          controls
+                          src={msg.content}
+                          className="w-full mt-1"
+                        />
+                      ) : msg.sender === "user" ? (
+                        <p className="text-sm md:text-base">{msg.text}</p>
+                      ) : (
+                        <MarkdownRenderer content={msg.text} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div ref={bottomRef} />
+        </main>
       </div>
     </div>
   );

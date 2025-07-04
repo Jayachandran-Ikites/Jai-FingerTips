@@ -145,10 +145,12 @@ const UserManagementContent = () => {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   User Management
                 </h1>
-                <p className="text-sm text-gray-600">Manage user accounts and permissions</p>
+                <p className="text-sm text-gray-600">
+                  Manage user accounts and permissions
+                </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate("/admin")}
@@ -204,39 +206,64 @@ const UserManagementContent = () => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">User</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Auth Type</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Role</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Created</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Actions</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">
+                      User
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">
+                      Auth Type
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">
+                      Role
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">
+                      Status
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">
+                      Created
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((user) => (
-                    <tr key={user._id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <tr
+                      key={user._id}
+                      className="border-b border-gray-100 hover:bg-gray-50"
+                    >
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
-                            {user.name ? user.name[0].toUpperCase() : user.email[0].toUpperCase()}
+                            {user.name
+                              ? user.name[0].toUpperCase()
+                              : user.email[0].toUpperCase()}
                           </div>
                           <div>
                             <p className="font-medium text-gray-900">
                               {user.name || "No name"}
                             </p>
-                            <p className="text-sm text-gray-500">{user.email}</p>
+                            <p className="text-sm text-gray-500">
+                              {user.email}
+                            </p>
                           </div>
                         </div>
                       </td>
                       <td className="py-4 px-4">
-                        <Badge variant={user.auth_type === "google" ? "info" : "secondary"}>
+                        <Badge
+                          variant={
+                            user.auth_type === "google" ? "info" : "secondary"
+                          }
+                        >
                           {user.auth_type}
                         </Badge>
                       </td>
                       <td className="py-4 px-4">
                         <select
                           value={user.role || "user"}
-                          onChange={(e) => handleRoleUpdate(user._id, e.target.value)}
+                          onChange={(e) =>
+                            handleRoleUpdate(user._id, e.target.value)
+                          }
                           className="text-sm border border-gray-200 rounded px-2 py-1 bg-white"
                         >
                           <option value="user">User</option>
@@ -248,7 +275,9 @@ const UserManagementContent = () => {
                       <td className="py-4 px-4">
                         <select
                           value={user.status || "active"}
-                          onChange={(e) => handleStatusUpdate(user._id, e.target.value)}
+                          onChange={(e) =>
+                            handleStatusUpdate(user._id, e.target.value)
+                          }
                           className="text-sm border border-gray-200 rounded px-2 py-1 bg-white"
                         >
                           <option value="active">Active</option>
@@ -278,26 +307,32 @@ const UserManagementContent = () => {
         </Card>
 
         {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => loadUsers(currentPage - 1, searchTerm)}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </Button>
-            <span className="px-4 py-2 text-sm text-gray-600">
-              Page {currentPage} of {totalPages}
-            </span>
-            <Button
-              variant="outline"
-              onClick={() => loadUsers(currentPage + 1, searchTerm)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </Button>
-          </div>
+        {loading ? (
+          <>
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => loadUsers(currentPage - 1, searchTerm)}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                <span className="px-4 py-2 text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  onClick={() => loadUsers(currentPage + 1, searchTerm)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            )}{" "}
+          </>
+        ) : (
+          <></>
         )}
       </div>
 
@@ -307,7 +342,9 @@ const UserManagementContent = () => {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-800">User Details</h2>
+                <h2 className="text-2xl font-bold text-gray-800">
+                  User Details
+                </h2>
                 <button
                   onClick={() => setShowUserModal(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -322,7 +359,9 @@ const UserManagementContent = () => {
               <div className="bg-gray-50 rounded-xl p-6">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold">
-                    {selectedUser.user.name ? selectedUser.user.name[0].toUpperCase() : selectedUser.user.email[0].toUpperCase()}
+                    {selectedUser.user.name
+                      ? selectedUser.user.name[0].toUpperCase()
+                      : selectedUser.user.email[0].toUpperCase()}
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-gray-800">
@@ -334,28 +373,41 @@ const UserManagementContent = () => {
                     </p>
                     <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
                       <FiShield className="w-4 h-4" />
-                      {selectedUser.user.role || "user"} • {selectedUser.user.auth_type}
+                      {selectedUser.user.role || "user"} •{" "}
+                      {selectedUser.user.auth_type}
                     </p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-blue-600">{selectedUser.total_conversations}</p>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {selectedUser.total_conversations}
+                    </p>
                     <p className="text-sm text-gray-600">Conversations</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-purple-600">{selectedUser.total_messages}</p>
+                    <p className="text-2xl font-bold text-purple-600">
+                      {selectedUser.total_messages}
+                    </p>
                     <p className="text-sm text-gray-600">Messages</p>
                   </div>
                   <div className="text-center">
                     <p className="text-2xl font-bold text-green-600">
-                      {new Date(selectedUser.user.created_at).toLocaleDateString()}
+                      {new Date(
+                        selectedUser.user.created_at
+                      ).toLocaleDateString()}
                     </p>
                     <p className="text-sm text-gray-600">Joined</p>
                   </div>
                   <div className="text-center">
-                    <Badge variant={selectedUser.user.status === "active" ? "success" : "secondary"}>
+                    <Badge
+                      variant={
+                        selectedUser.user.status === "active"
+                          ? "success"
+                          : "secondary"
+                      }
+                    >
                       {selectedUser.user.status || "active"}
                     </Badge>
                     <p className="text-sm text-gray-600 mt-1">Status</p>
@@ -365,7 +417,9 @@ const UserManagementContent = () => {
 
               {/* Recent Conversations */}
               <div>
-                <h4 className="text-lg font-semibold text-gray-800 mb-4">Recent Conversations</h4>
+                <h4 className="text-lg font-semibold text-gray-800 mb-4">
+                  Recent Conversations
+                </h4>
                 <div className="space-y-3">
                   {selectedUser.conversations.slice(0, 5).map((conv) => (
                     <div

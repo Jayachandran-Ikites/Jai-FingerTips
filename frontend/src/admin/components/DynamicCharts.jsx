@@ -290,7 +290,10 @@ const DynamicCharts = ({ data, timeRange, onTimeRangeChange }) => {
           <div className="flex flex-wrap gap-3">
             <Select value={dataType} onValueChange={setDataType}>
               <SelectTrigger className="w-36 h-9">
-                <SelectValue placeholder="Select data type"/>
+                <SelectValue placeholder="Select data type">
+                  {dataType.charAt(0).toUpperCase() + dataType.slice(1)
+                    .replace("s", "s")}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="users">Users</SelectItem>
