@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../user/components/ui/select";
+import { useToast } from "../../user/components/ui/toast";
 import axios from "axios";
 
 const api = axios.create({
@@ -37,6 +38,7 @@ const ConversationsManagement = ({
   loading: initialLoading,
 }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [conversations, setConversations] = useState(initialConversations || []);
   const [loading, setLoading] = useState(initialLoading || false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -156,15 +158,21 @@ const ConversationsManagement = ({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Filter by User
               </label>
-              {/* <Select
+              <Select
                 value={userFilter}
                 onValueChange={(value) => {
                   setUserFilter(value);
                   handleFilterChange();
                 }}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="All users" />
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="All users">
+                    {userFilter
+                      ? users.find((u) => u._id === userFilter)?.name ||
+                        users.find((u) => u._id === userFilter)?.email ||
+                        "Selected user"
+                      : "All users"}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All users</SelectItem>
@@ -174,33 +182,7 @@ const ConversationsManagement = ({
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select> */}
-              {/* <div className="flex items-center gap-2"> */}
-                <Select
-                  value={userFilter}
-                  onValueChange={(value) => {
-                    setUserFilter(value);
-                    handleFilterChange();
-                  }}
-                >
-                  <SelectTrigger className="w-48 h-9 gap-5 px-10">
-                    <SelectValue placeholder="Filter by user">
-                      {userFilter
-                        ? users.find((u) => u._id === userFilter)?.name ||
-                          users.find((u) => u._id === userFilter)?.email
-                        : null}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All users</SelectItem>
-                    {users.map((user) => (
-                      <SelectItem key={user._id} value={user._id}>
-                        {user.name || user.email}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              {/* </div> */}
+              </Select>
             </div>
 
             <div className="flex-1">

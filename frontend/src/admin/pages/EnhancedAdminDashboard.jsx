@@ -42,7 +42,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../user/components/
 import { Card, CardHeader, CardTitle, CardContent } from "../../user/components/ui/card";
 import { Button } from "../../user/components/ui/button";
 import { Badge } from "../../user/components/ui/badge";
-import { useToast } from "../../user/components/ui/toast";
+import { ToastProvider, useToast } from "../../user/components/ui/toast";
 import AdminAnalytics from "../components/AdminAnalytics";
 import DynamicCharts from "../components/DynamicCharts";
 import MarkdownRenderer from "../../user/components/MarkdownRenderer.jsx";
@@ -55,7 +55,17 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// Main component that wraps the dashboard content with ToastProvider
 const EnhancedAdminDashboard = () => {
+  return (
+    <ToastProvider>
+      <EnhancedAdminDashboardContent />
+    </ToastProvider>
+  );
+};
+
+// Dashboard content component that uses the toast hook
+const EnhancedAdminDashboardContent = () => {
   const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const { toast } = useToast();
