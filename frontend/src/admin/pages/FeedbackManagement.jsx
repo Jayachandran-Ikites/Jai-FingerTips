@@ -35,6 +35,7 @@ const FeedbackManagementContent = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [feedback, setFeedback] = useState([]);
   const [ratingFilter, setRatingFilter] = useState("all");
+  const [conversationsWithFeedback, setConversationsWithFeedback] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -62,12 +63,38 @@ const FeedbackManagementContent = () => {
   const loadConversations = async () => {
     try {
       setLoading(true);
+      // First load all conversations
       const token = localStorage.getItem("token");
-      const response = await api.get("/admin/conversations", {
+      const allConversationsResponse = await api.get("/admin/conversations", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { limit: 50 },
+        params: { limit: 100 }, // Get more conversations to filter from
       });
-      setConversations(response.data.conversations);
+      
+      const allConversations = allConversationsResponse.data.conversations || [];
+      setConversations(allConversations);
+      
+      // Then filter conversations with feedback
+      const withFeedback = [];
+      
+      for (const conversation of allConversations) {
+        try {
+          const feedbackResponse = await api.get(`/feedback/${conversation._id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          
+          if (feedbackResponse.data.feedback && feedbackResponse.data.feedback.length > 0) {
+            withFeedback.push({
+              ...conversation,
+              feedbackCount: feedbackResponse.data.feedback.length
+            });
+          }
+        } catch (error) {
+          // Skip conversations with errors fetching feedback
+          console.error(`Error checking feedback for conversation ${conversation._id}:`, error);
+        }
+      }
+      
+      setConversationsWithFeedback(withFeedback);
     } catch (error) {
       console.error("Error loading conversations:", error);
       if (error.response?.status === 403) {
@@ -288,7 +315,13 @@ const FeedbackManagementContent = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {conversations.map((conv) => (
+                  {conversationsWithFeedback.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      <FiMessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>No conversations with feedback found</p>
+                    </div>
+                  ) : (
+                    conversationsWithFeedback.map((conv) => (
                     <div
                       key={conv._id}
                       className={`p-4 rounded-lg border cursor-pointer transition-all hover:shadow-sm ${
@@ -302,8 +335,8 @@ const FeedbackManagementContent = () => {
                         <h3 className="font-medium text-gray-800 truncate">
                           {conv.title || "Untitled Chat"}
                         </h3>
-                        <Badge variant="secondary">
-                          {conv.message_count} messages
+                        <Badge variant="info" className="bg-blue-100 text-blue-800">
+                          {conv.feedbackCount} {conv.feedbackCount === 1 ? 'feedback' : 'feedbacks'}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-gray-600">
@@ -317,7 +350,7 @@ const FeedbackManagementContent = () => {
                         </div>
                       </div>
                     </div>
-                  ))}
+                  )))}
                 </div>
               </CardContent>
             </Card>
@@ -363,7 +396,7 @@ const FeedbackManagementContent = () => {
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
                               <div className="flex">
-                                {renderStars(item.rating)}
+                                {renderStars(item.rating || 0)}
                               </div>
                               <span className="text-sm font-medium">
                                 {item.rating}/5
@@ -375,9 +408,21 @@ const FeedbackManagementContent = () => {
                           </div>
                           
                           {item.comment && (
-                            <p className="text-sm text-gray-700 bg-white p-3 rounded border">
-                              {item.comment}
-                            </p>
+                            <div className="bg-white p-3 rounded border">
+                              <div className="mb-3 pb-3 border-b border-gray-100">
+                                <span className="text-xs text-gray-500">Message:</span>
+                                <p className="text-sm text-gray-800 mt-1">
+                                  {selectedConversation.messages?.find(m => m.id === item.message_id)?.text || 
+                                   "Message not found"}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-xs text-gray-500">Feedback:</span>
+                                <p className="text-sm text-gray-700 mt-1">
+                                  {item.comment}
+                                </p>
+                              </div>
+                            </div>
                           )}
                           
                           <div className="mt-2 text-xs text-gray-500">
