@@ -289,6 +289,11 @@ const ReviewerDashboardContent = () => {
     loadConversations(1, { search: searchTerm });
   };
 
+  useEffect(() => {
+    // Load conversations when user or date filter changes
+    loadConversations(1, { user : userFilter});
+  }, [userFilter]);
+
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <FiStar
@@ -627,43 +632,63 @@ const ReviewerDashboardContent = () => {
                           {message.sender === "bot" && (
                             <div className="mt-2 flex justify-between">
                               <div className="flex gap-2">
-                                {getFeedbackForMessage(message.id || `msg-${index}`).length > 0 && (
+                                {getFeedbackForMessage(
+                                  message.id || `msg-${index}`
+                                ).length > 0 && (
                                   <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      toggleFeedbackExpand(message.id || `msg-${index}`);
+                                      toggleFeedbackExpand(
+                                        message.id || `msg-${index}`
+                                      );
                                     }}
-                                    className="flex items-center gap-1"
+                                    className="flex items-center gap-1 bg-[#fefeff]"
                                   >
                                     <FiMessageCircle className="w-3 h-3 mr-1" />
                                     Feedback
-                                    <FiChevronDown className={`w-3 h-3 ml-1 transition-transform ${
-                                      expandedFeedback[message.id || `msg-${index}`] ? 'rotate-180' : ''
-                                    }`} />
+                                    <FiChevronDown
+                                      className={`w-3 h-3 ml-1 transition-transform ${
+                                        expandedFeedback[
+                                          message.id || `msg-${index}`
+                                        ]
+                                          ? "rotate-180"
+                                          : ""
+                                      }`}
+                                    />
                                   </Button>
                                 )}
-                                
-                                {getReviewsForMessage(message.id || `msg-${index}`).length > 0 && (
+
+                                {getReviewsForMessage(
+                                  message.id || `msg-${index}`
+                                ).length > 0 && (
                                   <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      toggleReviewsExpand(message.id || `msg-${index}`);
+                                      toggleReviewsExpand(
+                                        message.id || `msg-${index}`
+                                      );
                                     }}
-                                    className="flex items-center gap-1"
+                                    className="flex items-center gap-1 bg-[#fefeff]"
                                   >
                                     <FiEdit3 className="w-3 h-3 mr-1" />
                                     Reviews
-                                    <FiChevronDown className={`w-3 h-3 ml-1 transition-transform ${
-                                      expandedReviews[message.id || `msg-${index}`] ? 'rotate-180' : ''
-                                    }`} />
+                                    <FiChevronDown
+                                      className={`w-3 h-3  ml-1 transition-transform ${
+                                        expandedReviews[
+                                          message.id || `msg-${index}`
+                                        ]
+                                          ? "rotate-180"
+                                          : ""
+                                      }`}
+                                    />
                                   </Button>
                                 )}
                               </div>
-                              
+
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -671,11 +696,13 @@ const ReviewerDashboardContent = () => {
                                   e.stopPropagation();
                                   openReviewModal(message.id || `msg-${index}`);
                                 }}
-                                className="flex items-center gap-1"
+                                className="flex items-center gap-1 bg-[#fefeff]"
                               >
-                                <FiEdit3 className="w-3 h-3 mr-1" />
-                                {getReviewsForMessage(message.id || `msg-${index}`).length > 0 
-                                  ? "Edit Review" 
+                                <FiEdit3 className="w-3 h-3 mr-1 " />
+                                {getReviewsForMessage(
+                                  message.id || `msg-${index}`
+                                ).length > 0
+                                  ? "Edit Review"
                                   : "Add Review"}
                               </Button>
                             </div>
@@ -685,40 +712,40 @@ const ReviewerDashboardContent = () => {
 
                       {/* Feedback and Reviews for this message */}
                       {(message.id || message._id) && (
-                        <div className="ml-8 space-y-2">
+                        <div className="w-[80%] space-y-2">
                           {/* User Feedback */}
-                          {expandedFeedback[message.id || `msg-${index}`] && 
-                            getFeedbackForMessage(message.id || message._id).map(
-                              (item, idx) => (
-                                <div
-                                  key={`feedback-${idx}`}
-                                  className="bg-blue-50 rounded-lg p-3 border border-blue-100"
-                                >
-                                  <div className="flex items-center justify-between mb-1">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-sm font-medium">
-                                        {item.user_name || "User"}
-                                      </span>
-                                      <Badge variant="info">User</Badge>
-                                      <div className="flex">
-                                        {renderStars(item.rating)}
-                                      </div>
-                                    </div>
-                                    <span className="text-xs text-gray-500">
-                                      {new Date(item.created_at).toLocaleString()}
+                          {expandedFeedback[message.id || `msg-${index}`] &&
+                            getFeedbackForMessage(
+                              message.id || message._id
+                            ).map((item, idx) => (
+                              <div
+                                key={`feedback-${idx}`}
+                                className="bg-blue-50 rounded-lg p-3 border border-blue-100"
+                              >
+                                <div className="flex items-center justify-between mb-1">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium">
+                                      {item.user_name || "User"}
                                     </span>
+                                    <Badge variant="info">User</Badge>
+                                    <div className="flex">
+                                      {renderStars(item.rating)}
+                                    </div>
                                   </div>
-                                  {item.comment && (
-                                    <p className="text-sm text-gray-700 mt-1">
-                                      {item.comment}
-                                    </p>
-                                  )}
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(item.created_at).toLocaleString()}
+                                  </span>
                                 </div>
-                              )
-                            )}
+                                {item.comment && (
+                                  <p className="text-sm text-gray-700 mt-1">
+                                    {item.comment}
+                                  </p>
+                                )}
+                              </div>
+                            ))}
 
                           {/* Reviewer Comments */}
-                          {expandedReviews[message.id || `msg-${index}`] && 
+                          {expandedReviews[message.id || `msg-${index}`] &&
                             getReviewsForMessage(message.id || message._id).map(
                               (item, idx) => (
                                 <div
@@ -747,7 +774,9 @@ const ReviewerDashboardContent = () => {
                                       )}
                                     </div>
                                     <span className="text-xs text-gray-500">
-                                      {new Date(item.created_at).toLocaleString()}
+                                      {new Date(
+                                        item.created_at
+                                      ).toLocaleString()}
                                     </span>
                                   </div>
                                   <p className="text-sm text-gray-700 mt-1">
@@ -778,14 +807,14 @@ const ReviewerDashboardContent = () => {
       {/* Review Modal */}
       {showReviewModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div 
+          <div
             ref={modalRef}
             className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 animate-fadeIn"
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-800">
-                {getReviewsForMessage(reviewForm.messageId).length > 0 
-                  ? "Edit Review" 
+                {getReviewsForMessage(reviewForm.messageId).length > 0
+                  ? "Edit Review"
                   : "Add Review"}
               </h2>
               <button
@@ -857,14 +886,10 @@ const ReviewerDashboardContent = () => {
                   <FiX className="w-4 h-4 mr-2" />
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
-                  variant="gradient"
-                  className="flex-1"
-                >
+                <Button type="submit" variant="gradient" className="flex-1">
                   <FiSend className="w-4 h-4 mr-2" />
-                  {getReviewsForMessage(reviewForm.messageId).length > 0 
-                    ? "Update Review" 
+                  {getReviewsForMessage(reviewForm.messageId).length > 0
+                    ? "Update Review"
                     : "Submit Review"}
                 </Button>
               </div>
