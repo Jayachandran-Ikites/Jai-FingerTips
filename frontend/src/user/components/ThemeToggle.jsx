@@ -43,6 +43,7 @@ export function ThemeToggle() {
 
 export function ThemeToggleButton() {
   const { theme, setTheme } = useTheme();
+  console.log("Current theme:", theme);
 
   const toggleTheme = () => {
     if (theme === "light") {

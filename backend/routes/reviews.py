@@ -4,38 +4,44 @@ from bson import ObjectId
 from ..auth.utils import verify_token
 from ..database import get_db
 from ..models.review import (
-    create_review_comment, get_reviews_by_conversation, 
-    get_reviewer_activity, update_review_comment, delete_review_comment
+    create_review_comment,
+    get_reviews_by_conversation,
+    get_reviewer_activity,
+    update_review_comment,
+    delete_review_comment,
 )
 import logging
 
 reviews_bp = Blueprint("reviews", __name__)
 
+
 def require_reviewer_or_admin(f):
     """Decorator to require reviewer or admin role"""
+
     def decorated_function(*args, **kwargs):
         auth_header = request.headers.get("Authorization")
         if not auth_header:
             return jsonify({"error": "Missing token"}), 401
-        
+
         token = auth_header.split(" ")[1]
         user_id = verify_token(token)
         if not user_id:
             return jsonify({"error": "Invalid or expired token"}), 403
-        
+
         # Check user role
         db = get_db()
         users = db["users"]
         user = users.find_one({"_id": ObjectId(user_id)})
         user_role = user.get("role", "user")
-        
+
         if user_role not in ["admin", "reviewer"]:
             return jsonify({"error": "Reviewer or admin access required"}), 403
-        
+
         return f(user_id, *args, **kwargs)
-    
+
     decorated_function.__name__ = f.__name__
     return decorated_function
+
 
 @reviews_bp.route("/reviews", methods=["POST"])
 @require_reviewer_or_admin
@@ -47,85 +53,106 @@ def create_review(reviewer_id):
         message_id = data.get("message_id")
         comment = data.get("comment")
         rating = data.get("rating")  # Optional
-        
+
         if not all([conversation_id, message_id, comment]):
             return jsonify({"error": "Missing required fields"}), 400
-        
+
         if rating and not (1 <= rating <= 5):
             return jsonify({"error": "Rating must be between 1 and 5"}), 400
-        
-        review_id = create_review_comment(reviewer_id, conversation_id, message_id, comment, rating)
-        
-        return jsonify({
-            "message": "Review comment created successfully",
-            "review_id": str(review_id)
-        })
-        
+
+        review_id = create_review_comment(
+            reviewer_id, conversation_id, message_id, comment, rating
+        )
+
+        return jsonify(
+            {
+                "message": "Review comment created successfully",
+                "review_id": str(review_id),
+            }
+        )
+
     except Exception as e:
         logging.error(f"Create review error: {e}")
         return jsonify({"error": "Failed to create review"}), 500
+
 
 @reviews_bp.route("/reviews/conversation/<conversation_id>", methods=["GET"])
 def get_conversation_reviews(conversation_id):
     """Get all review comments for a conversation"""
     try:
         auth_header = request.headers.get("Authorization")
-        if not auth_header:
-            return jsonify({"error": "Missing token"}), 401
-        
-        token = auth_header.split(" ")[1]
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return jsonify({"error": "Missing or invalid token"}), 401
+
+        try:
+            token = auth_header.split(" ")[1]
+        except IndexError:
+            return jsonify({"error": "Invalid token format"}), 401
+
         user_id = verify_token(token)
         if not user_id:
             return jsonify({"error": "Invalid or expired token"}), 403
-        
-        # Check if user is admin, reviewer, or the conversation owner
+
         db = get_db()
         users = db["users"]
         conversations = db["conversations"]
-        
-        user = users.find_one({"_id": ObjectId(user_id)})
-        user_role = user.get("role", "user")
-        
+
+        try:
+            user = users.find_one({"_id": ObjectId(user_id)})
+        except Exception:
+            return jsonify({"error": "Invalid user ID"}), 400
+
+        user_role = user.get("role", "user") if user else "user"
+
         # If not admin or reviewer, check if user owns the conversation
         if user_role not in ["admin", "reviewer"]:
-            conversation = conversations.find_one({
-                "_id": ObjectId(conversation_id),
-                "user_id": ObjectId(user_id)
-            })
+            try:
+                conversation = conversations.find_one(
+                    {
+                        "_id": ObjectId(conversation_id),
+                        # "user_id": ObjectId(user_id)
+                    }
+                )
+            except Exception:
+                return jsonify({"error": "Invalid conversation ID"}), 400
             if not conversation:
                 return jsonify({"error": "Access denied"}), 403
-        
+
         reviews = get_reviews_by_conversation(conversation_id)
-        
-        # Format review data
+        print("***RRR", reviews)
         formatted_reviews = []
         for review in reviews:
-            formatted_review = {
-                "_id": str(review["_id"]),
-                "reviewer_id": str(review["reviewer_id"]),
-                "conversation_id": str(review["conversation_id"]),
-                "message_id": review["message_id"],
-                "comment": review["comment"],
-                "rating": review.get("rating"),
-                "created_at": review["created_at"].isoformat(),
-                "updated_at": review["updated_at"].isoformat(),
-                "reviewer_name": review.get("reviewer_name", ""),
-            }
-            
-            # Add reviewer info if available
-            if "reviewer" in review:
-                formatted_review["reviewer"] = {
-                    "email": review["reviewer"].get("email", ""),
-                    "name": review["reviewer"].get("name", "")
+            try:
+                formatted_review = {
+                    "_id": str(review.get("_id", "")),
+                    "reviewer_id": str(review.get("reviewer_id", "")),
+                    "conversation_id": str(review.get("conversation_id", "")),
+                    "message_id": review.get("message_id", ""),
+                    "comment": review.get("comment", ""),
+                    "rating": review.get("rating"),
+                    "created_at": review.get("created_at").isoformat()
+                    if hasattr(review.get("created_at"), "isoformat")
+                    else str(review.get("created_at", "")),
+                    "updated_at": review.get("updated_at").isoformat()
+                    if hasattr(review.get("updated_at"), "isoformat")
+                    else str(review.get("updated_at", "")),
+                    "reviewer_name": review.get("reviewer_name", ""),
                 }
-            
-            formatted_reviews.append(formatted_review)
-        
+                if "reviewer" in review:
+                    formatted_review["reviewer"] = {
+                        "email": review["reviewer"].get("email", ""),
+                        "name": review["reviewer"].get("name", ""),
+                    }
+                formatted_reviews.append(formatted_review)
+            except Exception as e:
+                logging.error(f"Error formatting review: {e}")
+        print("\n\n\n\n\n", formatted_reviews)
         return jsonify({"reviews": formatted_reviews})
-        
+
     except Exception as e:
         logging.error(f"Get conversation reviews error: {e}")
         return jsonify({"error": "Failed to get reviews"}), 500
+
 
 @reviews_bp.route("/reviews/<review_id>", methods=["PUT"])
 @require_reviewer_or_admin
@@ -135,36 +162,37 @@ def update_review(reviewer_id, review_id):
         data = request.get_json()
         comment = data.get("comment")
         rating = data.get("rating")
-        
+
         # Verify review belongs to reviewer (or user is admin)
         db = get_db()
         users = db["users"]
         reviews = db["reviews"]
-        
+
         user = users.find_one({"_id": ObjectId(reviewer_id)})
         user_role = user.get("role", "user")
-        
+
         review = reviews.find_one({"_id": ObjectId(review_id)})
         if not review:
             return jsonify({"error": "Review not found"}), 404
-        
+
         # Only allow update if user is admin or owns the review
         if user_role != "admin" and str(review["reviewer_id"]) != reviewer_id:
             return jsonify({"error": "Cannot update other reviewer's comments"}), 403
-        
+
         if rating and not (1 <= rating <= 5):
             return jsonify({"error": "Rating must be between 1 and 5"}), 400
-        
+
         success = update_review_comment(review_id, comment, rating)
-        
+
         if success:
             return jsonify({"message": "Review updated successfully"})
         else:
             return jsonify({"error": "Failed to update review"}), 500
-            
+
     except Exception as e:
         logging.error(f"Update review error: {e}")
         return jsonify({"error": "Failed to update review"}), 500
+
 
 @reviews_bp.route("/reviews/<review_id>", methods=["DELETE"])
 @require_reviewer_or_admin
@@ -175,28 +203,29 @@ def delete_review(reviewer_id, review_id):
         db = get_db()
         users = db["users"]
         reviews = db["reviews"]
-        
+
         user = users.find_one({"_id": ObjectId(reviewer_id)})
         user_role = user.get("role", "user")
-        
+
         review = reviews.find_one({"_id": ObjectId(review_id)})
         if not review:
             return jsonify({"error": "Review not found"}), 404
-        
+
         # Only allow deletion if user is admin or owns the review
         if user_role != "admin" and str(review["reviewer_id"]) != reviewer_id:
             return jsonify({"error": "Cannot delete other reviewer's comments"}), 403
-        
+
         success = delete_review_comment(review_id)
-        
+
         if success:
             return jsonify({"message": "Review deleted successfully"})
         else:
             return jsonify({"error": "Failed to delete review"}), 500
-            
+
     except Exception as e:
         logging.error(f"Delete review error: {e}")
         return jsonify({"error": "Failed to delete review"}), 500
+
 
 @reviews_bp.route("/reviews/activity", methods=["GET"])
 @require_reviewer_or_admin
@@ -205,27 +234,28 @@ def get_reviewer_activity_log(reviewer_id):
     try:
         start_date = request.args.get("start_date")
         end_date = request.args.get("end_date")
-        
+
         start_dt = None
         end_dt = None
-        
+
         if start_date:
             start_dt = datetime.fromisoformat(start_date)
         if end_date:
             end_dt = datetime.fromisoformat(end_date)
-        
+
         activity = get_reviewer_activity(reviewer_id, start_dt, end_dt)
-        
+
         # Format activity data
         for item in activity:
             item["_id"] = str(item["_id"])
             item["created_at"] = item["created_at"].isoformat()
-        
+
         return jsonify({"activity": activity})
-        
+
     except Exception as e:
         logging.error(f"Get reviewer activity error: {e}")
         return jsonify({"error": "Failed to get activity log"}), 500
+
 
 @reviews_bp.route("/reviews/all-activity", methods=["GET"])
 @require_reviewer_or_admin
@@ -237,13 +267,13 @@ def get_all_reviewer_activity(current_user_id):
         users = db["users"]
         user = users.find_one({"_id": ObjectId(current_user_id)})
         user_role = user.get("role", "user")
-        
+
         if user_role != "admin":
             return jsonify({"error": "Admin access required"}), 403
-        
+
         # Get all reviewers
         reviewers = list(users.find({"role": {"$in": ["reviewer", "admin"]}}))
-        
+
         all_activity = []
         for reviewer in reviewers:
             activity = get_reviewer_activity(str(reviewer["_id"]))
@@ -253,12 +283,12 @@ def get_all_reviewer_activity(current_user_id):
                 item["reviewer_email"] = reviewer["email"]
                 item["reviewer_name"] = reviewer.get("name", "")
             all_activity.extend(activity)
-        
+
         # Sort by creation date
         all_activity.sort(key=lambda x: x["created_at"], reverse=True)
-        
+
         return jsonify({"activity": all_activity})
-        
+
     except Exception as e:
         logging.error(f"Get all reviewer activity error: {e}")
         return jsonify({"error": "Failed to get activity log"}), 500

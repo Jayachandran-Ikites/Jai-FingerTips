@@ -1,10 +1,12 @@
+"use client";
 import { useState } from "react";
 import { FiMessageSquare, FiPlus, FiTrash2, FiEdit3 } from "react-icons/fi";
+import { toast } from "react-hot-toast";
 
 const Sidebar = ({
   isOpen,
   onToggle,
-  conversations,
+  conversations, // Now received as props from parent
   currentConvId,
   onSelectConversation,
   onNewChat,
@@ -46,7 +48,7 @@ const Sidebar = ({
 
       <div
         className={`
-          fixed lg:relative left-0 top-0 h-full bg-white/95 backdrop-blur-sm border-r border-blue-100 
+          fixed lg:relative left-0 top-0 h-full bg-white/95 backdrop-blur-sm border-r border-blue-100
           shadow-xl z-50 transform transition-all duration-300 ease-in-out flex flex-col
           ${
             isOpen
@@ -125,7 +127,7 @@ const Sidebar = ({
         )}
         {isOpen && (
           <>
-            <div className="p-4 flex-shrink-0 mt-[2.7rem]">
+            <div className="p-4 flex-shrink-0 lg:mt-[2.7rem]">
               <button
                 onClick={onNewChat}
                 className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
@@ -259,20 +261,38 @@ const ConversationItem = ({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setIsEditing(true);
-          }}
-          className="p-1 rounded hover:bg-white/80 text-gray-500 hover:text-blue-600"
-          title="Rename"
-          disabled={disabled}
-        >
-          <FiEdit3 className="w-3 h-3" />
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            if (window.confirm("Delete this conversation?")) {
-              onDelete();
-            }
+            console.log("Trash button clicked"); // Debugging log
+            toast.custom((t) => {
+              return (
+                <div
+                  className="fixed top-[4rem] left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg rounded-lg p-4 flex flex-col gap-2 w-72 text-sm z-[9999]"
+                  style={{ minWidth: 288 }}
+                >
+                  <span>
+                    Are you sure you want to delete this conversation?
+                  </span>
+                  <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => toast.dismiss(t.id)}
+                      className="px-3 py-1 text-sm rounded border hover:bg-gray-100"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        console.log("Delete confirmed"); // Debugging log
+                        onDelete();
+                        toast.dismiss(t.id);
+                        toast.success("Conversation deleted successfully.");
+                      }}
+                      className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            });
           }}
           className="p-1 rounded hover:bg-white/80 text-gray-500 hover:text-red-600"
           title="Delete"

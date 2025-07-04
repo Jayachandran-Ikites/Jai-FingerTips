@@ -156,9 +156,9 @@ const AdminAnalytics = () => {
                       {analytics.latency_stats.avg_latency?.toFixed(0)}ms
                     </p>
                     <div className="flex items-center gap-2 mt-2">
-                      <Badge variant="secondary" className="text-xs">
+                      {/* <Badge variant="secondary" className="text-xs">
                         Min: {analytics.latency_stats.min_latency?.toFixed(0)}ms
-                      </Badge>
+                      </Badge> */}
                       <Badge variant="secondary" className="text-xs">
                         Max: {analytics.latency_stats.max_latency?.toFixed(0)}ms
                       </Badge>

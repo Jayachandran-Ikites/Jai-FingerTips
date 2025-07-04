@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiEdit3, FiSave, FiX, FiRotateCcw, FiClock, FiTrash2 } from "react-icons/fi";
+import {
+  FiEdit3,
+  FiSave,
+  FiX,
+  FiRotateCcw,
+  FiClock,
+  FiTrash2,
+} from "react-icons/fi";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
@@ -38,9 +45,9 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await api.get("/prompts/active", {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      
+
       setActivePrompt(response.data.prompt);
       setEditedPrompt(response.data.prompt?.prompt_text || "");
     } catch (error) {
@@ -55,9 +62,9 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await api.get("/prompts/history", {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      
+
       setPromptHistory(response.data.history);
     } catch (error) {
       console.error("Error loading prompt history:", error);
@@ -71,14 +78,18 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
     }
 
     setIsSaving(true);
-    
+
     try {
       const token = localStorage.getItem("token");
-      await api.post("/prompts", {
-        prompt_text: editedPrompt.trim()
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post(
+        "/prompts",
+        {
+          prompt_text: editedPrompt.trim(),
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       toast.success("Prompt updated successfully!");
       setIsEditing(false);
@@ -97,9 +108,13 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
   const handleRevert = async (version) => {
     try {
       const token = localStorage.getItem("token");
-      await api.post(`/prompts/revert/${version}`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post(
+        `/prompts/revert/${version}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       toast.success(`Reverted to version ${version}`);
       await loadActivePrompt();
@@ -113,9 +128,13 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
   const handleReset = async () => {
     try {
       const token = localStorage.getItem("token");
-      await api.post("/prompts/reset", {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post(
+        "/prompts/reset",
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       toast.success("Prompt reset to default");
       await loadActivePrompt();
@@ -136,19 +155,23 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
       >
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Prompt Management</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {canEdit ? "Customize your AI assistant's behavior" : "View current prompt configuration"}
+              <h2 className="text-2xl font-bold text-gray-800">
+                Prompt Management
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                {canEdit
+                  ? "Customize your AI assistant's behavior"
+                  : "View current prompt configuration"}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <FiX className="w-5 h-5" />
             </button>
@@ -196,7 +219,9 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
                               size="sm"
                               onClick={() => {
                                 setIsEditing(false);
-                                setEditedPrompt(activePrompt?.prompt_text || "");
+                                setEditedPrompt(
+                                  activePrompt?.prompt_text || ""
+                                );
                               }}
                             >
                               <FiX className="w-4 h-4 mr-2" />
@@ -227,14 +252,15 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
                       placeholder="Enter your custom prompt..."
                     />
                   ) : (
-                    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 font-mono text-sm whitespace-pre-wrap">
+                    <div className="bg-gray-50 rounded-lg p-4 font-mono text-sm whitespace-pre-wrap">
                       {activePrompt?.prompt_text || "No prompt configured"}
                     </div>
                   )}
-                  
+
                   {activePrompt && (
-                    <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-                      Last updated: {new Date(activePrompt.updated_at).toLocaleString()}
+                    <div className="mt-4 text-xs text-gray-500">
+                      Last updated:{" "}
+                      {new Date(activePrompt.updated_at).toLocaleString()}
                     </div>
                   )}
                 </CardContent>
@@ -276,14 +302,18 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
                         <div
                           key={prompt._id}
                           className={`p-4 rounded-lg border ${
-                            prompt.is_active 
-                              ? "border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20" 
-                              : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50"
+                            prompt.is_active
+                              ? "border-blue-200 bg-blue-50"
+                              : "border-gray-200 bg-gray-50"
                           }`}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
-                              <Badge variant={prompt.is_active ? "info" : "secondary"}>
+                              <Badge
+                                variant={
+                                  prompt.is_active ? "info" : "secondary"
+                                }
+                              >
                                 Version {prompt.version}
                               </Badge>
                               {prompt.is_active && (
@@ -303,10 +333,11 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
                               )}
                             </div>
                           </div>
-                          <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                            Created: {new Date(prompt.created_at).toLocaleString()}
+                          <div className="text-xs text-gray-600 mb-2">
+                            Created:{" "}
+                            {new Date(prompt.created_at).toLocaleString()}
                           </div>
-                          <div className="text-sm font-mono bg-white dark:bg-gray-700 p-2 rounded border dark:border-gray-600 max-h-20 overflow-y-auto">
+                          <div className="text-sm font-mono bg-white p-2 rounded border max-h-20 overflow-y-auto">
                             {prompt.prompt_text.substring(0, 200)}
                             {prompt.prompt_text.length > 200 && "..."}
                           </div>
@@ -323,29 +354,34 @@ const PromptEditor = ({ isOpen, onClose, userRole }) => {
                   <CardTitle>About Prompts</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                  <div className="text-sm text-gray-600 space-y-2">
                     <p>
-                      Prompts define how the AI assistant behaves and responds to your questions.
+                      Prompts define how the AI assistant behaves and responds
+                      to your questions.
                     </p>
                     {canEdit ? (
                       <>
                         <p>
-                          As a Power User, you can customize your prompt to better suit your needs.
-                          Changes only affect your conversations.
+                          As a Power User, you can customize your prompt to
+                          better suit your needs. Changes only affect your
+                          conversations.
                         </p>
                         <p>
                           <strong>Tips:</strong>
                         </p>
                         <ul className="list-disc list-inside space-y-1 ml-4">
                           <li>Be specific about the tone and style you want</li>
-                          <li>Include any special instructions or constraints</li>
+                          <li>
+                            Include any special instructions or constraints
+                          </li>
                           <li>Test your changes with a few questions</li>
                           <li>You can always revert to previous versions</li>
                         </ul>
                       </>
                     ) : (
                       <p>
-                        Contact an administrator to upgrade to Power User for prompt editing capabilities.
+                        Contact an administrator to upgrade to Power User for
+                        prompt editing capabilities.
                       </p>
                     )}
                   </div>

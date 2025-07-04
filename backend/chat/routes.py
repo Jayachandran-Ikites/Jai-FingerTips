@@ -61,11 +61,13 @@ def chat():
     if user_prompt:
         # Use custom prompt for power users
         custom_history = [{"role": "system", "content": user_prompt["prompt_text"]}] + history
-        bot_reply = answer_medical_query(user_message, custom_history)
+        bot_answer = answer_medical_query(user_message, custom_history)
     else:
         # Use default system prompt
-        bot_reply = answer_medical_query(user_message, history)
+        bot_answer = answer_medical_query(user_message, history)
 
+    bot_reply=bot_answer.get("answer")
+    sources=bot_answer.get("sources")
     # Track end time and calculate latency
     end_time = time.time()
     
@@ -80,22 +82,27 @@ def chat():
     conversations.update_one(
         {"_id": ObjectId(conversation_id)},
         {
-            "$push": {"messages": {"$each": [
-                {
-                    "id": user_message_id,
-                    "sender": "user", 
-                    "text": user_message, 
-                    "timestamp": datetime.utcnow()
-                },
-                {
-                    "id": bot_message_id,
-                    "sender": "bot",  
-                    "text": bot_reply,    
-                    "timestamp": datetime.utcnow()
+            "$push": {
+                "messages": {
+                    "$each": [
+                        {
+                            "id": user_message_id,
+                            "sender": "user",
+                            "text": user_message,
+                            "timestamp": datetime.utcnow(),
+                        },
+                        {
+                            "id": bot_message_id,
+                            "sender": "bot",
+                            "text": bot_reply,
+                            "timestamp": datetime.utcnow(),
+                            "sources": sources,
+                        },
+                    ]
                 }
-            ]}},
-            "$set": {"updated_at": datetime.utcnow()}
-        }
+            },
+            "$set": {"updated_at": datetime.utcnow()},
+        },
     )
 
     # Track analytics
@@ -251,7 +258,7 @@ def delete_conversation(conversation_id):
 
 # Add endpoint to rename conversation
 @chat_bp.route("/chat/conversation/<conversation_id>", methods=["PATCH"])
-def rename_conversation(conversation_id):
+def patch_conversation(conversation_id):
     auth_header = request.headers.get("Authorization")
     if not auth_header:
         return jsonify({"error": "Missing token"}), 401

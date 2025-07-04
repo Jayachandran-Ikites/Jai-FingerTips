@@ -100,6 +100,100 @@ def get_conversation_feedback(user_id, conversation_id):
     except Exception as e:
         logging.error(f"Get conversation feedback error: {e}")
         return jsonify({"error": "Failed to get feedback"}), 500
+    
+@feedback_bp.route("/feedback/<conversation_id>/<message_id>", methods=["GET"])
+@require_auth
+def get_message_feedback(user_id, conversation_id, message_id):
+    """Get feedback for a specific message in a conversation"""
+    try:
+        # Verify user owns the conversation or is admin/reviewer
+        db = get_db()
+        users = db["users"]
+        conversations = db["conversations"]
+        
+        user = users.find_one({"_id": ObjectId(user_id)})
+        user_role = user.get("role", "user")
+        
+        if user_role not in ["admin", "reviewer"]:
+            conversation = conversations.find_one({
+                "_id": ObjectId(conversation_id),
+                "user_id": ObjectId(user_id)
+            })
+            if not conversation:
+                return jsonify({"error": "Conversation not found"}), 404
+        
+        # Get feedback for the specific message
+        feedback_list = get_feedback_by_conversation(conversation_id)
+        message_feedback = [
+            feedback for feedback in feedback_list
+            if str(feedback.get("message_id")) == message_id
+        ]
+        
+        # Format feedback data
+        for feedback in message_feedback:
+            feedback["_id"] = str(feedback["_id"])
+            feedback["user_id"] = str(feedback["user_id"])
+            feedback["conversation_id"] = str(feedback["conversation_id"])
+            feedback["message_id"] = str(feedback.get("message_id"))
+            feedback["created_at"] = feedback["created_at"].isoformat()
+            feedback["updated_at"] = feedback["updated_at"].isoformat()
+        
+        return jsonify({"feedback": message_feedback[0]})
+        
+    except Exception as e:
+        logging.error(f"Get message feedback error: {e}")
+        return jsonify({"error": "Failed to get message feedback"}), 500
+
+@feedback_bp.route("/feedback/<conversation_id>/<message_id>", methods=["PATCH"])
+@require_auth
+def update_message_feedback(user_id, conversation_id, message_id):
+    """Update feedback for a specific message in a conversation"""
+    try:
+        data = request.get_json()
+        db = get_db()
+        feedbacks = db["feedback"]
+        users = db["users"]
+        conversations = db["conversations"]
+
+        user = users.find_one({"_id": ObjectId(user_id)})
+        user_role = user.get("role", "user")
+
+        # Check if user has permission
+        if user_role not in ["admin", "reviewer"]:
+            conversation = conversations.find_one(
+                {"_id": ObjectId(conversation_id), "user_id": ObjectId(user_id)}
+            )
+            if not conversation:
+                return jsonify({"error": "Conversation not found"}), 404
+
+        # Find feedback for the given conversation + message + user
+        feedback = feedbacks.find_one(
+            {
+                "conversation_id": ObjectId(conversation_id),
+                "message_id": message_id,
+                "user_id": ObjectId(user_id),
+            }
+        )
+
+        if not feedback:
+            return jsonify({"error": "Feedback not found"}), 404
+
+        # Build update data
+        update_data = {}
+        if "rating" in data:
+            update_data["rating"] = data["rating"]
+        if "comment" in data:
+            update_data["comment"] = data["comment"]
+        update_data["updated_at"] = datetime.utcnow()
+
+        feedbacks.update_one({"_id": feedback["_id"]}, {"$set": update_data})
+
+        return jsonify({"message": "Feedback updated successfully"})
+
+    except Exception as e:
+        logging.error(f"Update message feedback error: {e}")
+        return jsonify({"error": "Failed to update feedback"}), 500
+
 
 @feedback_bp.route("/feedback/<feedback_id>", methods=["PUT"])
 @require_auth

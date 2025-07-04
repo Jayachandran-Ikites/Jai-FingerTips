@@ -3,7 +3,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 from concurrent.futures import ThreadPoolExecutor
 
 from dotenv import load_dotenv      
@@ -31,10 +31,10 @@ SUMMARIZATION_MODEL = os.getenv("SUMMARIZATION_MODEL", "gpt-4.1-2025-04-14")
 
 # ─── Utility Functions ─────────────────────────────────────────────────────────
 
-def load_markdowns(folder: str) -> List[str]:
+def load_markdowns(folder: str) -> List[Tuple[str, str]]:
     """
-    Read all .md files from `folder`, which is interpreted
-    as relative to this script’s directory if not absolute.
+    Read all .md files from `folder` and return a list of (content, filename) tuples.
+    The `folder` is interpreted relative to this script’s directory if not absolute.
     """
     base_dir = Path(__file__).resolve().parent
     md_path = Path(folder)
@@ -43,11 +43,10 @@ def load_markdowns(folder: str) -> List[str]:
 
     if not md_path.exists() or not md_path.is_dir():
         # for debugging, show where we looked
-        logging.error("Tried to load markdowns from %s (cwd=%s)",
-                      md_path, Path.cwd())
+        logging.error("Tried to load markdowns from %s (cwd=%s)", md_path, Path.cwd())
         raise FileNotFoundError(f"Folder not found: {md_path}")
 
-    return [p.read_text(encoding="utf-8") for p in md_path.glob("*.md")]
+    return [(p.read_text(encoding="utf-8"), p.name) for p in md_path.glob("*.md")]
 
 def call_model(
     model: str,
@@ -69,6 +68,7 @@ def call_model(
                 **kwargs
             )
             return resp.choices[0].message.content
+        
         except openai.RateLimitError:
             if attempt == max_retries:
                 logging.error("Rate limit reached; no more retries left.")
@@ -90,30 +90,42 @@ def parse_json_response(raw: str) -> Dict[str, Optional[str]]:
         return {
             "answer": data.get("answer"),
             "context": data.get("context"),
+            "disease":data.get("disease"),
             "source": data.get("source")
+
         }
     except json.JSONDecodeError:
         logging.error("Failed to parse JSON from model response: %r", raw)
-        return {"answer": None, "context": None, "source": None}
+        return {"answer": None, "context": None, "disease":None,"source": None}
 
-def get_relevant_info(query: str, markdown: str) -> Dict[str, Optional[str]]:
+def get_relevant_info(query: str, markdown: str, disease_name: str) -> Dict[str, Optional[str]]:
     """Extract answer/context/source from a single disease markdown."""
+    # print("disease_name:",disease_name)
     system_prompt = (
-        "You are a medical assistant. "
-        "Given a user query and a disease markdown, first determine if that markdown contains information that directly answers the query. "
-        "• If it does NOT, respond with {\"answer\": null, \"context\": null, \"source\": null}. "
-        "• If it DOES, extract three things:  "
-        "  1) \"answer\": the minimal excerpt that directly answers the query,  "
-        "  2) \"context\": one or two sentences of surrounding text for additional context,  "
-        "  3) \"source\": the name of the pathway section from which you pulled this.  "
-        "Always return valid JSON with exactly these keys: \"answer\", \"context\", and \"source\"."
+        f"You are a medical assistant. "
+        f"Given a user query and a disease markdown, first determine if that markdown contains information that directly answers the query. "
+        f"You can get answer from image , lines and tables. So check everything properly"
+        f"• If it does NOT, respond with {{\"answer\": null, \"context\": null, \"disease\": null, \"source\": null}}. "
+        f"• If it DOES, extract the following four things:\n"
+        f"  1) \"answer\": the minimal excerpt that directly answers the query,\n"
+        f"  2) \"context\": one or two sentences of surrounding text for additional context,\n"
+        f"  3) \"disease\": \"{disease_name.replace('.md', '')}\",\n"
+        f"  4) \"source\": a JSON object with two keys:\n"
+        f"     - \"lines\": a list of line numbers and image numbers used in the answer, e.g. [\"L34\", \"L35\",\"I1\"],\n"
+        f"     - \"tables\": a dictionary where each key is the table identifier (e.g. \"T1\", \"T2\") and each value is a list of used cell coordinates in that table, e.g. {{\"T1\": [\"R1C1\", \"R2C2\"]}}.\n"
+        f"If no tables or lines  are used in the answer, then do not return that field .\n"
+        f"Always return valid JSON with exactly these keys: \"answer\", \"context\", \"disease\" and \"source\". The value of \"source\" must itself be a JSON object with \"lines\" (list) and \"tables\" (dictionary)."
     )
+
+    # print(system_prompt)
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": f"User Query: {query}\n\nDisease Markdown:\n{markdown}"}
     ]
     raw = call_model(PATHWAY_MODEL, messages)
-    return parse_json_response(raw)
+    raw=parse_json_response(raw)
+    # print("raw",raw)
+    return raw
 
 # ─── Combined History Check & Query Refinement ─────────────────────────────────
 def get_history_insights(query: str, history: List[Dict[str, str]]) -> Dict[str, Optional[str]]:
@@ -170,17 +182,23 @@ def answer_medical_query(query: str, history: List[Dict[str, str]], markdown_fol
     docs = load_markdowns(markdown_folder)
     logging.info("Loaded %d markdown files.", len(docs))
     with ThreadPoolExecutor(max_workers=min(11, len(docs))) as executor:
-        results = list(executor.map(lambda md: get_relevant_info(refined, md), docs))
+        results = list(executor.map(lambda md: get_relevant_info(refined, md[0],md[1]), docs))
 
-    filtered = [r for r in results if r.get("answer")]
+    filtered = [r for r in results if r.get("answer")!=None]
+    # print("Filtered:",results)
     if not filtered:
         return "I’m sorry, I couldn’t find any information relevant to your question."
 
     combined = "\n\n".join(
-        f"- Source ({item['source']})\n  Answer: {item['answer']}\n  Context: {item['context']}"
+        f"- Disease ({item['disease']})\n  Answer: {item['answer']}\n  Context: {item['context']}"
         for item in filtered
     )
+    sources = {
+        item["disease"]: item["source"]
+        for item in filtered
+    }
 
+    # print("sources1:",sources)
     synth_system = (
         "You are an Indian doctor working in a resource-constrained environment and an expert medical summarizer. Follow these steps:\n"
         "1. If the user’s question is already answered in our conversation, respond immediately using that content.\n"
@@ -195,6 +213,9 @@ def answer_medical_query(query: str, history: List[Dict[str, str]], markdown_fol
         "8. If no objects are relevant, reply exactly: \"I’m sorry, I couldn’t find any information relevant to your question.\".\n"
     )
 
+    
+
+
     messages = []
 
     messages.append({"role": "system", "content": synth_system})
@@ -207,9 +228,18 @@ def answer_medical_query(query: str, history: List[Dict[str, str]], markdown_fol
         })
 
     messages.append({"role": "user", "content": f"User Query: {query}\n\nCollected facts:\n{combined}"})
+    # messages.append({"role": "assistant", "content": f"User Query: {query}\n\nCollected facts:\n{combined}"})
 
     final = call_model(SUMMARIZATION_MODEL, messages)
-    return final
+    final_answer={}
+    final_answer["answer"]=final
+    final_answer["sources"]=sources
+    if isinstance(final_answer, str):
+        data = json.loads(final_answer)
+    else:
+        data = final_answer  
+    # print("data:",data)
+    return data
 
 # ─── Entry Point ────────────────────────────────────────────────────────────────
 
@@ -225,6 +255,15 @@ if __name__ == "__main__":
         default="disease_markdown",
         help="Path to the folder containing .md files"
     )
-    args = parser.parse_args()
+    parser.add_argument(
+        "--history",
+        nargs="*",
+        default=[],
+        help="Optional previous questions or conversation history"
+    )
 
-    print(answer_medical_query(args.query, args.folder))
+    args = parser.parse_args()
+    reply=answer_medical_query(args.query, args.history,args.folder)
+    print(reply)
+    # print(type(sources))
+    

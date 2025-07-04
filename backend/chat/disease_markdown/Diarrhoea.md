@@ -1,37 +1,206 @@
-# Disease Name : Diarrhoea
-
-### Acute Diarrhoea and Its Impact in India
-
-Acute diarrhoea is defined as the passage of loose or watery stools three or more times in a 24-hour period. It is the fourth leading cause of death in India overall and the number one infectious cause of mortality, according to the Institute for Health Metrics and Evaluation (IHME). In 2019, there were 632,000 diarrhoea-related deaths across all age groups. The greatest burden of these deaths was observed in the 70+ age group, accounting for 385,000 deaths.
- In the Indian context, antibiotics are widely used for treating acute diarrhoea in both adults and children. However, the majority of acute diarrhoeal syndromes do not require treatment with antibiotics. Additionally, while diarrhoea in children has been studied extensively, the condition in adults is not as well researched.
-
-### Causes of Acute Diarrhoea and Challenges in Diagnosis and Treatment
-
-Acute diarrhoea can be caused by a range of infectious agents, including viruses, bacteria, and protozoa. Viral diarrhoea cannot be treated with antibiotics, and even bacterial and protozoal diarrhoea often resolves without the need for antibiotic therapy. To provide more clarity on the causes of infectious diarrhoea, the Community Science Alliance (CSA) conducted a systematic review focusing on Indian studies from the past five years. These studies were required to recruit participants from the general population and test for multiple pathogens to minimize bias.
- The review identified 10 relevant studies across nine Indian states. Of these, four studies included adults, while six were limited to children. The detection rate of pathogens varied significantly, ranging from 16.3% in studies focusing solely on parasites to 65.2% when broader microbiological testing was performed. When parasite-only studies were excluded, the pathogen detection rate ranged from 25.6% to 65.2%. Commonly identified pathogens included viruses such as rotavirus and norovirus, as well as bacteria like Escherichia coli, Shigella, and Vibrio cholerae.
- A major challenge in managing diarrhoea in India is the ease of access to antibiotics without a medical prescription. Many patients, especially those with mild to moderate symptoms, bypass healthcare providers altogether and obtain antibiotics directly from pharmacies. This lack of antibiotic stewardship hinders effective management and contributes to inappropriate usage.
-
-### Key Questions in the Diagnosis and Treatment of Acute Diarrhoea
-
-Effective management of acute diarrhoea hinges on answering two key questions: When and how should testing be done? and When and how should treatment be administered? These decisions are guided by several authoritative sources, including UpToDate, clinical guidelines from the American College of Gastroenterology (2016), the Infectious Diseases Society of America (2017), the Indian Council of Medical Research (2019), the World Health Organization (2005), and Médecins Sans Frontières (2021). 
- These guidelines provide evidence-based recommendations to determine the appropriate timing and method of testing for infectious causes, as well as the correct use of treatments, including when antibiotics are necessary and when supportive care alone is sufficient. The integration of international and national guidance ensures that clinical decisions are tailored to both global standards and the local Indian context.
-
-### Proposed Clinical Pathway for Acute Diarrhoea Management
-
-The proposed clinical approach to managing acute diarrhoea begins with assessing whether the patient is stable or unstable. In cases of instability, immediate resuscitation is prioritized. Following stabilization, it is important to establish the time course and chronicity of the diarrhoea. Clinicians should then consider differential diagnoses that could present similarly, such as sepsis, acute abdomen, malaria, or chronic/inflammatory causes of diarrhoea. Based on the suspected primary diagnosis, further investigation and treatment should proceed in line with the relevant clinical pathway.
-
-### Severity Assessment and Rehydration in Adult Diarrhoea
-
-Volume depletion due to diarrhoea is a critical factor contributing to morbidity and mortality, necessitating prompt and accurate assessment of dehydration severity in adults. The degree of dehydration is classified as mild, moderate, or severe based on clinical signs. For patients with no or mild dehydration, oral rehydration solution (ORS) should be administered after each loose stool to prevent worsening fluid loss. Moderate dehydration requires more aggressive rehydration, with 2.2 to 4 liters of ORS given over a period of four hours to restore fluid balance.
- Severe dehydration demands urgent intravenous fluid replacement, starting with a rapid bolus of 30 ml/kg over 30 minutes. This bolus may be repeated if signs of severe dehydration, such as weak pulses, persist. Following this, a maintenance infusion of 70 ml/kg should be administered over the next 2.5 hours. Patients with severe hypovolaemia require inpatient care until they can tolerate oral fluids. Until IV access is established, ORS should be provided to maintain hydration. In extreme cases, where rehydration is challenging, patients may need to be transferred to a higher-level care facility for appropriate management. Throughout treatment, ongoing fluid losses must be continuously replaced to ensure effective recovery.
-
-### Anti-microbial Treatment of Diarrhoea: When Is It Necessary?
-
-Most cases of acute diarrhoea follow a mild, self-limiting course that resolves without the need for specific antimicrobial treatment. Deciding when to perform stool microbiological testing and initiate antibiotics can be challenging, even in well-equipped healthcare settings. Microbiological investigations are often time-consuming, may not always identify a causative pathogen, and importantly, not all detected pathogens require antimicrobial therapy.
- Antibiotic treatment and microbiological testing are generally reserved for more severe or complicated presentations. Indications include signs of sepsis, presence of grossly bloody stools, stools containing pus or mucus, severe dehydration, or an extended duration of illness—typically beyond three days, as suggested by guidelines. In the absence of these criteria, routine microbiological testing and antibiotic use are not recommended, emphasizing the importance of supportive care and hydration as the primary treatment approach.
-
-### Suggested Treatment Regimens for Acute Diarrhoea and Follow-Up and Discharge Guidelines
-
-When antimicrobial treatment is necessary, it should be specifically targeted to the suspected causative organism. In cases where cholera is suspected, a single dose of 300 mg doxycycline orally or 1 gram of azithromycin once is recommended. For suspected Shigella infection or when bloody diarrhoea is present, the regimen includes ciprofloxacin 500 mg twice daily for three days or azithromycin 500 mg once daily for three days. These targeted treatments help ensure effective management while minimizing unnecessary antibiotic use.
- Patients who are able to tolerate oral intake can be safely discharged with instructions to continue oral rehydration, boil drinking water, and maintain good hand hygiene. Where feasible, isolation from other household members is advised to prevent transmission. Patients should be advised to return promptly to a care facility if their symptoms worsen, if they are unable to maintain oral fluid intake, or if they develop new symptoms such as gross blood, mucus, or pus in the stool. This approach ensures ongoing monitoring and timely intervention if complications arise.
-
+#L1
+**Adult Diarrhoea Pathway**
+#L2
+**Definition**
+#L3
+- Passage of loose/watery stools 3+ times in 24 hours
+#L4
+**Background**
+#L5
+- [Diarrhoeal diseases](https://www.healthdata.org/india) 4th leading cause of deaths in India overall, number 1 infectious cause
+#L6
+  of mortality (IHME)
+#L7
+- 632,000 diarrhea deaths (all ages) in 2019
+#L8
+- Greatest burden of diarrhoea deaths in the 70+ age group (385,000)
+#L9
+**Local context**
+#L10
+- [Antibiotics](https://pubmed.ncbi.nlm.nih.gov/22265057/) are [widely used](https://pubmed.ncbi.nlm.nih.gov/19001680/) for acute diarrhoea in India amongst both adults and children
+#L11
+  o However, the majority of acute diarrhoeal syndromes [do not require treatment](https://apps.who.int/iris/bitstream/handle/10665/43209/9241593180.pdf?sequence=1&isAllowed=y)
+#L12
+    with antibiotics
+#L13
+- Diarrhoea in adults is not as well studied as in children
+#L14
+**What causes acute diarrhoea?**
+#L15
+- Diarrhoea can be caused by viruses, bacteria, and protozoa
+#L16
+- Diarrhoea caused by viruses cannot be treated with antibiotics, and bacterial and
+#L17
+  protozoal diarrhoea often resolves without antibiotic therapy
+#L18
+- CSA performed a systematic review to provide further guidance in this area
+#L19
+  o Search conducted to identify all Indian studies published in the last 5 years
+#L20
+    reporting microbiological information on the aetiology of infectious diarrhoea.
+#L21
+    Studies had to recruit from the general population, and test for multiple
+#L22
+    pathogens, to reduce risk of bias
+#L23
+  o 10 studies were identified from 9 states of India
+#L24
+  o 4 studies included adults, 6 studies were limited to children only
+#L25
+  o The yield of pathogen detection in included studies ranged from 16.3 (examining
+#L26
+    parasites only) to 65.2%
+#L27
+  o When studies investigating parasites only excluded, yield of microbiological
+#L28
+    testing ranged from 25.6% to 65.2%
+#L29
+  o Common pathogens included viruses (rotavirus, norovirus) and bacteria (E coli,
+#L30
+    shigella, cholera)
+#L31
+**Other challenges**
+#L32
+- Patients in many parts of India do not need to see a doctor to obtain antibiotics for
+#L33
+  diarrhoea  lack of stewardship
+#L34
+- Patients may not present to CSA partner sites with mild-moderate diarrhoea (can present
+#L35
+  directly to pharmacy for antibiotics)
+#L36
+**Key questions to answer**
+#L37
+- How to test/when to test
+#L38
+- How to treat/when to treat
+#L39
+**Methods**
+#L40
+- UpToDate
+#L41
+- American College of Gastroenterology Clinical Guidelines (2016)
+#L42
+- Infectious Diseases Society of America Guidelines (2017)
+#L43
+- Indian Council of Medical Research (2019)
+#L44
+- WHO (2005)
+#L45
+- MSF (2021)
+#L46
+**Proposed Pathway**
+#L47
+- Stable or unstable
+#L48
+  o If unstable, resuscitate
+#L49
+- Establish time course/chronicity
+#L50
+- Consider differential diagnoses
+#L51
+  o Sepsis
+#L52
+  o Acute abdomen
+#L53
+  o Malaria
+#L54
+  o Chronic diarrhoea/inflammatory causes
+#L55
+  o Treat and investigate primary diagnosis as per appropriate pathway
+#L56
+**Severity Assessment and Rehydration**
+#L57
+- Volume depletion is a major cause of morbidity and mortality from diarrhoea
+#L58
+- For all adult diarrhoea:
+#L59
+  o Assess degree of dehydration (Appendix)
+#L60
+    ▪︎ Mild/moderate/severe
+#L61
+  o If no signs/mild signs of hypovolaemia/dehydration, give ORS after each stool
+#L62
+  o If signs of moderate hypovolaemia/dehydration, give 2.2 – 4 litres of ORS over 4
+#L63
+    hours
+#L64
+  o If severe hypovolaemia/dehydration, will require IV fluid replacement
+#L65
+    ▪︎ 30ml/kg over 30 minutes
+#L66
+      ● Repeat bolus if severe dehydration persists/pulses remain weak
+#L67
+      ● Then 70ml/kg over 2.5 hours
+#L68
+    ▪︎ Diarrhoea with severe hypovolaemia will require inpatient management
+#L69
+      until patient can tolerate oral replacement
+#L70
+    ▪︎ ORS should be given until IV access is possible
+#L71
+  o In cases of severe diarrhoea, assess ability to manage at CSA partner site – may
+#L72
+    require transfer
+#L73
+  o In all, aim to replace ongoing losses as maintenance
+#L74
+**Anti-microbial treatment of diarrhoea**
+#L75
+- Most acute diarrhoea has an uncomplicated disease course and is self-resolving
+#L76
+- The decision to investigate (i.e. stool microbiology) and treat acute diarrhoea in difficult
+#L77
+  even in resource-rich settings
+#L78
+  o Microbiology is time consuming, can have variable yield, and not all pathogens
+#L79
+    identified on microbiological testing require treatment
+#L80
+- Indications for microbiological testing +/- antibiotic therapy
+#L81
+  o Signs of sepsis (see also: sepsis pathway TBD)
+#L82
+  o Grossly bloody stool
+#L83
+  o Stool with pus or mucus
+#L84
+  o Severe dehydration
+#L85
+  o Extended disease course (how many days – ICMR suggest 3 days)
+#L86
+- In most other cases, microbiological testing and antibiotic therapy is NOT required
+#L87
+**Suggested Treatment Regimens for Acute Diarrhoea**
+#L88
+- If required, treatment should be targeted towards suspected causative organism (see table)
+#L89
+- If cholera suspected:
+#L90
+  o 300mg Doxycycline PO once **OR**
+#L91
+  o Azithromycin 1g once
+#L92
+- If Shigella suspected/bloody diarrhoea
+#L93
+  o Ciprofloxacin 500mg BD for 3 days **OR**
+#L94
+  o Azithromycin 500mg daily for 3 days
+#L95
+**Follow up activities**
+#L96
+- If tolerating oral intake, discharge home with oral rehydration and instructions
+#L97
+  o Water to be boiled
+#L98
+  o Hand hygiene
+#L99
+- Isolation of patient from other household contacts if possible
+#L100
+- Return to CSA partner site if
+#L101
+  o Worsening symptoms
+#L102
+  o Unable to tolerate oral fluid intake
+#L103
+  o Development of gross blood/mucus/pus in stool

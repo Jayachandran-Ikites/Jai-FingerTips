@@ -1,64 +1,408 @@
-# Disease Name : Pneumonia
+#L1
+Adult Community Acquired Pneumonia Pathway
+#L2
+**Methods**
+#L3
+- Existing guidelines from professional bodies, clinical resources, and intergovernmental
+#L4
+  resources for the management of pneumonia in resource-limited settings
+#L5
+  - [ATS/IDSA 2019 guidelines](https://www.atsjournals.org/doi/pdf/10.1164/rccm.201908-1581ST)
+#L6
+  - UpToDate
+#L7
+  - [Indian guidelines](https://journals.lww.com/lungindia/Fulltext/2012/29052/Guidelines_for_diagnosis_and_management_of.1.aspx)
+#L8
+    o Joint ICS/NCCP(I) recommendations 2012
+#L9
+  - [MSF](https://medicalguidelines.msf.org/en)
+#L10
+  - [Indian Council of Medical Research antimicrobial guidelines](https://main.icmr.nic.in/sites/default/files/guidelines/Treatment_Guidelines_2019_Final.pdf)
+#L11
+  - [British Thoracic Society](https://thorax.bmj.com/content/64/Suppl_3/iii1)
+#L12
+**This pathway is suitable for**
+#L13
+- Adults presenting to CSA clinics
+#L14
+**Initial assessment**
+#L15
+- Assess stability
+#L16
+  o If unstable, resuscitate +/- transfer to higher level of care
+#L17
+- Consider differential diagnoses
+#L18
+- Obtain pulse oximetry
+#L19
+**Radiography for CAP**
+#L20
+- Routine chest radiography is not required for patients who have:
+#L21
+  o A clinical presentation consistent with CAP **AND**
+#L22
+  o Are candidates for outpatient management **AND**
+#L23
+  o No compelling differential diagnoses **AND**
+#L24
+  o No relevant co-morbidities **AND**
+#L25
+  o No hypoxia/evidence of severe disease **AND**
+#L26
+  o NB: our preference is for all patients to have CXR if possible. However,
+#L27
+    infrastructure limitations can prohibit this. In the case CXR is not available,
+#L28
+    careful clinical diagnosis can be considered. In outpatient settings globally, [CAP](https://pubmed.ncbi.nlm.nih.gov/29167296/)
+#L29
+    [is often diagnosed without CXR.](https://pubmed.ncbi.nlm.nih.gov/29167296/)
+#L30
+- Chest XR should be obtained for patients who are:
+#L31
+  o Unwell, clinically unstable, have evidence of severe disease, or hypoxic **OR**
+#L32
+  o If there are relevant co-morbidities **OR**
+#L33
+  o If there is diagnostic uncertainty
+#L34
+**Lab tests for CAP**
+#L35
+- All patients with suspected CAP should be screened for COVID-19
+#L36
+- During flu season, consider screening patients with suspected CAP for influenza A/B
+#L37
+- Patients suspected of tuberculosis should be investigated according to local
+#L38
+  protocols/CSA pathway (to be written)
 
-### Initial Assessment
+#L39
+**Location of treatment**
 
-Pneumonia is an infection that inflames the air sacs in one or both lungs. The air sacs may fill with fluid or pus (purulent material), causing cough with phlegm or pus, fever, chills, and difficulty breathing. A variety of organisms, including bacteria, viruses and fungi, can cause pneumonia.
- The initial assessment of the patient with pneumoina should begin with evaluating their stability. If the patient is unstable, resuscitate them immediately and consider transferring to a higher level of care. And if stable then  Differential diagnoses should be considered early in the evaluation. Pulse oximetry should be obtained as part of the initial workup. Now next step is to figure out if a person is consistent with CAP through readiography of chest
+#L40
+- Decision to manage patient as an outpatient or inpatient to be determined through risk stratification and clinical judgment
 
-### Radiography for CAP
+#L41
+- CRB65, CURB65 and PSI can be used to stratify risk (Appendix 3)
 
-When considering radiography for community-acquired pneumonia (CAP), chest X-rays are not always necessary. If the patient has a clinical presentation consistent with CAP, is suitable for outpatient treatment, and has no severe disease, relevant comorbidities, hypoxia, or diagnostic uncertainty, then radiography may be skipped. However, if the patient is unwell, clinically unstable, or there is doubt in diagnosis, a chest X-ray should be obtained. Although we prefer all patients to receive a chest X-ray, resource limitations may require relying on clinical judgment alone. AFter chest radiography do differential diagnosis and figure out the location of treatement
+#L42
+  o CRB65 is the simplest tool and does not require blood tests
 
-### Differential Diagnosis
+#L43
+- Investigations such as arterial blood gas, full blood count, and biochemistry may aid in risk stratification (and are required by the PSI)
 
-When evaluating a patient with suspected community-acquired pneumonia (CAP), a differential diagnosis should be considered. All such patients should be screened for COVID-19. During flu season, also consider screening for influenza A and B. If tuberculosis is suspected, follow local protocols or the CSA pathway. Screening for these conditions typically represents the first laboratory step in assessing suspected CAP. If there is no clinical or radiologic evidence of CAP, alternative diagnoses should be explored.
+#L44
+**IF patient suitable for outpatient management of CAP**
 
-### Location of Treatment
+#L45
+- i.e. clinically stable, low CRB65
 
-Deciding the location of treatment for community-acquired pneumonia (CAP) depends on risk stratification and clinical judgment. Tools like CRB-65, CURB-65, and PSI can help assess the severity. CRB-65 is the simplest, requiring no blood tests. CURB-65 includes confusion, urea >7 mmol/L, respiratory rate >=30, blood pressure <90 systolic or <=60 diastolic, and age >=65. A score of 0-1 suggests outpatient treatment, 2 suggests short hospitalization or close outpatient monitoring, while 3 or more indicates the need for inpatient or ICU care. CRB-65 score of 0 (low risk) suggests outpatient care. Score of 1 (mild risk) also supports outpatient care. Score of 2 (moderate risk) suggests hospital admission. Scores of 3-4 (high risk) indicate severe pneumonia and need for inpatient treatment, possibly ICU care.
+#L46
+- Initiate empiric therapy for CAP with first line oral agent (Appendix 1)
 
-### Outpatient Treatment for CAP (No Risk Factors)
+#L47
+- Re-assess patient in 48–72 hours
 
-For outpatient treatment of community-acquired pneumonia (CAP) in patients without risk factors, initiate empiric antibiotic therapy for 5 days using a first-line oral agent. Recommended treatment options include: Amoxicillin 1g three times daily OR Doxycycline 100mg twice daily OR Azithromycin 500mg on day one, then 250mg daily thereafter OR Clarithromycin 500mg twice daily.
+#L48
+- Outpatient CAP should be treated for 5 days
 
-### Outpatient Treatment for CAP (Comorbidities or Recent Antibiotic Use)
+#L49
+  o Ensure afebrile > 48 hours and clinically stable prior to stopping antibiotics
 
-For outpatient treatment of CAP in patients with comorbidities or recent antibiotic use, treat for 5 days. The treatment should include Amoxicillin/Clavulanate 875/125mg twice daily OR Cefuroxime 500mg twice daily, along with Doxycycline 100mg twice daily OR Azithromycin 500mg on day one, then 250mg daily thereafter OR Clarithromycin 500mg twice daily.
+#L50
+**IF patient requires inpatient management of CAP**
 
-### Interventions to Avoid for Outpatient
+#L51
+- Assess capacity to manage at CSA partner site
 
-In the outpatient management of community-acquired pneumonia (CAP), certain interventions and tests are not routinely necessary. Patients with suspected CAP who are suitable for outpatient care do not require sputum culture, blood culture, urinary antigens, or inflammatory markers such as CRP and procalcitonin. These tests should only be considered in patients with severe CAP requiring inpatient treatment or those with significant co-morbidities. Antibiotic treatment should not include empiric use of carbapenems like meropenem or imipenem, as these offer unnecessarily broad-spectrum coverage for typical CAP pathogens. Similarly, avoid using anti-MRSA or anti-pseudomonal agents empirically, since these organisms are not common causes of CAP. Corticosteroids should also not be prescribed for CAP in outpatient settings, as clinical trials have not demonstrated any clear benefit—except potentially in cases of severe CAP, as indicated in the CAPECOD trial.
+#L52
+  o Arrange transfer if required
 
-### ATS/IDSA Criteria for ICU Admission
+#L53
+- Use the ATS/IDSA Major and Minor criteria to determine regular ward vs ICU level care (Appendix 4)
 
-To determine whether ICU admission is required for a patient with community-acquired pneumonia (CAP), perform an initial check for signs of severe disease. Look for evidence of septic shock or respiratory failure. According to ATS/IDSA guidelines, ICU admission should then be considered using major and minor criteria. Major criteria include septic shock requiring vasopressors and respiratory failure requiring mechanical ventilation. Minor criteria include respiratory rate ≥ 30 breaths per minute, PaO2/FiO2 ratio ≤ 250, multilobar infiltrates, confusion or disorientation, uremia (BUN ≥ 20 mg/dL), leukopenia (WBC < 4,000/μL), thrombocytopenia (platelets < 100,000/μL), hypothermia, and hypotension.
+#L54
+- Take sputum and blood cultures if possible (only in severe CAP, as defined in the appendix)
 
-### ICU Management
+#L55
+- Start IV empiric antibiotic therapy as soon as possible (Appendix 1)
 
-When ICU management is required and , admit the patient to the ICU, which may involve transfer to a district or teaching hospital. Begin antibiotic therapy before transfer. Empiric treatment for severe community-acquired pneumonia includes Ceftriaxone 1-2g daily AND either Azithromycin 500mg daily OR Clarithromycin 500mg twice daily. For microbiological testing in severe CAP, obtain both blood and sputum cultures to guide further management.
+#L56
+  o If patient requires transfer, give first dose of antibiotics prior to transfer
 
-### Inpatient Management
+#L57
+  o If intravenous access not possible at CSA site, then IM ceftriaxone can be considered as a temporising measure
 
-For inpatient Management when ICU is not required but the patient needs inpatient care for community-acquired pneumonia (CAP), initiate intravenous empiric antibiotic therapy for 5 days. The recommended treatment is Ceftriaxone 1-2g daily AND Azithromycin 500mg daily OR Clarithromycin 500mg twice daily. If the patient requires transfer to another facility, ensure the first dose of antibiotics is administered before transfer. Also, check for any prior history of respiratory MRSA, respiratory Pseudomonas aeruginosa, or if MRSA or Pseudomonas is suspected based on the patient's condition (e.g. underlying structural lung disease) or relevant epidemiological factors.
+#L58
+- Give antibiotics for at least 5 days
 
-### Management of Suspected or Confirmed MRSA and Pseudomonas in CAP
+#L59
+- Initial empiric therapy can be de-escalated as patient clinically improves
 
-In patients with a prior history of respiratory MRSA, add Vancomycin IV (15mg/kg every 12 hours) and obtain cultures or PCR to guide ongoing therapy. Vancomycin or MRSA coverage should be stopped if MRSA is not identified on laboratory testing. In patients with a prior history of respiratory Pseudomonas aeruginosa, initiate treatment with antipseudomonal coverage such as piperacillin/tazobactam 4.5g every 6 hours or cefepime 2g three times daily. Cultures or PCR should be obtained to guide therapy, and pseudomonal coverage should be discontinued if pseudomonas is not identified. If MRSA or pseudomonas is suspected based on the patient's condition (e.g., underlying structural lung disease) or epidemiological factors, management depends on severity. In non-severe disease, obtain cultures or PCR but withhold MRSA or pseudomonas coverage unless confirmed. In severe disease, initiate MRSA or pseudomonas coverage and obtain cultures or PCR to guide continued treatment. Avoid respiratory fluoroquinolones unless tuberculosis (TB) has been ruled out.
+#L60
+- If patient does not improve clinically on empiric therapy, re-assess patient and consider:
 
-### Ongoing Inpatient and outpatient Management
+#L61
+  o Resistant organisms (MRSA, Pseudomonas)
 
-The clinician should ensure that patients receiving ongoing inpatient management for community-acquired pneumonia (CAP) are treated with antibiotics for a minimum of 5 days. The clinician may de-escalate empiric antibiotic therapy as the patient shows clinical improvement. If the patient does not improve on empiric therapy, the clinician should reassess the case to consider the possibility of resistant organisms such as MRSA or Pseudomonas, complications of CAP such as empyema or parapneumonic effusion, or an alternative diagnosis.
- For the ongoing management of community-acquired pneumonia (CAP) in an outpatient setting, it is important to ensure that the patient has been afebrile for more than 48 hours and is clinically stable before stopping antibiotics. A follow-up should be arranged within 48 to 72 hours to assess the patient’s response to treatment and overall stability. Additionally, a further follow-up should be scheduled in 4 to 6 weeks to determine whether the patient requires catch-up vaccination for COVID-19, influenza, or pneumococcal disease.
+#L62
+  o Complications of CAP (Parapneumonic effusion, Empyema)
 
-### Plan for Discharge
+#L63
+  o Alternative diagnosis
 
-The clinician should arrange appropriate follow-up with the patient prior to discharge after inpatient management of community-acquired pneumonia (CAP). This includes scheduling a follow-up visit in 48-72 hours to assess treatment response and clinical stability. Additionally, a second follow-up should be arranged in 4-6 weeks to determine whether the patient requires catch-up vaccinations for COVID-19, influenza, or pneumococcus.
+#L64
+**In influenza positive**
 
-### Management of Influenza-Positive CAP
+#L65
+- If within 3 days of symptom onset, start oseltamivir 75mg BD for 5 days
 
-In patients who test positive for influenza, if they are within 3 days of symptom onset, the clinician should initiate treatment with oseltamivir 75mg twice daily for 5 days. The clinician should also cover with empirical antibiotics due to the risk of bacterial superinfection or co-infection.
+#L66
+- Cover with empirical antibiotics given the risk for bacterial superinfection/co-infection
 
-### Chest X-ray is not available and Indications for chest X-ray
+#L67
+**If Covid positive**
 
-If a chest X-ray is not available, it is important to note that ideally, suspected pneumonia should be investigated with a chest X-ray. However, a provisional clinical diagnosis of community-acquired pneumonia (CAP) can be made in patients who present with a clinical picture consistent with CAP, are suitable for outpatient management, have no compelling alternative diagnoses, no relevant co-morbidities, and show no signs of hypoxia or severe disease. In cases where a chest X-ray is not available on-site, it should be obtained for patients who are unwell, clinically unstable, have evidence of severe disease or hypoxia, have relevant co-morbidities, or when there is diagnostic uncertainty.
+#L68
+- As per CSA Covid pathway
 
+#L69
+**Plan for discharge**
+
+#L70
+- Follow-up should be arranged with patient prior to discharge
+
+#L71
+  o Arrange follow up in 48–72 hours to assess response and stability
+
+#L72
+  o Arrange an additional follow up in 4–6 weeks to if patient requires
+
+#L73
+  o Covid/Influenza/Pneumococcal vaccine catch-up
+
+#L74
+- Checklist for discharge (Appendix 5)
+
+#L75
+**Interventions to avoid**
+
+#L76
+- The following tests do not need to be done routinely for suspected CAP suitable for outpatient management
+
+#L77
+  o Sputum culture
+
+#L78
+  o Blood culture
+
+#L79
+  o Urinary antigens
+
+#L80
+  o Inflammatory markers (CRP, procalcitonin)
+
+#L81
+  o These tests can be considered if severe CAP requiring inpatient management, or if patient has co-morbidities
+
+#L82
+- **Do not treat CAP empirically with carbapenems (e.g. meropenem, imipenem)**
+
+#L83
+  o Carbapenems have an unnecessarily broad spectrum of coverage for CAP
+
+#L84
+- **Do not treat CAP empirically with anti-MRSA or anti-pseudomonal agents**
+
+#L85
+  o Most CAP is not caused by MRSA or pseudomonas – these organisms do not need to be routinely covered
+
+#L86
+- **Do not prescribe steroids for CAP**
+
+#L87
+  o Multiple trials have failed to show a clinical benefit from corticosteroid administration in CAP
+
+#L88
+  o Exception – Severe CAP (CAPECOD trial)
+
+
+#T1
+### Appendix 1: Empiric Treatment of Pneumonia
+
+| | Outpatient first line (no risk factors) | Outpatient with comorbidities/recent antibiotic use | Inpatient, NOT severe | Inpatient, severe |
+| :--- | :--- | :--- | :--- | :--- |
+| **CSA** | Amoxicillin 1g three times daily **OR** Doxycycline 100mg twice daily **OR** Azithromycin 500mg first day then 250mg daily thereafter **OR** Clarithromycin 500mg twice daily | Amoxicillin/Clavulanate 875/125 twice daily **OR** cefuroxime 500mg twice daily <br><br> **AND** <br><br> Doxycycline 100mg twice daily **OR** Azithromycin 500mg first day then 250mg daily thereafter **OR** Clarithromycin 500mg twice daily |Ceftriaxone 1-2g daily  **AND** <br><br> Azithromycin 500mg daily **OR** Clarithromycin 500mg twice daily |Ceftriaxone 1-2g daily  **AND** <br><br> Azithromycin 500mg daily **OR** Clarithromycin 500mg twice daily |
+
+#L89
+-*Avoid respiratory fluroquinolones unless TB ruled out 
+
+#L90
+If prior history of respiratory MRSA
+
+#L91
+- Add vancomycin (15mg/kg every 12 hours)
+
+#L92
+- Obtain cultures/PCR to guide ongoing therapy
+
+#L93
+- Vancomycin/MRSA cover should be stopped if MRSA is not identified on laboratory testing
+
+#L94
+If prior history of respiratory pseudomonas aeruginosa
+
+#L95
+- Initiate treatment with antipseudomonal cover (piperacillin/tazobactam 4.5g every 6 hours or cefepime 2g three times daily)
+
+#L96
+- Obtain cultures/PCR to guide ongoing therapy
+
+#L97
+- Pseudomonal cover should be stopped if pseudomonas is not identified on laboratory testing
+
+#L98
+If MRSA or pseudomonas is suspected based on patient (e.g. underlying structural lung disease) or epidemiological factors
+
+#L99
+- In non-severe disease, obtain cultures/PCR but withhold MRSA/pseudomonas cover unless confirmed on laboratory testing
+
+#L100
+- In severe disease, add MRSA or pseudomonas coverage, obtain cultures/PCR to guide ongoing need for MRSA/pseudomonas coverage
+
+#L101
+If influenza positive
+
+#L102
+- Add Oseltamivir 75mg twice daily
+
+
+#T2
+### Appendix 2: Empiric treatment of CAP at CSA partner sites in patients with confirmed anaphylactic reaction to penicillins
+
+| | Outpatient first line (no risk factors) | Outpatient with comorbidities/recent antibiotic use | Inpatient, NOT severe | Inpatient, severe |
+| :--- | :--- | :--- | :--- | :--- |
+| **CSA** | Doxycycline 100mg twice daily **OR**<br>Azithromycin 500mg first day then 250mg daily thereafter **OR**<br>Clarithromycin 500mg twice daily | Doxycycline 100mg twice daily **OR**<br>Azithromycin 500mg first day then 250mg daily thereafter **OR**<br>Clarithromycin 500mg twice daily<br><br>**OR**<br><br>Levofloxacin 750mg daily **OR**<br>Moxifloxacin 400mg daily* | Levofloxacin 750mg daily **OR**<br>Moxifloxacin 400mg daily* | Aztreonam 2g every 8 hours <br><br>**AND**<br><br>Levofloxacin 750mg daily **OR**<br>Moxifloxacin 400mg daily |
+
+#L103
+-*Sputum sample should be sent for TB testing in patients commencing on respiratory 
+fluroquinolones  
+
+#L104
+- **NOTES**:
+
+#L105
+    - Characteristics of penicillin allergy should be clarified prior to initiation of treatment 
+#L106
+    - While up to 10% of patients report penicillin allergies, greater than 90% of these patients 
+#L107
+    do not have evidence of penicillin allergy on subsequent testing 
+#L108
+**Appendix 3 – Validated Severity Scales**
+#T3
+### CURB-65
+
+| Criteria | Points |
+| :--- | :--- |
+| Confusion | +1 |
+| Urea > 7 mmol/L | +1 |
+| Respiratory Rate ≥ 30 | +1 |
+| Systolic BP < 90 mmHg or Diastolic BP ≤ 60 mmHg | +1 |
+| Age ≥ 65 | +1 |
+| **Total** | |
+
+#T4
+| CURB-65 Score | Mortality Risk | Recommendation |
+| :--- | :--- | :--- |
+| 0 | 0.6% | Low risk, consider outpatient treatment |
+| 1 | 2.7% | Low risk, consider outpatient treatment |
+| 2 | 6.8% | Short inpatient hospitalization or closely supervised outpatient treatment |
+| 3 | 14.0% | Severe pneumonia, inpatient management, consider ICU |
+| 4 or 5 | 27.8% | Severe pneumonia, inpatient management, consider ICU |
+
+#T5
+### CRB-65
+
+| Criteria | Points |
+| :--- | :--- |
+| Confusion | +1 |
+| Respiratory Rate ≥ 30 | +1 |
+| Systolic BP < 90 mmHg or Diastolic BP ≤ 60 mmHg | +1 |
+| Age ≥ 65 | +1 |
+| **Total** | |
+
+
+#T6
+### CRB-65 Interpretation
+
+| Score | Recommendation |
+| :--- | :--- |
+| 0 | Low risk, consider outpatient management |
+| 1 | Increased risk, consider inpatient management |
+| 2 | Increased risk, consider inpatient management |
+| 3-4 | High risk, inpatient management |
+
+##L109
+Appendix 4 – ATS/IDSA Major and Minor criteria for determining regular ward vs ICU disposition
+
+#L110
+Validated definition includes either one major criterion or three or more minor criteria
+
+#L111
+- If meeting this definition, patient should be managed in an intensive care setting
+
+#L112
+Major criteria
+
+#L113
+Septic shock with need for vasopressors
+
+#L114
+Respiratory failure requiring mechanical ventilation
+
+#L115
+Minor criteria
+
+#L116
+Respiratory rate ≥ 30 breaths/min
+
+#L117
+PaO2/FIO2 ratio ≤ 250
+
+#L118
+Multilobar infiltrates Confusion/disorientation
+
+#L119
+Uremia (blood urea nitrogen level ≥ 20 mg/dl)
+
+#L120
+Leukopenia* (white blood cell count < 4,000 cells/µl) 
+
+#L121
+Thrombocytopenia (platelet count < 100,000/µl) 
+
+#L122
+Hypothermia (core temperature < 36 C)  
+
+#L123
+Hypotension requiring aggressive fluid 
+
+#L124
+Resuscitation 
+
+#L125
+*Due to infection alone (i.e. not chemotherapy related) 
+
+
+#T7
+### Appendix 5 – Checklist for discharge
+
+| Intervention | Outcome |
+| :--- | :--- |
+| Diagnosis | CAP vs DDx |
+| COVID test | Pos/Neg |
+| TB screen | Pos/Neg |
+| CXR | Findings |
+| Risk stratification (likely CRB-65) | Outpatient vs Inpatient vs Inpatient ICU |
+| Antibiotics | Drug |
+| Disposition | Home/Admit |
+| Follow up | Planned |

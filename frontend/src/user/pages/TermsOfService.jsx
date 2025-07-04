@@ -3,9 +3,9 @@ import animationData from "../components/animation.json";
 import cloudsBg from "../assets/clouds.png";
 import { HiOutlineFingerPrint } from "react-icons/hi";
 // import styles from '../styles/PrivacyPolicy.module.css';
-import construction from "../assets/construction.svg"; // Assuming you have an image for under construction
+import construction from "../assets/construction.svg"; 
 
-function PrivacyPolicy() {
+function TermOfService() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
   useEffect(() => {
@@ -42,17 +42,17 @@ function PrivacyPolicy() {
         {/* Left: Text */}
         <div className="max-w-xl text-center md:text-left">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
-            PRIVACY POLICY
+            TERMS OF SERVICE
           </h1>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-6">
             UNDER CONSTRUCTION
           </h2>
           <p className="text-base sm:text-lg text-gray-700 mb-2">
-            We are currently updating our privacy policy and adding some new
-            cool features.
+            We are currently drafting our terms of service to ensure the best
+            user experience and protection.
           </p>
           <p className="text-base sm:text-lg text-gray-700">
-            We will be back shortly. Thank you for your patience.
+            The page will be available soon. Thank you for your understanding.
           </p>
         </div>
 
@@ -66,4 +66,4 @@ function PrivacyPolicy() {
   );
 }
 
-export default PrivacyPolicy;
+export default TermOfService;

@@ -1,3 +1,4 @@
+// src/AppRouter.jsx
 import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
@@ -8,20 +9,24 @@ import {
 
 import App from "./user/pages/App.jsx";
 import Auth from "./user/pages/Auth.jsx";
+import PrivacyPolicy from "./user/pages/PrivacyPolicy.jsx";
+import PrivateRoute from "./user/components/PrivateRoute.jsx";
+import { AuthContext } from "./user/context/AuthContext.jsx";
+import Profile from "./user/pages/Profile.jsx";
+import TermOfService from "./user/pages/TermsOfService.jsx";
+import Pathways from "./user/pages/Pathways.jsx";
+import DocumentViewer from "./user/pages/DocumentViewer.jsx";
 import AdminDashboard from "./admin/pages/AdminDashboard.jsx";
 import ReviewerDashboard from "./admin/pages/ReviewerDashboard.jsx";
 import AnalyticsDashboard from "./admin/pages/AnalyticsDashboard.jsx";
 import UserManagement from "./admin/pages/UserManagement.jsx";
 import FeedbackManagement from "./admin/pages/FeedbackManagement.jsx";
-import PrivacyPolicy from "./user/pages/PrivacyPolicy.jsx";
 import ForgotPassword from "./user/pages/ForgotPassword.jsx";
 import ResetPassword from "./user/pages/ResetPassword.jsx";
 import VerifyEmail from "./user/pages/VerifyEmail.jsx";
 import AllNotifications from "./user/pages/AllNotifications.jsx";
 import PromptManagement from "./user/pages/PromptManagement.jsx";
-import PrivateRoute from "./user/components/PrivateRoute.jsx";
 import RoleBasedRoute from "./user/components/RoleBasedRoute.jsx";
-import { AuthContext } from "./user/context/AuthContext.jsx";
 import { ThemeProvider } from "./user/components/ui/theme-provider.jsx";
 
 const AppRouter = () => {
@@ -44,115 +49,136 @@ const AppRouter = () => {
   }
 
   return (
-    <ThemeProvider defaultTheme="system" storageKey="fingertips-ui-theme">
-      <Router basename={import.meta.env.VITE_BASE_URL}>
-        <Routes>
-          {/* Public Routes */}
-          <Route
-            path="/auth"
-            element={user ? <Navigate to="/chat" replace /> : <Auth />}
-          />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+    <Router basename={import.meta.env.VITE_BASE_URL}>
+      <Routes>
+        {/* If logged in, go straight to chat; otherwise show Auth */}
+        <Route
+          path="/auth"
+          element={user ? <Navigate to="/chat" replace /> : <Auth />}
+        />
 
-          {/* Protected Chat Routes */}
-          <Route
-            path="/chat/:id"
-            element={
-              <PrivateRoute>
-                <App />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/chat"
-            element={
-              <PrivateRoute>
-                <App />
-              </PrivateRoute>
-            }
-          />
-          
-          {/* Notifications Page */}
-          <Route
-            path="/notifications"
-            element={
-              <PrivateRoute>
-                <AllNotifications />
-              </PrivateRoute>
-            }
-          />
-          
-          {/* Prompt Management Page */}
-          <Route
-            path="/prompts"
-            element={
-              <PrivateRoute>
-                <PromptManagement />
-              </PrivateRoute>
-            }
-          />
+        {/* Privacy Policy Route */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermOfService />} />
+        {/* Protected chat routes */}
+        <Route
+          path="/chat/:id"
+          element={
+            <PrivateRoute>
+              <App />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute>
+              <App />
+            </PrivateRoute>
+          }
+        />
+        {/* Protected profile route */}
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
 
-          {/* Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <RoleBasedRoute allowedRoles={["admin"]}>
-                <AdminDashboard />
-              </RoleBasedRoute>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <RoleBasedRoute allowedRoles={["admin"]}>
-                <UserManagement />
-              </RoleBasedRoute>
-            }
-          />
-          <Route
-            path="/admin/analytics"
-            element={
-              <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
-                <AnalyticsDashboard />
-              </RoleBasedRoute>
-            }
-          />
-          <Route
-            path="/admin/feedback"
-            element={
-              <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
-                <FeedbackManagement />
-              </RoleBasedRoute>
-            }
-          />
+        {/* Protected pathways routes */}
+        <Route
+          path="/pathways"
+          element={
+            <PrivateRoute>
+              <Pathways />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/document/:documentId"
+          element={
+            <PrivateRoute>
+              <DocumentViewer />
+            </PrivateRoute>
+          }
+        />
 
-          {/* Reviewer Routes */}
-          <Route
-            path="/reviewer"
-            element={
-              <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
-                <ReviewerDashboard />
-              </RoleBasedRoute>
-            }
-          />
-
-          {/* Fallback Routes */}
-          <Route
-            path="*"
-            element={
-              user ? (
-                <Navigate to="/chat" replace />
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            }
-          />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+        {/* Fallback: redirect based on auth status */}
+        {/* Notifications Page */}
+        <Route
+          path="/notifications"
+          element={
+            <PrivateRoute>
+              <AllNotifications />
+            </PrivateRoute>
+          }
+        />
+        {/* Prompt Management Page */}
+        <Route
+          path="/prompts"
+          element={
+            <PrivateRoute>
+              <PromptManagement />
+            </PrivateRoute>
+          }
+        />
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <RoleBasedRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
+            </RoleBasedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <RoleBasedRoute allowedRoles={["admin"]}>
+              <UserManagement />
+            </RoleBasedRoute>
+          }
+        />
+        <Route
+          path="/admin/analytics"
+          element={
+            <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
+              <AnalyticsDashboard />
+            </RoleBasedRoute>
+          }
+        />
+        <Route
+          path="/admin/feedback"
+          element={
+            <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
+              <FeedbackManagement />
+            </RoleBasedRoute>
+          }
+        />
+        {/* Reviewer Routes */}
+        <Route
+          path="/reviewer"
+          element={
+            <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
+              <ReviewerDashboard />
+            </RoleBasedRoute>
+          }
+        />
+        {/* Fallback Routes */}
+        <Route
+          path="*"
+          element={
+            user ? (
+              <Navigate to="/chat" replace />
+            ) : (
+              <Navigate to="/auth" replace />
+            )
+          }
+        />
+      </Routes>
+    </Router>
   );
 };
 

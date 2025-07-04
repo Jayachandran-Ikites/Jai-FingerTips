@@ -49,14 +49,6 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
 
 #root {
   position: fixed;
@@ -64,7 +56,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  overflow: scroll;
+  overflow: auto;
 }
 
 @keyframes fadeIn {
@@ -75,6 +67,172 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+/* Custom styles for document viewer */
+.document-content {
+  line-height: 1.7;
+  color: #374151;
+}
+
+.document-content h1,
+.document-content h2,
+.document-content h3,
+.document-content h4 {
+  color: #1f2937;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.document-content h1 {
+  font-size: 1.875rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.document-content h2 {
+  font-size: 1.5rem;
+  color: #2563eb;
+}
+
+.document-content h3 {
+  font-size: 1.25rem;
+}
+
+.document-content p {
+  margin-bottom: 1rem;
+}
+
+.document-content ul,
+.document-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.document-content li {
+  margin-bottom: 0.5rem;
+}
+
+.document-content a {
+  color: #2563eb;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.document-content a:hover {
+  color: #1d4ed8;
+}
+
+.document-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.document-content th,
+.document-content td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.document-content th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #374151;
+}
+
+.document-content tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Highlighted content styles */
+.document-content .highlighted {
+  background-color: #fef3c7;
+  border: 2px solid #f59e0b;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  margin: 0.25rem 0;
+}
+
+/* Avoid page break inside headings only */
+h1, h2, h3, h4 {
+  page-break-after: avoid;
+  page-break-inside: avoid;
+  break-after: avoid;
+  break-inside: avoid;
+}
+/* Allow paragraphs, lists, and tables to break across pages */
+p, ul, ol, table, tr, td, th {
+  page-break-inside: auto !important;
+  break-inside: auto !important;
+}
+
+/* Print styles */
+@media print {
+  body, html, #root {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    height: auto !important;
+    position: static !important;
+  }
+  .max-w-4xl, .mx-auto, .px-4, .sm\:px-6, .lg\:px-8, .py-8 {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .document-content, .prose {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: white !important;
+    color: #222 !important;
+  }
+  /* Allow content to break across pages */
+  .document-content, .prose, .printable-content {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+  /* Avoid page break inside headings only */
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    break-after: avoid;
+    break-inside: avoid;
+  }
+  /* Allow paragraphs, lists, and tables to break across pages */
+  p, ul, ol, table, tr, td, th {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+  .document-content {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  .document-content h1 {
+    font-size: 18pt;
+  }
+  
+  .document-content h2 {
+    font-size: 16pt;
+  }
+  
+  .document-content h3 {
+    font-size: 14pt;
+  }
+  .no-print {
+    display: none !important;
   }
 }
 

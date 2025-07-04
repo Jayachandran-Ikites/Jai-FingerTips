@@ -28,6 +28,7 @@ CORS(
     },
 )
 
+
 # Register blueprints
 app.register_blueprint(auth_bp, url_prefix=os.getenv("BASE_URL")+"/auth")
 app.register_blueprint(chat_bp, url_prefix=os.getenv("BASE_URL"))
@@ -44,5 +45,24 @@ app.register_blueprint(prompts_bp, url_prefix=os.getenv("BASE_URL"))
 def check_health():
     return {"status": "healthy"}, 200
 
+
 if __name__ == "__main__":
     app.run(port=os.getenv("PORT"), debug=True)
+
+
+# from flask import Flask
+# from flask_cors import CORS
+# from auth.routes import auth_bp
+# from chat.routes import chat_bp
+
+# app = Flask(__name__)
+
+# CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
+
+
+# # Register blueprints
+# app.register_blueprint(auth_bp, url_prefix="/auth")
+# app.register_blueprint(chat_bp, url_prefix="")
+
+# if __name__ == "__main__":
+#     app.run(port=5000, debug=True)

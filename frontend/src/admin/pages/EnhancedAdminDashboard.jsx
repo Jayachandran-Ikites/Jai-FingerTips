@@ -295,7 +295,11 @@ const EnhancedAdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex">
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white/90 backdrop-blur-sm shadow-lg border-r border-blue-100 transition-all duration-300 flex flex-col h-screen sticky top-0`}>
+      <div
+        className={`${
+          sidebarOpen ? "w-64" : "w-20"
+        } bg-white/90 backdrop-blur-sm shadow-lg border-r border-blue-100 transition-all duration-300 flex flex-col h-screen sticky top-0`}
+      >
         {/* Logo */}
         <div className="p-4 border-b border-blue-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -306,7 +310,7 @@ const EnhancedAdminDashboard = () => {
               </h1>
             )}
           </div>
-          <button 
+          <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-1 rounded-lg hover:bg-gray-100 text-gray-500"
           >
@@ -317,67 +321,67 @@ const EnhancedAdminDashboard = () => {
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto py-4">
           <nav className="px-2 space-y-1">
-            <NavItem 
-              icon={FiBarChart2} 
-              label="Dashboard" 
-              isActive={activeTab === "dashboard"} 
-              onClick={() => handleTabChange("dashboard")} 
+            <NavItem
+              icon={FiBarChart2}
+              label="Dashboard"
+              isActive={activeTab === "dashboard"}
+              onClick={() => handleTabChange("dashboard")}
               expanded={sidebarOpen}
             />
-            <NavItem 
-              icon={FiPieChart} 
-              label="Analytics" 
-              isActive={activeTab === "analytics"} 
-              onClick={() => handleTabChange("analytics")} 
+            <NavItem
+              icon={FiPieChart}
+              label="Analytics"
+              isActive={activeTab === "analytics"}
+              onClick={() => handleTabChange("analytics")}
               expanded={sidebarOpen}
             />
-            <NavItem 
-              icon={FiUsers} 
-              label="Users" 
-              isActive={activeTab === "users"} 
-              onClick={() => handleTabChange("users")} 
+            <NavItem
+              icon={FiUsers}
+              label="Users"
+              isActive={activeTab === "users"}
+              onClick={() => handleTabChange("users")}
               expanded={sidebarOpen}
             />
-            <NavItem 
-              icon={FiMessageSquare} 
-              label="Conversations" 
-              isActive={activeTab === "conversations"} 
-              onClick={() => handleTabChange("conversations")} 
+            <NavItem
+              icon={FiMessageSquare}
+              label="Conversations"
+              isActive={activeTab === "conversations"}
+              onClick={() => handleTabChange("conversations")}
               expanded={sidebarOpen}
             />
-            <NavItem 
-              icon={FiBell} 
-              label="Notifications" 
-              isActive={activeTab === "notifications"} 
-              onClick={() => handleTabChange("notifications")} 
+            <NavItem
+              icon={FiBell}
+              label="Notifications"
+              isActive={activeTab === "notifications"}
+              onClick={() => handleTabChange("notifications")}
               expanded={sidebarOpen}
             />
-            
+
             <div className="pt-4 mt-4 border-t border-gray-200">
-              <NavItem 
-                icon={FiUserCheck} 
-                label="Reviewer Panel" 
-                onClick={() => navigate("/reviewer")} 
+              <NavItem
+                icon={FiUserCheck}
+                label="Reviewer Panel"
+                onClick={() => navigate("/reviewer")}
                 expanded={sidebarOpen}
               />
-              <NavItem 
-                icon={FiFileText} 
-                label="Feedback" 
-                onClick={() => navigate("/admin/feedback")} 
+              <NavItem
+                icon={FiFileText}
+                label="Feedback"
+                onClick={() => navigate("/admin/feedback")}
                 expanded={sidebarOpen}
               />
-              <NavItem 
-                icon={FiTag} 
-                label="Tags" 
-                onClick={() => navigate("/admin/tags")} 
+              {/* <NavItem
+                icon={FiTag}
+                label="Tags"
+                onClick={() => navigate("/admin/tags")}
                 expanded={sidebarOpen}
               />
-              <NavItem 
-                icon={FiSettings} 
-                label="Settings" 
-                onClick={() => navigate("/admin/settings")} 
+              <NavItem
+                icon={FiSettings}
+                label="Settings"
+                onClick={() => navigate("/admin/settings")}
                 expanded={sidebarOpen}
-              />
+              /> */}
             </div>
           </nav>
         </div>
@@ -385,19 +389,19 @@ const EnhancedAdminDashboard = () => {
         {/* Footer */}
         <div className="p-4 border-t border-blue-100">
           <div className="flex flex-col gap-2">
-            <NavItem 
-              icon={FiHome} 
-              label="Back to Chat" 
-              onClick={() => navigate("/chat")} 
+            <NavItem
+              icon={FiHome}
+              label="Back to Chat"
+              onClick={() => navigate("/chat")}
               expanded={sidebarOpen}
             />
-            <NavItem 
-              icon={FiLogOut} 
-              label="Logout" 
+            <NavItem
+              icon={FiLogOut}
+              label="Logout"
               onClick={() => {
                 logout();
                 navigate("/auth");
-              }} 
+              }}
               expanded={sidebarOpen}
               className="text-red-600 hover:bg-red-50"
             />
@@ -419,9 +423,11 @@ const EnhancedAdminDashboard = () => {
                   {activeTab === "conversations" && "Conversations"}
                   {activeTab === "notifications" && "Notifications"}
                 </h1>
-                <p className="text-sm text-gray-600">FingerTips Management Panel</p>
+                <p className="text-sm text-gray-600">
+                  FingerTips Management Panel
+                </p>
               </div>
-              
+
               <div className="flex items-center gap-4">
                 {activeTab === "notifications" && (
                   <Button
@@ -440,16 +446,14 @@ const EnhancedAdminDashboard = () => {
 
         <div className="p-6">
           {activeTab === "dashboard" && (
-            <DashboardOverview 
-              stats={dashboardStats} 
+            <DashboardOverview
+              stats={dashboardStats}
               onSendNotification={() => setShowNotificationModal(true)}
             />
           )}
 
-          {activeTab === "analytics" && (
-            <AdminAnalytics />
-          )}
-          
+          {activeTab === "analytics" && <AdminAnalytics />}
+
           {activeTab === "users" && (
             <UsersManagement
               users={users}
@@ -462,9 +466,10 @@ const EnhancedAdminDashboard = () => {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
+              loading={loading}
             />
           )}
-          
+
           {activeTab === "conversations" && (
             <ConversationsManagement
               conversations={conversations}
@@ -472,9 +477,10 @@ const EnhancedAdminDashboard = () => {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
+              loading={loading}
             />
           )}
-          
+
           {activeTab === "notifications" && (
             <NotificationsManagement
               notifications={notifications}
@@ -482,6 +488,7 @@ const EnhancedAdminDashboard = () => {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
+              loading={loading}
             />
           )}
         </div>
@@ -640,6 +647,7 @@ const UsersManagement = ({
   currentPage,
   totalPages,
   onPageChange,
+  loading
 }) => {
   return (
     <div className="space-y-6">
@@ -758,6 +766,7 @@ const UsersManagement = ({
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={onPageChange}
+        loading={loading}
       />
     </div>
   );
@@ -770,6 +779,7 @@ const ConversationsManagement = ({
   currentPage,
   totalPages,
   onPageChange,
+  loading
 }) => {
   return (
     <div className="space-y-6">
@@ -842,6 +852,7 @@ const ConversationsManagement = ({
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={onPageChange}
+        loading={loading}
       />
     </div>
   );
@@ -854,6 +865,7 @@ const NotificationsManagement = ({
   currentPage,
   totalPages,
   onPageChange,
+  loading
 }) => {
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -876,7 +888,9 @@ const NotificationsManagement = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">Notifications Management</h2>
+        <h2 className="text-2xl font-bold text-gray-800">
+          Notifications Management
+        </h2>
         <Button
           onClick={onSendNotification}
           variant="gradient"
@@ -891,7 +905,7 @@ const NotificationsManagement = ({
         {notifications.map((notification) => {
           const Icon = getNotificationIcon(notification.type);
           const colorClass = getNotificationColor(notification.type);
-          
+
           return (
             <Card
               key={notification._id}
@@ -902,7 +916,7 @@ const NotificationsManagement = ({
                   <div className={`p-2 rounded-lg ${colorClass}`}>
                     <Icon className="w-5 h-5" />
                   </div>
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="text-lg font-semibold text-gray-800">
@@ -911,12 +925,16 @@ const NotificationsManagement = ({
                       <div className="flex items-center gap-2 text-sm text-gray-500">
                         <span>{notification.read ? "Read" : "Unread"}</span>
                         <span>•</span>
-                        <span>{new Date(notification.created_at).toLocaleDateString()}</span>
+                        <span>
+                          {new Date(
+                            notification.created_at
+                          ).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
-                    
+
                     <p className="text-gray-600 mb-3">{notification.message}</p>
-                    
+
                     <div className="flex items-center gap-4 text-sm text-gray-500">
                       <span>To: {notification.user.email}</span>
                       <span>•</span>
@@ -938,14 +956,30 @@ const NotificationsManagement = ({
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={onPageChange}
+        loading={loading}
       />
     </div>
   );
 };
 
 // Pagination Component
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination = ({ currentPage, totalPages, onPageChange, loading }) => {
   if (totalPages <= 1) return null;
+
+  if( loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="flex space-x-2 items-center justify-center mb-4">
+            <div className="w-3 h-3 rounded-full bg-blue-300 animate-bounce"></div>
+            <div className="w-3 h-3 rounded-full bg-purple-300 animate-bounce"></div>
+            <div className="w-3 h-3 rounded-full bg-cyan-300 animate-bounce"></div>
+          </div>
+        
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center gap-2">

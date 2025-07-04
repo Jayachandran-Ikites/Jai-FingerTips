@@ -4,6 +4,7 @@ from bson import ObjectId
 from ..auth.utils import verify_token
 from ..database import get_db
 import logging
+from ..routes.reviews import require_reviewer_or_admin
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -135,7 +136,7 @@ def get_dashboard_stats(admin_user_id):
         return jsonify({"error": "Failed to fetch dashboard stats"}), 500
 
 @admin_bp.route("/users", methods=["GET"])
-@admin_required
+@require_reviewer_or_admin
 def get_users(admin_user_id):
     """Get all users with pagination"""
     try:

@@ -1,8 +1,8 @@
 # Variables
 CLIENT_DIR   := frontend
 BUILD_DIR    := $(CLIENT_DIR)/dist
-TARGET_DIR   := /var/www/fingertips
-SERVICE      := fingertips.service
+TARGET_DIR   := /var/www/dev/fingertips
+SERVICE      := dev-fingertips.service
 BACKEND_DIR  := backend
 VENV_DIR     := /home/ubuntu/global-env
 
@@ -11,7 +11,7 @@ VENV_DIR     := /home/ubuntu/global-env
 # Deploy only the React/Vite frontend
 deploy-frontend:
 	@echo "→ Building frontend…"
-	cd $(CLIENT_DIR) && npm ci && npm run build
+	cd $(CLIENT_DIR) && npm install && npm run build
 	@echo "→ Installing build to $(TARGET_DIR)…"
 	sudo rm -rf $(TARGET_DIR)
 	sudo mv $(BUILD_DIR) $(TARGET_DIR)

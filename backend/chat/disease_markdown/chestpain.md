@@ -1,40 +1,291 @@
-# Disease Name : Chestpain
+#L1
+**Comprehensive Acute Coronary Syndrome Pathway**
+#L2
+**Introduction**
+#L3
+This document presents a comprehensive Acute Coronary Syndrome (ACS) pathway tailored for
+#L4
+resource-poor settings in India. It addresses the unique challenges faced in these settings while
+#L5
+leveraging existing infrastructure and government initiatives to improve ACS care outcomes.
+#L6
+**Clinical Pathway**
+#L7
+**1. Initial Assessment and Triage (0-5 minutes)**
+#L8
+*Standard Approach*
+#L9
+- Rapid assessment of consciousness, breathing, and circulation
+#L10
+- Quick pain assessment using OPQRST method
+#L11
+*Indian Context Adaptation*
+#L12
+- Emphasis on visual assessment due to potential lack of monitoring equipment
+#L13
+- Training for healthcare workers to perform quick manual BP measurements
+#L14
+- Use of locally relevant pain scales (e.g., visual analog scale with culturally appropriate images)
+#L15
+**2. ECG Assessment (within 15 minutes of arrival)**
+#L16
+*Standard Approach*
+#L17
+- 12-lead ECG performed and interpreted by trained personnel
+#L18
+*Indian Context Adaptation*
+#L19
+- Alternatives for facilities without ECG machines:
+#L20
+  - Use of smartphone-based ECG devices (e.g., AliveCor; https://alivecor.in)
+#L21
+- Telemedicine linkages with district hospitals for remote ECG interpretation
+#L22
+- Training of local healthcare workers in basic ECG interpretation
+#L23
+- Collaboration with state governments to improve ECG availability in rural areas
+#L24
+**3. Initial Management**
+#L25
+*Standard Approach*
+#L26
+- Oxygen therapy if needed (if patient has hypoxia; no significant benefit in the absence of it-
+#L27
+  https://www.nejm.org/doi/full/10.1056/NEJMoa1706222#:~:text=Discussion,of%20rehospitaliza
+#L28
+  tion%20with%20myocardial%20infarction.; Hofmann and in NEJM have shown the results of a
+#L29
+  registry-based, randomized clinical trial of the use of supplemental oxygen in 6629 patients in
+#L30
+  Sweden who had suspected acute myocardial infarction and did not have hypoxemia. Patients
+#L31
+  were randomly assigned to supplemental oxygen administered through an open face mask (6
+#L32
+  liters per minute for 6 to 12 hours) or to ambient air. The trial was adequately sized for the
+#L33
+  assessment of hard clinical end points, with a primary end point of death from any cause at 1
+#L34
+  year. Supplemental oxygen was not associated with lower all-cause mortality at 1 year than
+#L35
+  ambient air, and the rate of a key secondary end point — rehospitalization for acute myocardial
+#L36
+  infarction within 1 year — also did not differ significantly between the study groups. These
+#L37
+  results clearly support the view that supplemental oxygen offers no benefit in patients with acute
+#L38
+  myocardial infarction who have normal oxygen saturation.
+#L39
+- oxygen therapy in the absence of hypoxemia may even be harmful
+#L40
+- Pain management
+#L41
+**Initial Management**
+#L42
+For all suspected ACS:
+#L43
+Give Aspirin 300 mg (chewed)
+#L44
+o Costs about ₹0.50, available as Jan Aushadhi Aspirin
+#L45
+If BP allows, give sublingual nitroglycerine
+#L46
+o Costs ₹55-70 for 30 tablets, not in Jan Aushadhi
+#L47
+Oxygen if needed, start IV if you can
+#L48
+**If it's a STEMI:**
+#L49
+Add Clopidogrel 300 mg
+#L50
+o Costs ₹15-20, available as Jan Aushadhi Clopidogrel
+#L51
+Arrange transfer to a PCI center if it’s less than 2 hours away
+#L52
+If transfer will take longer, consider thrombolysis with Streptokinase
+#L53
+o Costs ₹1500-2000, might be free in government hospitals
+#L54
+**For suspected NSTEMI or Unstable Angina:**
+#L55
+Add anticoagulation to aspirin and Plavix; transfer to a PCI center asap
+#L56
+Unfractionated Heparin
+#L57
+Dose: 60 units/kg IV bolus (max 4000 units) followed by 12 units/kg/hour infusion
+#L58
+Jan Aushadhi availability: No
+#L59
+Typical market price: ₹150-200 per 5000 IU vial
+#L60
+Note: Preferred in resource-poor settings due to lower cost and no need for refrigeration
+#L61
+Enoxaparin (if Unfractionated Heparin is unavailable)
+#L62
+Dose: 1 mg/kg subcutaneously every 12 hours
+#L63
+Jan Aushadhi availability: No
+#L64
+Typical market price: ₹250-350 per 40mg prefilled syringe
+#L65
+Note: Consider this option only if cold chain can be maintained
+#L66
+**Discharge management**
+#L67
+Give medications as available:
+#L68
+Beta-blocker (e.g., Metoprolol 25-50 mg)
+#L69
+o Costs ₹2-3 per tablet, available as Jan Aushadhi Metoprolol
+#L70
+ACE inhibitor (e.g., Enalapril 2.5 mg)
+#L71
+o Costs ₹2-3 per tablet, available as Jan Aushadhi Enalapril
+#L72
+Statin (e.g., Atorvastatin 40-80 mg)
+#L73
+o Costs ₹5-7 per tablet, available as Jan Aushadhi Atorvastati
+#L74
+**4. Referral Network**
+#L75
+*Standard Approach*
+#L76
+- Clear criteria for transfer to PCI-capable centers
+#L77
+- Ambulance transfer with trained paramedics
+#L78
+*Indian Context Adaptation*
+#L79
+- Tiered referral system aligned with Indian healthcare structure:
+#L80
+- Primary Health Centers → Community Health Centers → District Hospitals → Tertiary Care
+#L81
+  Centers
+#L82
+- Alternative transport solutions:
+#L83
+- Collaboration with local taxi services or community vehicles
+#L84
+- Use of 108 Emergency Response Service where available
+#L85
+- WhatsApp groups for real-time communication within referral network
+#L86
+**5. Training and Education**
+#L87
+<u>Healthcare Provider Training</u>
+#L88
+*Standard Approach*
+#L89
+- Regular CME programs for healthcare providers
+#L90
+*Indian Context Adaptation*
+#L91
+- Tiered training program:
+#L92
+- Basic ACS recognition for ASHAs and ANMs
+#L93
+- Comprehensive pathway training for rural physicians
+#L94
+- Advanced management techniques for referral center staff
+#L95
+- Use of mobile learning apps for continuous education
+#L96
+- Collaboration with local medical colleges for training support
+#L97
+**6. Community Engagement and Education**
+#L98
+*Standard Approach*
+#L99
+- Public awareness campaigns about heart attack symptoms
+#L100
+*Indian Context Adaptation*
+#L101
+- Leverage existing community structures:
+#L102
+- Training for panchayat health committees
+#L103
+- Incorporation of ACS awareness in village health and nutrition days
+#L104
+- Use of local folk media (street plays, puppet shows) for health education
+#L105
+- Multilingual education materials in regional languages
+#L106
+**7. Resource Utilization**
+#L107
+<u>Medication Access and Affordability</u>
+#L108
+*Standard Approach*
+#L109
+- Prescription of guideline-directed medical therapy
+#L110
+*Indian Context Adaptation*
+#L111
+- Integration with Jan Aushadhi scheme:
+#L112
+- List of ACS medications available under Jan Aushadhi with costs
+#L113
+- Guidance on using Jan Aushadhi store locator
+#L114
+  (https://janaushadhi.gov.in/DistributorDetails.aspx)
+#L115
+- Ayushman Bharat scheme integration for hospitalization costs
+#L116
+- Bulk purchasing strategies for rural health centers
+#L117
+<u>Diagnostic Resources</u>
+#L118
+*Standard Approach*
+#L119
+- Access to standard diagnostic tools (ECG, troponin testing, etc.)
+#L120
+*Indian Context Adaptation*
+#L121
+- Exploration of point-of-care testing options suitable for rural settings
+#L122
+- Collaboration with state governments and NGOs to improve diagnostic capabilities in resource-
+#L123
+  poor areas
+#L124
+**8. Monitoring and Evaluation**
+#L125
+*Standard Approach*
+#L126
+- Regular audit of ACS care metrics
+#L127
+*Indian Context Adaptation*
+#L128
+- Simplified data collection tools for resource-limited settings
+#L129
+- Collaboration with ICMR and national institutions for rural ACS research
+#L130
+- Innovation challenges for low-cost ACS care solutions
+#L131
+**9.ACS Management Guidelines**
+#L132
+*Standard Approach*
 
-### Initial Assessment and Triage (0–5 minutes) and ECG Assessment (within 15 minutes of arrival)
-
-Initial Assessment and Triage (0–5 minutes): The standard approach involves a rapid assessment of consciousness, breathing, and circulation, along with a quick pain assessment using the OPQRST method. In the Indian context, adaptations include placing emphasis on visual assessment due to the potential lack of monitoring equipment. Healthcare workers should be trained to perform quick manual blood pressure measurements, and pain assessment can be conducted using locally relevant pain scales, such as a visual analog scale with culturally appropriate images.
- ECG Assessment (within 15 minutes of arrival): The standard approach involves performing a 12-lead ECG and having it interpreted by trained personnel. In the Indian context, adaptations include alternatives for facilities without ECG machines, such as the use of smartphone-based ECG devices like AliveCor. Telemedicine linkages with district hospitals can be used for remote ECG interpretation. Local healthcare workers should be trained in basic ECG interpretation, and collaboration with state governments is essential to improve ECG availability in rural areas.
-
-### Initial Management
-
-The standard approach involves oxygen therapy if needed, specifically if the patient has hypoxia. There is no significant benefit in the absence of hypoxia. A registry-based, randomized clinical trial (Hofmann et al.) published in the New England Journal of Medicine assessed the use of supplemental oxygen in 6,629 patients in Sweden with suspected acute myocardial infarction who did not have hypoxemia. Patients were randomly assigned to receive supplemental oxygen through an open face mask (6 liters per minute for 6 to 12 hours) or ambient air. The trial was adequately sized to assess hard clinical endpoints, with the primary endpoint being death from any cause at 1 year. Supplemental oxygen was not associated with lower all-cause mortality at 1 year compared to ambient air, and the rate of a key secondary endpoint—rehospitalization for acute myocardial infarction within 1 year—also did not differ significantly between the study groups. These results clearly support the view that supplemental oxygen offers no benefit in patients with acute myocardial infarction who have normal oxygen saturation. Oxygen therapy in the absence of hypoxemia may even be harmful. Pain management is also included as part of initial management.
- For all suspected Acute Coronary Syndrome (ACS) cases, administer Aspirin 300 mg (chewed), which costs about ₹0.50 and is available as Jan Aushadhi Aspirin. If blood pressure permits, sublingual nitroglycerine should be given; it costs ₹55-70 for 30 tablets but is not available under Jan Aushadhi. Oxygen should be given if needed, and an intravenous (IV) line should be started if possible.
- If the patient has ST-Elevation Myocardial Infarction (STEMI), add Clopidogrel 300 mg, which costs ₹15-20 and is available as Jan Aushadhi Clopidogrel. Arrange for transfer to a PCI (Percutaneous Coronary Intervention) center if it is within 2 hours. If transfer will take longer, consider thrombolysis with Streptokinase, which costs ₹1500-2000 and might be free in government hospitals.
- For suspected Non-ST-Elevation Myocardial Infarction (NSTEMI) or Unstable Angina, add anticoagulation to Aspirin and Clopidogrel (Plavix), and transfer the patient to a PCI center as soon as possible. Preferred anticoagulation is Unfractionated Heparin, with a dose of 60 units/kg IV bolus (maximum 4000 units) followed by a 12 units/kg/hour infusion. It is not available under Jan Aushadhi but typically costs ₹150-200 per 5000 IU vial. It is preferred in resource-poor settings due to its lower cost and no refrigeration requirement.
- If Unfractionated Heparin is unavailable, Enoxaparin may be used at a dose of 1 mg/kg subcutaneously every 12 hours. It is not available under Jan Aushadhi and typically costs ₹250-350 per 40 mg prefilled syringe. Enoxaparin should only be considered if the cold chain can be maintained.
- Discharge Management: On discharge, prescribe medications as available. Beta-blockers such as Metoprolol (25-50 mg) cost ₹2-3 per tablet and are available as Jan Aushadhi Metoprolol. ACE inhibitors like Enalapril (2.5 mg) also cost ₹2-3 per tablet and are available under Jan Aushadhi. Statins such as Atorvastatin (40-80 mg) cost ₹5-7 per tablet and are available as Jan Aushadhi Atorvastatin.
-
-### Referral Network and Training:
-
-For the referral network, the standard approach involves having clear criteria for transfer to PCI-capable centers and using ambulances staffed with trained paramedics. In the Indian context, this is adapted to a tiered referral system aligned with the healthcare structure: Primary Health Centers refer to Community Health Centers, which refer to District Hospitals, and then to Tertiary Care Centers. Alternative transport solutions include collaboration with local taxi services or community vehicles, use of the 108 Emergency Response Service where available, and WhatsApp groups for real-time communication within the referral network.
- For training and education, the standard approach recommends regular CME (Continuing Medical Education) programs for healthcare providers. In the Indian context, this is adapted through a tiered training program: basic ACS recognition training for ASHAs and ANMs, comprehensive pathway training for rural physicians, and advanced management techniques for referral center staff. Training is supported through mobile learning apps for continuous education and collaboration with local medical colleges.
-
-### Community Engagement and Education and Resource Utilization:
-
-For community engagement and education, the standard approach involves public awareness campaigns about heart attack symptoms. In the Indian context, this is adapted by leveraging existing community structures, such as providing training for panchayat health committees and incorporating ACS awareness into village health and nutrition days. Additionally, local folk media like street plays and puppet shows are used for health education, along with multilingual education materials in regional languages.
- For resource utilization and medication access, the standard approach is to prescribe guideline-directed medical therapy. In the Indian context, this includes integration with the Jan Aushadhi scheme, providing a list of ACS medications available under Jan Aushadhi with their costs and guidance on using the Jan Aushadhi store locator (https://janaushadhi.gov.in/DistributorDetails.aspx). Integration with the Ayushman Bharat scheme is also included for hospitalization costs. Bulk purchasing strategies are suggested for rural health centers.
- Diagnostic Resources:The standard approach involves access to standard diagnostic tools such as ECG and troponin testing. In the Indian context, adaptations include exploring point-of-care testing options that are suitable for rural settings and collaborating with state governments and NGOs to improve diagnostic capabilities in resource-poor areas.
-
-### Monitoring and Evaluation:
-
-The standard approach involves regular audit of ACS care metrics. In the Indian context, this is adapted through the use of simplified data collection tools suited for resource-limited settings. There is collaboration with ICMR and national institutions for rural ACS research, along with innovation challenges aimed at developing low-cost ACS care solutions.
-
-### ACS Management Guidelines:
-
-The standard approach is based on international best practices for ACS care. In India, the guidelines are adapted to align with the Indian Council of Medical Research (ICMR) and Cardiological Society of India. They are informed by extensive literature review published from India and the global south, utilize the GRADE system, and reflect consensus opinions from practitioners on the ground. These adaptations also take into account the resource constraints present in rural settings.
-
-### Introduction and conclusion
-
-This document presents a comprehensive Acute Coronary Syndrome (ACS) pathway tailored for resource-poor settings in India. It addresses the unique challenges faced in these settings while leveraging existing infrastructure and government initiatives to improve ACS care outcomes.
- This comprehensive ACS pathway for resource-poor settings in India demonstrates a deep understanding of the unique challenges and opportunities within the Indian healthcare system. By adapting international best practices to the local context, leveraging existing government initiatives, and addressing specific resource constraints, this pathway aims to improve ACS care outcomes across diverse settings in India.
-
+#L133
+- Based on international best practices for ACS care
+#L134
+*Indian Context Adaptation*
+#L135
+- Adapted to align with Indian Council of Medical Research (ICMR) and Cardiological Society
+#L136
+  of India guidelines
+#L137
+- Based on extensive lit review published from India and the global south, GRADE system and
+#L138
+  consensus opinions from practitioners on the ground
+#L139
+- Considerations for resource constraints in rural settings
+#L140
+**Conclusion**
+#L141
+This comprehensive ACS pathway for resource-poor settings in India demonstrates a deep
+#L142
+understanding of the unique challenges and opportunities within the Indian healthcare system.
+#L143
+By adapting international best practices to the local context, leveraging existing government
+#L144
+initiatives, and addressing specific resource constraints, this pathway aims to improve ACS care
+#L145
+outcomes across diverse settings in India.

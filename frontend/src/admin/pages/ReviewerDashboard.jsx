@@ -26,7 +26,12 @@ import {
 import { HiOutlineFingerPrint } from "react-icons/hi";
 import { Button } from "../../user/components/ui/button";
 import { Input } from "../../user/components/ui/input";
-import { Card, CardHeader, CardTitle, CardContent } from "../../user/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "../../user/components/ui/card";
 import { Badge } from "../../user/components/ui/badge";
 import { Textarea } from "../../user/components/ui/textarea";
 import { ToastProvider, useToast } from "../../user/components/ui/toast";
@@ -64,7 +69,7 @@ const ReviewerDashboardContent = () => {
   const [reviews, setReviews] = useState([]);
   const [activeTab, setActiveTab] = useState("conversations");
   const [showReviewForm, setShowReviewForm] = useState(false);
-  
+
   // New filter states
   const [userFilter, setUserFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
@@ -75,7 +80,7 @@ const ReviewerDashboardContent = () => {
       navigate("/auth");
       return;
     }
-    
+
     loadConversations();
     loadUsers();
   }, [token, navigate]);
@@ -97,30 +102,30 @@ const ReviewerDashboardContent = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      
+
       // Build query parameters
-      const params = { 
-        page, 
+      const params = {
+        page,
         limit: 20,
         search: searchTerm,
-        ...filters
+        ...filters,
       };
-      
+
       // Add user_id filter if specified
       if (userFilter) {
         params.user_id = userFilter;
       }
-      
+
       // Add date filter if specified
       if (dateFilter) {
         params.date = dateFilter;
       }
-      
+
       const response = await api.get("/admin/conversations", {
         headers: { Authorization: `Bearer ${token}` },
-        params
+        params,
       });
-      
+
       setConversations(response.data.conversations);
       setTotalPages(response.data.pages);
       setCurrentPage(page);
@@ -142,13 +147,13 @@ const ReviewerDashboardContent = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSelectedConversation(response.data);
-      
+
       // Load feedback for this conversation
       loadConversationFeedback(conversationId);
-      
+
       // Load reviews for this conversation
       loadConversationReviews(conversationId);
-      
+
       // Reset review form
       setReviewForm({
         messageId: "",
@@ -161,7 +166,7 @@ const ReviewerDashboardContent = () => {
       toast.error("Failed to load conversation details");
     }
   };
-  
+
   const loadConversationFeedback = async (conversationId) => {
     try {
       const token = localStorage.getItem("token");
@@ -174,13 +179,16 @@ const ReviewerDashboardContent = () => {
       setFeedback([]);
     }
   };
-  
+
   const loadConversationReviews = async (conversationId) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await api.get(`/reviews/conversation/${conversationId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.get(
+        `/reviews/conversation/${conversationId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setReviews(response.data.reviews || []);
     } catch (error) {
       console.error("Error loading conversation reviews:", error);
@@ -190,7 +198,7 @@ const ReviewerDashboardContent = () => {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!reviewForm.comment.trim()) {
       toast.error("Comment is required");
       return;
@@ -198,19 +206,23 @@ const ReviewerDashboardContent = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await api.post("/reviews", {
-        conversation_id: selectedConversation._id,
-        message_id: reviewForm.messageId,
-        comment: reviewForm.comment,
-        rating: reviewForm.rating || null,
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post(
+        "/reviews",
+        {
+          conversation_id: selectedConversation._id,
+          message_id: reviewForm.messageId,
+          comment: reviewForm.comment,
+          rating: reviewForm.rating || null,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       toast.success("Review submitted successfully");
       setReviewForm({ messageId: "", comment: "", rating: 0 });
       setShowReviewForm(false);
-      
+
       // Reload reviews
       loadConversationReviews(selectedConversation._id);
     } catch (error) {
@@ -223,11 +235,11 @@ const ReviewerDashboardContent = () => {
     e.preventDefault();
     loadConversations(1, { search: searchTerm });
   };
-  
+
   const handleFilterChange = () => {
     loadConversations(1, { user_id: userFilter, date: dateFilter });
   };
-  
+
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <FiStar
@@ -238,13 +250,13 @@ const ReviewerDashboardContent = () => {
       />
     ));
   };
-  
+
   const getFeedbackForMessage = (messageId) => {
-    return feedback.filter(item => item.message_id === messageId);
+    return feedback.filter((item) => item.message_id === messageId);
   };
-  
+
   const getReviewsForMessage = (messageId) => {
-    return reviews.filter(item => item.message_id === messageId);
+    return reviews.filter((item) => item.message_id === messageId);
   };
 
   if (loading && !selectedConversation) {
@@ -265,7 +277,11 @@ const ReviewerDashboardContent = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex">
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white/90 backdrop-blur-sm shadow-lg border-r border-blue-100 transition-all duration-300 flex flex-col h-screen sticky top-0`}>
+      <div
+        className={`${
+          sidebarOpen ? "w-64" : "w-20"
+        } bg-white/90 backdrop-blur-sm shadow-lg border-r border-blue-100 transition-all duration-300 flex flex-col h-screen sticky top-0`}
+      >
         {/* Logo */}
         <div className="p-4 border-b border-blue-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -276,7 +292,7 @@ const ReviewerDashboardContent = () => {
               </h1>
             )}
           </div>
-          <button 
+          <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-1 rounded-lg hover:bg-gray-100 text-gray-500"
           >
@@ -287,46 +303,46 @@ const ReviewerDashboardContent = () => {
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto py-4">
           <nav className="px-2 space-y-1">
-            <NavItem 
-              icon={FiMessageSquare} 
-              label="Conversations" 
-              isActive={activeTab === "conversations"} 
-              onClick={() => setActiveTab("conversations")} 
+            <NavItem
+              icon={FiMessageSquare}
+              label="Conversations"
+              isActive={activeTab === "conversations"}
+              onClick={() => setActiveTab("conversations")}
               expanded={sidebarOpen}
             />
-            <NavItem 
+            {/* <NavItem 
               icon={FiActivity} 
               label="Analytics" 
               isActive={activeTab === "analytics"} 
               onClick={() => navigate("/admin/analytics")} 
               expanded={sidebarOpen}
-            />
-            <NavItem 
+            /> */}
+            {/* <NavItem 
               icon={FiList} 
               label="Feedback" 
               isActive={activeTab === "feedback"} 
               onClick={() => setActiveTab("feedback")} 
               expanded={sidebarOpen}
-            />
+            /> */}
           </nav>
         </div>
 
         {/* Footer */}
         <div className="p-4 border-t border-blue-100">
           <div className="flex flex-col gap-2">
-            <NavItem 
-              icon={FiHome} 
-              label="Back to Chat" 
-              onClick={() => navigate("/chat")} 
+            <NavItem
+              icon={FiHome}
+              label="Back to Chat"
+              onClick={() => navigate("/chat")}
               expanded={sidebarOpen}
             />
-            <NavItem 
-              icon={FiLogOut} 
-              label="Logout" 
+            <NavItem
+              icon={FiLogOut}
+              label="Logout"
               onClick={() => {
                 logout();
                 navigate("/auth");
-              }} 
+              }}
               expanded={sidebarOpen}
               className="text-red-600 hover:bg-red-50"
             />
@@ -344,9 +360,11 @@ const ReviewerDashboardContent = () => {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   Reviewer Dashboard
                 </h1>
-                <p className="text-sm text-gray-600">Review and comment on conversations</p>
+                <p className="text-sm text-gray-600">
+                  Review and comment on conversations
+                </p>
               </div>
-              
+
               <form onSubmit={handleSearch} className="flex gap-2">
                 <Input
                   placeholder="Search conversations..."
@@ -369,21 +387,26 @@ const ReviewerDashboardContent = () => {
               <FiFilter className="text-gray-500" />
               <span className="text-sm text-gray-600">Filters:</span>
             </div>
-            
+
             <div className="flex items-center gap-2">
-              <Select 
-                value={userFilter} 
+              <Select
+                value={userFilter}
                 onValueChange={(value) => {
                   setUserFilter(value);
                   handleFilterChange();
                 }}
               >
-                <SelectTrigger className="w-48 h-9">
-                  <SelectValue placeholder="Filter by user" />
+                <SelectTrigger className="w-48 h-9 gap-5 px-10">
+                  <SelectValue placeholder="Filter by user">
+                    {userFilter
+                      ? users.find((u) => u._id === userFilter)?.name ||
+                        users.find((u) => u._id === userFilter)?.email
+                      : null}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All users</SelectItem>
-                  {users.map(user => (
+                  {users.map((user) => (
                     <SelectItem key={user._id} value={user._id}>
                       {user.name || user.email}
                     </SelectItem>
@@ -391,8 +414,8 @@ const ReviewerDashboardContent = () => {
                 </SelectContent>
               </Select>
             </div>
-            
-            <div className="flex items-center gap-2">
+
+            {/* <div className="flex items-center gap-2">
               <Input
                 type="date"
                 value={dateFilter}
@@ -402,11 +425,11 @@ const ReviewerDashboardContent = () => {
                 }}
                 className="w-40 h-9"
               />
-            </div>
-            
+            </div> */}
+
             {(userFilter || dateFilter) && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => {
                   setUserFilter("");
@@ -424,18 +447,20 @@ const ReviewerDashboardContent = () => {
 
         <div className="flex h-[calc(100vh-145px)]">
           {/* Conversations List */}
-          <div className="w-1/3 border-r border-blue-100 overflow-y-auto">
+          <div className="w-1/3 border-r border-blue-100 overflow-y-auto ">
             <div className="p-4">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Conversations</h2>
-              
-              <div className="space-y-2">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Conversations
+              </h2>
+
+              <div className="space-y-2 ">
                 {conversations.map((conv) => (
                   <div
                     key={conv._id}
                     className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                      selectedConversation?._id === conv._id 
-                        ? "border-blue-500 bg-blue-50" 
-                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                      selectedConversation?._id === conv._id
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 bg-white"
                     }`}
                     onClick={() => viewConversationDetails(conv._id)}
                   >
@@ -460,14 +485,19 @@ const ReviewerDashboardContent = () => {
                   </div>
                 ))}
               </div>
-              
+
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2 mt-4">
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => loadConversations(currentPage - 1, { user_id: userFilter, date: dateFilter })}
+                    onClick={() =>
+                      loadConversations(currentPage - 1, {
+                        user_id: userFilter,
+                        date: dateFilter,
+                      })
+                    }
                     disabled={currentPage === 1}
                   >
                     <FiChevronLeft className="w-4 h-4" />
@@ -478,7 +508,12 @@ const ReviewerDashboardContent = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => loadConversations(currentPage + 1, { user_id: userFilter, date: dateFilter })}
+                    onClick={() =>
+                      loadConversations(currentPage + 1, {
+                        user_id: userFilter,
+                        date: dateFilter,
+                      })
+                    }
                     disabled={currentPage === totalPages}
                   >
                     <FiChevronRight className="w-4 h-4" />
@@ -491,7 +526,7 @@ const ReviewerDashboardContent = () => {
           {/* Conversation Details */}
           <div className="w-2/3 overflow-y-auto">
             {selectedConversation ? (
-              <div className="p-4">
+              <div className="p-4 ">
                 {/* Conversation Info */}
                 <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
                   <h2 className="text-xl font-semibold text-gray-800 mb-2">
@@ -500,30 +535,48 @@ const ReviewerDashboardContent = () => {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <span className="text-gray-600">User:</span>
-                      <p className="font-medium">{selectedConversation.user.email}</p>
+                      <p className="font-medium">
+                        {selectedConversation.user.email}
+                      </p>
                     </div>
                     <div>
                       <span className="text-gray-600">Messages:</span>
-                      <p className="font-medium">{selectedConversation.messages?.length || 0}</p>
+                      <p className="font-medium">
+                        {selectedConversation.messages?.length || 0}
+                      </p>
                     </div>
                     <div>
                       <span className="text-gray-600">Created:</span>
-                      <p className="font-medium">{new Date(selectedConversation.created_at).toLocaleDateString()}</p>
+                      <p className="font-medium">
+                        {new Date(
+                          selectedConversation.created_at
+                        ).toLocaleDateString()}
+                      </p>
                     </div>
                     <div>
                       <span className="text-gray-600">Updated:</span>
-                      <p className="font-medium">{new Date(selectedConversation.updated_at).toLocaleDateString()}</p>
+                      <p className="font-medium">
+                        {new Date(
+                          selectedConversation.updated_at
+                        ).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Messages */}
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">Messages</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                  Messages
+                </h3>
                 <div className="space-y-6">
                   {selectedConversation.messages?.map((message, index) => (
                     <div key={index} className="space-y-2">
                       <div
-                        className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+                        className={`flex ${
+                          message.sender === "user"
+                            ? "justify-end"
+                            : "justify-start"
+                        }`}
                       >
                         <div className="max-w-[80%]">
                           <div
@@ -534,13 +587,17 @@ const ReviewerDashboardContent = () => {
                             }`}
                           >
                             <MarkdownRenderer content={message.text} />
-                            <p className={`text-xs mt-2 ${
-                              message.sender === "user" ? "text-blue-100" : "text-gray-500"
-                            }`}>
+                            <p
+                              className={`text-xs mt-2 ${
+                                message.sender === "user"
+                                  ? "text-blue-100"
+                                  : "text-gray-500"
+                              }`}
+                            >
                               {new Date(message.timestamp).toLocaleString()}
                             </p>
                           </div>
-                          
+
                           {/* Review Button for Assistant Messages */}
                           {message.sender === "bot" && (
                             <div className="mt-2 flex justify-end">
@@ -563,62 +620,94 @@ const ReviewerDashboardContent = () => {
                           )}
                         </div>
                       </div>
-                      
+
                       {/* Feedback and Reviews for this message */}
                       {(message.id || message._id) && (
                         <div className="ml-8 space-y-2">
                           {/* User Feedback */}
-                          {getFeedbackForMessage(message.id || message._id).map((item, idx) => (
-                            <div key={`feedback-${idx}`} className="bg-blue-50 rounded-lg p-3 border border-blue-100">
-                              <div className="flex items-center justify-between mb-1">
-                                <div className="flex items-center gap-2">
-                                  <Badge variant="info">User Feedback</Badge>
-                                  <span className="text-sm font-medium">{item.user_name || "User"}</span>
-                                  <div className="flex">
-                                    {renderStars(item.rating)}
-                                  </div>
-                                </div>
-                                <span className="text-xs text-gray-500">
-                                  {new Date(item.created_at).toLocaleString()}
-                                </span>
-                              </div>
-                              {item.comment && (
-                                <p className="text-sm text-gray-700 mt-1">{item.comment}</p>
-                              )}
-                            </div>
-                          ))}
-                          
-                          {/* Reviewer Comments */}
-                          {getReviewsForMessage(message.id || message._id).map((item, idx) => (
-                            <div key={`review-${idx}`} className="bg-purple-50 rounded-lg p-3 border border-purple-100">
-                              <div className="flex items-center justify-between mb-1">
-                                <div className="flex items-center gap-2">
-                                  <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                                    Reviewer: {item.reviewer_name || item.reviewer?.name || item.reviewer?.email || "Unknown"}
-                                  </Badge>
-                                  {item.rating > 0 && (
+                          {getFeedbackForMessage(message.id || message._id).map(
+                            (item, idx) => (
+                              <div
+                                key={`feedback-${idx}`}
+                                className="bg-blue-50 rounded-lg p-3 border border-blue-100"
+                              >
+                                <div className="flex items-center justify-between mb-1">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium">
+                                      {item.user_name || "User"}
+                                    </span>
+                                    <Badge variant="info">User</Badge>
                                     <div className="flex">
                                       {renderStars(item.rating)}
                                     </div>
-                                  )}
+                                  </div>
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(item.created_at).toLocaleString()}
+                                  </span>
                                 </div>
-                                <span className="text-xs text-gray-500">
-                                  {new Date(item.created_at).toLocaleString()}
-                                </span>
+                                {item.comment && (
+                                  <p className="text-sm text-gray-700 mt-1">
+                                    {item.comment}
+                                  </p>
+                                )}
                               </div>
-                              <p className="text-sm text-gray-700 mt-1">{item.comment}</p>
-                            </div>
-                          ))}
+                            )
+                          )}
+
+                          {/* Reviewer Comments */}
+                          {getReviewsForMessage(message.id || message._id).map(
+                            (item, idx) => (
+                              <div
+                                key={`review-${idx}`}
+                                className="bg-purple-50 rounded-lg p-3 border border-purple-100"
+                              >
+                                <div className="flex items-center justify-between mb-1">
+                                  <div className="flex items-center gap-2">
+                                   
+                                    <span className="text-sm font-medium">
+                                      {item.reviewer_name ||
+                                        item.reviewer?.name ||
+                                        item.reviewer?.email ||
+                                        "Unknown"}
+                                    </span>
+                                    <Badge
+                                      variant="secondary"
+                                      className="bg-purple-100 text-purple-800"
+                                    >
+                                      Reviewer
+                                    </Badge>
+
+                                    {item.rating > 0 && (
+                                      <div className="flex">
+                                        {renderStars(item.rating)}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(item.created_at).toLocaleString()}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-gray-700 mt-1">
+                                  {item.comment}
+                                </p>
+                              </div>
+                            )
+                          )}
                         </div>
                       )}
                     </div>
                   ))}
                 </div>
-                
+
                 {/* Review Form */}
                 {showReviewForm && (
-                  <div id="reviewForm" className="mt-8 bg-white rounded-lg border border-gray-200 p-4">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">Add Review</h3>
+                  <div
+                    id="reviewForm"
+                    className="mt-8 bg-white rounded-lg border border-gray-200 p-4"
+                  >
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                      Add Review
+                    </h3>
                     <form onSubmit={handleReviewSubmit} className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -629,7 +718,12 @@ const ReviewerDashboardContent = () => {
                             <button
                               key={star}
                               type="button"
-                              onClick={() => setReviewForm(prev => ({ ...prev, rating: star }))}
+                              onClick={() =>
+                                setReviewForm((prev) => ({
+                                  ...prev,
+                                  rating: star,
+                                }))
+                              }
                               className="p-1"
                             >
                               <FiStar
@@ -650,7 +744,12 @@ const ReviewerDashboardContent = () => {
                         </label>
                         <Textarea
                           value={reviewForm.comment}
-                          onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
+                          onChange={(e) =>
+                            setReviewForm((prev) => ({
+                              ...prev,
+                              comment: e.target.value,
+                            }))
+                          }
                           placeholder="Enter your review comment..."
                           rows={4}
                           required
@@ -666,10 +765,7 @@ const ReviewerDashboardContent = () => {
                           <FiX className="w-4 h-4 mr-2" />
                           Cancel
                         </Button>
-                        <Button
-                          type="submit"
-                          variant="gradient"
-                        >
+                        <Button type="submit" variant="gradient">
                           <FiSend className="w-4 h-4 mr-2" />
                           Submit Review
                         </Button>
@@ -694,20 +790,25 @@ const ReviewerDashboardContent = () => {
 };
 
 // Navigation Item Component
-const NavItem = ({ icon: Icon, label, isActive, onClick, expanded, className = "" }) => {
+const NavItem = ({
+  icon: Icon,
+  label,
+  isActive,
+  onClick,
+  expanded,
+  className = "",
+}) => {
   return (
     <button
       onClick={onClick}
       className={`w-full flex items-center px-3 py-3 rounded-lg transition-colors ${
-        isActive 
-          ? "bg-blue-50 text-blue-700" 
+        isActive
+          ? "bg-blue-50 text-blue-700"
           : `text-gray-700 hover:bg-gray-100 ${className}`
       }`}
     >
       <Icon className={`w-5 h-5 ${isActive ? "text-blue-600" : ""}`} />
-      {expanded && (
-        <span className="ml-3 text-sm font-medium">{label}</span>
-      )}
+      {expanded && <span className="ml-3 text-sm font-medium">{label}</span>}
     </button>
   );
 };

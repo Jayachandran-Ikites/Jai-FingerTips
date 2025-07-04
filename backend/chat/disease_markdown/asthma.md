@@ -1,124 +1,391 @@
-# Disease Name : Asthma
+#L1
+Asthma Pathway
+#L2
+**Background**
+#L3
+- GBD study estimates [34.3 million](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9149387/pdf/00528-2021.pdf) patients with asthma in India, accounting for 13.09%
+#L4
+  of the total asthma burden
+#L5
+- India [has 3x higher](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9149387/pdf/00528-2021.pdf) asthma mortality and 2x higher asthma morbidity compared to global
+#L6
+  burdens
+#L7
+- Asthma is [underdiagnosed and undertreated](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9149387/pdf/00528-2021.pdf) in India
+#L8
+**Main Source Documents**
+#L9
+- [GINA](https://ginasthma.org/wp-content/uploads/2022/07/GINA-Main-Report-2022-FINAL-22-07-01-WMS.pdf)
+#L10
+  o Global Initiative for Asthma. Global Strategy for Asthma Management and
+#L11
+    Prevention, 2023. Updated May 2023. Available from: www.ginasthma.org
+#L12
+- UpToDate
+#L13
+- [Indian Guidelines](http://www.indiachest.org/wp-content/uploads/2016/07/asthma_guidelines_ics_nccp_2015.pdf) (2015)
+#L14
+- UK guidelines (BTS, NICE)
+#L15
+- US [NIH guidelines](https://www.nhlbi.nih.gov/resources/2020-focused-updates-asthma-management-guidelines)
+#L16
+- WHO [](https://www.who.int/publications/i/item/who-package-of-essential-noncommunicable-(pen)-disease-interventions-for-primary-health-care)
+#L17
+  [](https://www.who.int/publications/i/item/who-package-of-essential-noncommunicable-(pen)-disease-interventions-for-primary-health-care)
 
-### Symptoms Suggestive of Asthma
+#L18
+- International Union Against Tuberculosis and Lung Disease (The Union)
+#L19
+- Review article NIH discussing management of asthma in LMIC - shortcomings/ available
+#L20
+  resources [](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9474897/)
+#L21
+**Key points for contextualisation**
+#L22
+- Diagnosis
+#L23
+  o Diagnosis of asthma requires evidence of variable expiratory airflow obstruction
+#L24
+  o The gold standard approach requires access to spirometry.
+#L25
+- Treatment – ensuring appropriate, evidence-based stepwise treatment
+#L26
+- Education – including appropriate use of inhalers, literacy?
+#L27
+- Non-pharmacological management
+#L28
+- Key barriers
+#L29
+  o Environmental (how to address?)
+#L30
+  o [Financial](https://www.thelancet.com/action/showPdf?pii=S2214-109X%2822%2900330-8) – inhalers remain expensive/unaffordable in LMICs
+#L31
+- Currently do not address:
+#L32
+  o Children 0-5
+#L33
+**Diagnosis**
+#L34
+- Intermittent dyspnoea, cough, wheeze, chest tightness
+#L35
+- Diagnosis requires symptoms + variable expiratory airflow obstruction
+#L36
+- Spirometry criteria:
+#L37
+  o FEV1/FVC < 0.7
+#L38
+  o AND reversibility (improvement in FEV1/FVC after 2-4 puffs of SABA)
+#L39
+    ▪︎ Various ways to define this:
+#L40
+    ▪︎ Increase of ≥12 percent **and** 200 mL in FEV1
 
-Asthma typically presents with a range of respiratory symptoms. Common features include dyspnea, chest tightness, cough, and wheezing. In adults, the presence of more than one type of respiratory symptom increases the likelihood of asthma, as isolated cough alone is rarely indicative of the condition. Symptoms usually vary in intensity and over time. They tend to worsen at night or upon waking and can be triggered by factors such as exercise, laughter, allergens, cold air, or viral infections.
+#L41
+  o Alternatively: 20% improvement in peak expiratory flow 15 minutes after
+#L42
+    bronchodilation (for LMICs)
+#L43
+- In high-income settings, asthma is [often overdiagnosed](https://pubmed.ncbi.nlm.nih.gov/28114551/), or diagnosed without diagnostic
+#L44
+  testing
+#L45
+**Differential Diagnosis (based on “cough” per [UpToDate](https://www.uptodate.com/contents/asthma-in-adolescents-and-adults-evaluation-and-diagnosis?search=asthma%20differential%20diagnosis&sectionRank=1&usage_type=default&anchor=H20489068&source=machineLearning&selectedTitle=1~150&display_rank=1#H20489068))**
+#L46
+● chronic obstructive pulmonary disease
+#L47
+● gastroesophageal reflux disease
+#L48
+● pneumonia
+#L49
+● rhinitis or rhinosinus
+#L50
+● post-viral tussive syndrome
+#L51
+● eosinophilic bronchitis
+#L52
+● cough induced by angiotensin converting enzyme inhibitors
+#L53
+● infection with Bordetella pertussis
+#L54
+**Non-pharmacological management (most important)**
+#L55
+- Smoking cessation
+#L56
+- Avoid triggers
 
-### GINA Guidelines
+# I1
+Based on the GINA 2023 guidelines for adults and adolescents aged 12 and over, the stepwise management of asthma involves personalized management to control symptoms and minimize future risk, centered on a cycle of Assess, Adjust, and Review for individual patient needs. Assessment includes confirming the diagnosis, checking symptom control, modifiable risk factors, comorbidities, inhaler technique, and patient preferences. Adjustment involves treating modifiable risk factors, using non-pharmacological strategies, adjusting asthma medications up or down between tracks, and providing education. Review focuses on symptoms, exacerbations, side-effects, lung function, and patient satisfaction. The guideline presents two tracks. Track 1 is the preferred controller and reliever strategy, using ICS-formoterol as the reliever to reduce exacerbations. Steps 1-2 of this track involve as-needed-only low dose ICS-formoterol. Step 3 is low dose maintenance ICS-formoterol, Step 4 is medium dose maintenance ICS-formoterol, and Step 5 involves adding on a LAMA and referring for assessment of phenotype, considering options like high dose maintenance ICS-formoterol, anti-IgE, anti-IL5/5R, anti-IL4Rα, or anti-TSLP, with the reliever for all steps being as-needed low-dose ICS-formoterol. Track 2 is the alternative controller and reliever pathway, where before considering a regimen with a SABA reliever, it's checked if the patient is likely to adhere to daily controller treatment. In Track 2, Step 1 is to take ICS whenever SABA is taken. Step 2 is low dose maintenance ICS. Step 3 is low dose maintenance ICS-LABA. Step 4 is medium/high dose maintenance ICS-LABA. Step 5 involves adding on a LAMA and referring for assessment of phenotype, considering options like high dose maintenance ICS-LABA, anti-IgE, anti-IL5/5R, anti-IL4Rα, or anti-TSLP. The reliever for Track 2 is an as-needed SABA or as-needed ICS-SABA. Other controller options for Track 2 include adding LTRA or HDM SLIT, or for severe cases, adding azithromycin or LTRA, with low dose OCS as a last resort. For more details, the GINA severe asthma guide should be consulted.
 
-For comprehensive information on the diagnosis, management, and treatment of asthma, refer to the Global Initiative for Asthma (GINA) 2023 guidelines. The full report can be accessed at: https://ginasthma.org/wp-content/uploads/2023/07/GINA-2023-Full-report-23_07_06-WMS.pdf
+#L57
+**Step 1: Infrequent symptoms (<2 times/week)**
+#L58
+- Low dose ICS/rapid onset LABA (Track 1) OR
+#L59
+- SABA + ICS whenever SABA used (Track 2)
+#L60
+**Step 2: Symptoms or need for inhaler ≥ 2 times/week**
 
-### Spirometry Criteria for Asthma Diagnosis
+#L61
+- Low dose ICS-formoterol as needed (Track 1) OR
+#L62
+- Low dose ICS daily AND SABA (Track 2)
+#L63
+**Step 3: symptoms on most days, nocturnal awakening due to asthma ≥ once/month, risk factors**
+#L64
+**for exacerbations**
+#L65
+- Low dose ICS-formoterol for maintenance and reliever (MART; Track 1) OR
+#L66
+- Low dose ICS-LABA AND SABA (Track 2)
+#L67
+**Step 4: severe uncontrolled asthma with ≥ of: daytime symptoms ≥ 2 times/week, nocturnal**
+#L68
+**awakening due to asthma, reliever needed > 2 times/week, activity limitation**
+#L69
+- Medium dose ICS-formoterol for maintenance and reliever (MART; Track 1) OR
+#L70
+- Medium Dose ICS-LABA AND SABA PRN (Track 2)
+#L71
+**Step 5: Consider high dose ICS-LABA and Add-on LAMA**
+#L72
+**Stepwise treatment of children ages 6-11**
+#L73
+**Step 1: Symptoms less than twice a month and no risk factors for exacerbation**
+#L74
+- As needed SABA
+#L75
+**Step 2: Symptoms or need for reliever more than twice a month but less than daily**
+#L76
+- Low dose ICS with as-needed SABA
+#L77
+**Step 3: Symptoms most days, nocturnal awakenings due to asthma, especially in the context of**
+#L78
+**risk factors for exacerbation**
+#L79
+- Low dose ICS-LABA with as needed SABA OR
+#L80
+- Medium dose ICS with as needed SABA
+#L81
+**Step 4: As for Step 3, but with poor lung function**
+#L82
+- Medium dose ICS-LABA AND referral to specialist
+#L83
+**Step 5: consider high dose ICS-LABA**
+#L84
+**Dosage adjustments**
+#L85
+- Day to day adjustments
+#L86
+  o Reliever inhaler can be adjusted as needed (i.e. used more)
+#L87
+- Short term adjustments: increase in ICS dose for 1-2 weeks may be necessary (e.g. if
+#L88
+  viral illness, or allergen/pollution exposure)
+#L89
+**Stepping down therapy**
+#L90
+- Continue with same treatment and once good asthma control has been achieved and
+#L91
+  maintained for 2–3 months, consider stepping down gradually to find the patient’s lowest
+#L92
+  treatment that controls both symptoms and exacerbations.
+#L93
+**If poor response to therapy**
+#L94
+- Inhaler technique!!
+#L95
+- Confirm/reconsider diagnosis
+#L96
+- Assess risk factors and comorbidities
+#L97
+- Consider stepping up treatment
+#L98
+**Management of exacerbations- location of management based on extent of exacerbation.**
+#L99
+**Home therapy**
+#L100
+- All patients should be provided an asthma action plan
+#L101
+- Home therapy of exacerbations depends on whether we are doing Step 1 or Step 2
+#L102
+- Increase reliever for acute exacerbation
+#L103
+  o If usual reliever is ICS-LABA, increase frequency not exceeding maximum daily
+#L104
+    dosage of inhaler
+#L105
+  o If usual reliever is SABA, then increase frequency
+#L106
+- Increase preventer to prevent future exacerbations
+#L107
+  o If usual preventer is ICS-formoterol, continue maintenance ICS-formoterol AND
+#L108
+    increase reliever ICS-formoterol as required
+#L109
+  o If usual preventer is ICS with SABA as reliever, quadruple ICS dose
+#L110
+Above changes should be continued for 1-2 weeks
+#L111
+- If peak flow is < 60% of previous best peak flow, OR if not improving after 48 hours
+#L112
+  o Continue reliever and preventer
+#L113
+  o Add prednisone 40-50mg
+#L114
+  o **Contact doctor**
+#L115
+**Clinic management**
+#L116
+- Assess clinical stability
+#L117
+  o If severe: If unable to talk in full sentences, respiratory rate > 30, accessory
+#L118
+    muscle use, HR > 120, SpO2 on air < 90%, peak flow < 50%
+#L119
+    ▪︎ Transfer to higher center of care
+#L120
+    ▪︎ In the interim, give SABA, ipratropium bromide, O2, systemic
+#L121
+      corticosteroid
+#L122
+  o If mild or moderate: talks in phrases, prefers sitting to lying down, not agitated,
+#L123
+    respiratory rate increased from baseline, accessory muscles not used, pulse 100-
+#L124
+    120 beats per minute, O2 saturation on air 90-95%, peak flow >50% predicted or
+#L125
+    best
+#L126
+    ▪︎ Treat at clinic
+#L127
+    ▪︎ Salbutamol 4-10 puffs via spacer, every 20 minutes for 1 hour
+#L128
+    ▪︎ Prednisolone 40-50mg (adults), children 1-2mg/kg max 40mg
+#L129
+    ▪︎ O2 therapy if available: target SpO2 93-95% (children 94-98%)
+#L130
+    ▪︎ Reassess at 1 hour
+#L131
+      ● If worsening, requires transfer to higher center of care
+#L132
+      ● If improving, discharge, signs of improvement below
+#L133
+        o Improving symptoms, no SABA requirement
+#L134
+        o Peak flow 60-80% of predicted or personal best
+#L135
+        o SpO2 > 94% on room air
+#L136
+        o Safe discharge destination
 
-Spirometry is a key diagnostic tool for asthma. Diagnostic criteria include a forced expiratory volume in one second to forced vital capacity ratio (FEV1/FVC) of less than 0.7, along with evidence of reversibility. Reversibility is demonstrated by an improvement in lung function after administration of 2–4 puffs of a short-acting beta-agonist (SABA). A commonly accepted threshold for reversibility is an increase in FEV1 of at least 12 percent and 200 mL.
+#L137
+        o Ensure has home action plan
+#L138
+            ▪︎ Prednisolone – to be continued for 5-7 days
+#L139
+                (adults), 3-5 days (children)
+#L140
+            ▪︎ Follow up within 2-7 days (adults), 1-2 days
+#L141
+                (children)
+#L142
+            ▪︎ continue the rescue inhaler as needed. rescue inhaler
+#L143
+                may be SABA, low dose ICS-LABA, or ICS-SABA
+#L144
+            ▪︎ up titrate maintenance inhaler- ICS-LABA – to be
+#L145
+                continued or uptitrated
+#L146
+**Asthma-COPD overlap**
+#L147
+- Both are obstructive conditions with overlapping diagnostic criteria
+#L148
+- Some patients may have features of both conditions
+#L149
+  o Particularly if long standing asthma and risk factors for COPD (e.g. smoking)
+#L150
+- For patients with features of both asthma and COPD, treat as asthma with ICS
+#L151
+  o First line therapy for COPD (i.e. LAMA or LABA without ICS) is not appropriate
+#L152
+    for patients with features of asthma (see CSA COPD pathway)
+#L153
+**Other topics to address**
+#L154
+- Risk factor modification/non-pharmacological measures?
+#L155
+- Other than avoiding smoke/pollution, this is tricky
+#L156
+**Interventions to avoid**
+#L157
+- Do not use oral steroids as a first line therapy for asthma
+#L158
+  o “It is not acceptable in 2022 to manage asthma with SABAs and oral
+#L159
+    corticosteroids instead of preventive ICS-containing treatments” – GINA
+#L160
+- Avoid SABA monotherapy, even in cases of mild asthma
+#L161
+  o Associated with [increased rates](https://erj.ersjournals.com/content/55/4/1901872) of asthma-related death, and urgent asthma-
+#L162
+    related healthcare
+#L163
+- Do not treat asthma exacerbations with corticosteroid therapy
+#L164
+- Do not treat asthma with methylxanthines (e.g. theophylline)
+#L165
+**Vaccinations**
+#L166
+- Influenza
+#L167
+- Pneumococcal
+#L168
+- COVID-19
 
-### Alternative Diagnostic Approach Without Spirometry
+#T1
 
-In settings where spirometry is not available, asthma can be assessed using pre- and post-bronchodilator peak expiratory flow (PEF) measurements. A 20% improvement in peak expiratory flow 15 minutes after administering a bronchodilator is suggestive of asthma. This approach aligns with recommendations from the GINA Guidelines.
+### APPENDIX A
 
-### Initial Management After Asthma Diagnosis
+**List of available drugs along with cost information**
 
-If the clinical picture is consistent with asthma, treatment should be initiated. To reconfirm the diagnosis, consider performing spirometry when available. In addition to pharmacological therapy, non-pharmacological management plays a key role. This includes smoking cessation and avoiding known asthma triggers to help reduce symptom frequency and severity.
-
-### Step 1: Initial Pharmacological Treatment for equal to or above 12 yr old
-
-For patients with mild asthma symptoms, Step 1 treatment involves two main options. Track 1 includes the use of a low-dose inhaled corticosteroid (ICS) combined with a rapid-onset long-acting beta-agonist (LABA) as needed. Track 2 involves using a short-acting beta-agonist (SABA) as needed, with an inhaled corticosteroid (ICS) taken every time the SABA is used. Both approaches aim to manage symptoms effectively and reduce the risk of asthma exacerbations.
-
-### Inhaled Corticosteroids (ICS) and Costs in India
-
-Common inhaled corticosteroids (ICS) used in asthma treatment in India include fluticasone, budesonide, and ciclesonide. Fluticasone is available as a metered dose inhaler (Cipla - Flohale, 125 mcg/dose) priced at Rs 267 per inhaler, and as respules (Cipla - Flohale, 0.5 mg) priced at Rs 240. Budesonide is available as rotacaps (Cipla - Budecort, 200 mcg, 30 capsules) priced at Rs 92, a metered dose inhaler (Cipla - Budesonide inhaler, 100 and 200 mcg) priced at Rs 400, and respules (Cipla - Budecort respules, 0.5 mg) priced at Rs 115 for a pack of 5. Ciclesonide is available as rotacaps (Cipla - Ciclohale, 400 mcg, 30 capsules) priced at Rs 195, and as metered dose inhalers from Cipla (Ciclohale, 160 mcg) at Rs 350 and Ranbaxy (Osonide, 160 mcg) at Rs 300.
-
-### Short-Acting Beta-Agonists (SABA) and Costs in India
-
-Short-acting beta-agonists (SABA) commonly used in asthma treatment in India include salbutamol and levalbuterol (levisalbutamol). Salbutamol is available as rotacaps (Cipla - Asthalin, 200 mcg, 60 capsules) priced at Rs 98 per pack, a metered dose inhaler (Cipla - Asthalin) priced at Rs 110 per box, and respules (Cipla - Asthalin, 2.5 mg/2.5 ml, pack of 5) priced at Rs 28. Levisalbutamol is available as rotacaps (Cipla - Levolin, 100 mcg, 30 capsules) priced at Rs 30 per pack, a metered dose inhaler (Cipla - Levolin, 50 mcg) priced at Rs 200 per pack, and respules including Cipla - Levolin (0.63 mg per respule at Rs 5 each) and Lupin - Salbair (0.63 mg/2.5 mL respule at Rs 7 each).
-
-### ICS-LABA Combination Drugs and Costs in India
-
-Inhaled corticosteroid (ICS) and long-acting beta-agonist (LABA) combination therapies are commonly used in asthma management. Fluticasone and salmeterol combinations are available as rotacaps from Macleods Pharma (Flutrol, 50/100 mcg at Rs 155), Zydus Cadila (Forair R cap, 100/50 mcg at Rs 361 for 30 capsules), and Seroflo (500/50 mcg at Rs 472). They are also available as respules from Lupin Labs (Esiflo, 100/50 mcg, 30 capsules at Rs 108), and as metered dose inhalers from Glenmark (Airtec SF, 50/100 mcg at Rs 330) and Sun Pharma (Combitide, 25/125 mcg at Rs 292). Budesonide and formoterol (a rapid-onset LABA) are available as rotacaps from Zydus Cadila (Formonide Resicaps, 200/6 mcg at Rs 147 for a bottle of 30) and as a metered dose inhaler from Kopran Pharma (VentFB inhaler, 100/6 mcg at Rs 134).
-
-### Stepping Down Asthma Treatment
-
-Once good asthma control has been achieved and maintained for 2–3 months, treatment should be continued and then gradually stepped down. The goal is to identify the lowest level of treatment that effectively controls both symptoms and exacerbations for the individual patient.
-
-### Step 2: Asthma Treatment Options for equal to or above 12 yr old
-
-Step 2 treatment for asthma includes two options. Track 1 involves using a low-dose inhaled corticosteroid (ICS) combined with a rapid-onset long-acting beta-agonist (LABA) as needed. Track 2 involves taking a low-dose inhaled corticosteroid (ICS) daily and using a short-acting beta-agonist (SABA) as needed.
-
-### Step 3: Asthma Treatment Options for equal to or above 12 yr old
-
-Step 3 treatment includes two tracks. Track 1 involves using a low-dose inhaled corticosteroid (ICS) combined with a rapid-onset long-acting beta-agonist (LABA) for both maintenance and reliever therapy. Track 2 consists of a low-dose ICS combined with a rapid-acting LABA for maintenance, along with a short-acting beta-agonist (SABA) as needed.
-
-### Step 4: Asthma Treatment Options for equal to or above 12 yr old
-
-Step 4 treatment includes two tracks. Track 1 involves using a medium-dose inhaled corticosteroid (ICS) combined with a rapid-acting long-acting beta-agonist (LABA) for both maintenance and reliever therapy. Track 2 includes either a medium or high-dose ICS combined with a long-acting beta-agonist (LABA), along with a short-acting beta-agonist (SABA) as needed or an inhaled corticosteroid (ICS) plus SABA as needed.
-
-### Step 5: Add-On Asthma Treatment Options for equal to or above 12 yr old
-
-Step 5 treatment includes add-on options for patients with uncontrolled asthma. In Track 1, consider adding a long-acting muscarinic antagonist (LAMA) or using a high-dose inhaled corticosteroid (ICS) combined with a rapid-acting long-acting beta-agonist (LABA). In Track 2, add a LAMA or use a high-dose ICS with a long-acting beta-agonist (LABA).
-
-### Simplified Stepwise Asthma Treatment Approach for patient between 6 to 11 yr old
-
-Step 1: Treat with short-acting beta agonist (SABA) as needed. Step 2: Treat with low-dose inhaled corticosteroid (ICS) along with SABA as needed. Step 3: Treat with low-dose ICS-long acting beta agonist (LABA) with as needed SABA OR medium-dose ICS with as needed SABA. Step 4: Treat with medium-dose ICS-LABA and refer to a specialist. Step 5: Consider high-dose ICS with rapid-onset LABA (Track 1).
-
-### Dosage Adjustments in Asthma Management
-
-Day-to-day adjustments may involve increasing the use of the reliever inhaler as needed. Short-term adjustments can include increasing the inhaled corticosteroid (ICS) dose for 1–2 weeks, especially in response to triggers such as viral illness, allergen exposure, or pollution.
-
-### Management of Poor Response to Asthma Therapy
-
-If there is a poor response to asthma therapy, first check the patient’s inhaler technique. Confirm or reconsider the diagnosis, assess for risk factors and comorbidities, and consider stepping up the treatment if necessary.
-
-### Clinic Management of Asthma Exacerbations
-
-Asthma management in the clinic begins with assessing clinical stability. For severe cases, look for signs such as the inability to talk in full sentences, respiratory rate over 30 breaths per minute, use of accessory muscles, heart rate over 120 beats per minute, oxygen saturation on room air below 90%, and a peak flow less than 50% of predicted. These patients require immediate transfer to a higher center of care. While awaiting transfer, provide short-acting beta agonists (SABA), ipratropium bromide, oxygen, and systemic corticosteroids.
-
-In mild to moderate cases, the patient may talk in phrases, prefer sitting, show no signs of agitation, have a slightly elevated respiratory rate, a heart rate between 100–120 bpm, oxygen saturation between 90–95%, and a peak flow above 50%. These patients can be treated at the clinic. Administer salbutamol (4–10 puffs via spacer) every 20 minutes for one hour, and give prednisolone—40–50 mg for adults, or 1–2 mg/kg (maximum 40 mg) for children. If available, start oxygen therapy with a target SpO2 of 93–95% in adults and 94–98% in children.
-
-Reassess the patient after one hour. If the condition worsens, transfer is needed. If symptoms improve—indicated by reduced symptoms, no need for SABA, peak flow 60–80% of predicted or personal best, and SpO2 over 94%—the patient can be discharged safely. Ensure a safe discharge destination and provide a home action plan. Prednisolone should be continued for 5–7 days in adults and 3–5 days in children. Follow-up should occur within 2–7 days for adults and 1–2 days for children. Continue the rescue inhaler as needed; options include SABA, low-dose ICS-LABA, or ICS-SABA. Maintenance therapy with ICS-LABA should also be continued or up-titrated.
-
-### Home Therapy of Asthma Exacerbations
-
-All patients with asthma should have a personalized asthma action plan. Home therapy for exacerbations depends on the current treatment step (Step 1 or Step 2).
-
-During an acute exacerbation, increase the use of the reliever inhaler. If the regular reliever is an ICS-LABA combination, increase the frequency without exceeding the maximum daily dosage. If the reliever is a short-acting beta agonist (SABA), increase the frequency as needed.
-
-To prevent future exacerbations, the preventer inhaler should also be adjusted. If the usual preventer is ICS-formoterol, continue using it for maintenance and increase the ICS-formoterol reliever as required. If the preventer is ICS with SABA as reliever, quadruple the dose of ICS. These changes should be continued for 1–2 weeks.
-
-If the patient’s peak flow is less than 60% of their previous best or if there is no improvement after 48 hours, continue both the reliever and preventer therapies. Additionally, start oral prednisone 40–50 mg and contact a doctor for further evaluation.
-
-### Asthma-COPD Overlap
-
-Asthma and chronic obstructive pulmonary disease (COPD) are both obstructive airway conditions that can share overlapping features. Some patients, especially those with long-standing asthma and risk factors for COPD such as smoking, may exhibit characteristics of both diseases.
-
-In cases where features of both asthma and COPD are present, the treatment approach should prioritize asthma management. This means initiating therapy with inhaled corticosteroids (ICS), as they are essential in managing asthma symptoms and reducing inflammation.
-
-Importantly, first-line COPD treatments—such as long-acting muscarinic antagonists (LAMA) or long-acting beta agonists (LABA) without ICS—are not suitable as initial therapy for patients who show features of asthma. Proper assessment and tailored treatment are critical in managing this overlap effectively.
-
-### Risk Factor Modification and Non-Pharmacological Measures in Asthma
-
-Risk factor modification is an important but sometimes challenging aspect of asthma management. Avoidance of smoking and exposure to air pollution remains the most effective and widely applicable intervention. Patients should be counseled on the importance of smoke-free environments and minimizing exposure to pollutants and allergens whenever possible.
-
-Beyond this, non-pharmacological measures can be less straightforward. While allergen avoidance and lifestyle adjustments like maintaining a healthy weight and managing stress may help, their effectiveness can vary significantly between individuals. Regular follow-up and personalized education remain key components in helping patients understand and manage their unique risk factors.
-
-### Differential Diagnosis of Cough
-
-When evaluating a patient with cough, it is essential to consider a broad range of differential diagnoses beyond asthma. Common conditions that can present with chronic or persistent cough include chronic obstructive pulmonary disease (COPD), gastroesophageal reflux disease (GERD), and pneumonia. Rhinitis or rhinosinusitis may lead to postnasal drip, contributing to chronic cough.
-
-Other potential causes include post-viral tussive syndrome, eosinophilic bronchitis, and cough induced by medications such as angiotensin converting enzyme (ACE) inhibitors. Additionally, infection with Bordetella pertussis should be considered, particularly if there is a history of prolonged paroxysmal coughing episodes. Accurate diagnosis requires careful clinical evaluation and may involve spirometry, imaging, and a review of medication history.
-
-### Vaccinations in Asthma
-
-Patients with asthma should receive vaccinations for influenza, pneumococcal disease, and COVID-19.
-
-### Interventions to Avoid in Asthma Management
-
-Oral steroids should not be used as a first-line therapy for asthma. According to GINA, it is not acceptable to manage asthma with SABAs and oral corticosteroids instead of preventive ICS-containing treatments. SABA monotherapy should be avoided, even in mild asthma, as it is linked to increased rates of asthma-related death and urgent healthcare visits. Asthma exacerbations should not be treated with corticosteroid therapy, and methylxanthines, such as theophylline, should not be used for asthma treatment.
-
-### Stepwise Asthma Management (12+) per GINA Guidelines
-
-The image details the GINA 2023 guidelines for personalized asthma management in patients aged 12 and above. It emphasizes a continuous cycle of assessment, adjustment, and review to achieve optimal symptom control and minimize future risks, underscoring the necessity of tailoring treatment to each individual's specific needs. This process involves evaluating symptoms, exacerbations, lung function, comorbidities, and patient satisfaction to inform treatment strategies, which include managing modifiable risk factors, employing non-pharmacological methods, adjusting medications, and providing patient education and skills training.
-
-The guidelines offer two primary pathways for controller and reliever therapy. Track 1, the preferred strategy, uses ICS-formoterol for both control and quick relief, which is highlighted for its effectiveness in reducing exacerbations and its simplicity compared to using a separate SABA reliever. This track progresses through five steps, starting with as-needed low-dose ICS-formoterol and escalating to higher maintenance doses, the addition of LAMA, and consideration of biologic treatments for severe asthma phenotypes. Track 2 presents an alternative, beginning with taking ICS whenever SABA is needed, then moving to low-dose maintenance ICS and ICS-LABA combinations, with similar later steps involving LAMA and biologics.
-
-In addition to these main tracks, the guidelines suggest other controller options for specific situations. These include low to medium dose ICS with as-needed SABA or daily LTRA or HOM SLIT, the addition of LAMA or switching to high-dose ICS, and considering azithromycin or LTRA at higher levels, while being cautious of potential side effects. The image also refers to the GINA severe asthma guide for more detailed information on managing severe asthma cases.
-
+| Drug Class | Drug name | Type | Brand | Pricing |
+|---|---|---|---|---|
+| **SABA** | Salbutamol | Rotacaps | Cipla - Asthalin | 200 mcg - 60 capsules in 1 bottle - Rs 98/pack |
+| | | Metered dose inhaler | Cipla - Asthalin | Rs 110/ box |
+| | | Respules | Cipla - Asthalin | 2.5mg/2.5 ml pack of 5 - Rs 28 |
+| | Levisalbutamol | Rotacaps | Cipla-Levolin | 100 mcg - 30 capsules in 1 bottle - Rs 30/pack |
+| | | Metered dose inhaler | Cipla-Levolin | 50 mcg inhaler / Rs 200 per pack |
+| | | Respules | Cipla - Levolin ,\<br\>Lupin-Salbair | 0.63 Mg/ 1 respule - Rs 5 per respule,\<br\>0.63mg/2.5 mL respule - Rs 7 per respule |
+| **Combination - SABA and SAMA** | Ipravent and Levosalbutamol | Rotacaps | Cipla - Duolin | 60 capsules - 100 + 40 mcg/ Rs 144 per bottle |
+| | | Metered dose inhaler | Cipla - Duolin Forte | 200 mdi inhaler - Rs 393 |
+| | | Respules | Cipla - Duolin | 3 ml respules - pack of 5 - Rs 104 |
+| **ICS** | Fluticasone | Rotacaps | | |
+| | | Metered dose inhaler | Cipla - Flohale | 125 mcg/dose, Rs 267/ inhaler |
+| | | Respules | Cipla-Flohale | 0.5 mg respules - Rs 240 |
+| | Budesonide | Rotacaps | Cipla - Budecort\<br\>Cipla-Budesonide | 200 mcg, 30 capsules in 1 bottle - Rs 92 |
+| | | Metered dose inhaler | | 100, 200 mg - Rs 400 |
+| | | Respules | Cipla - Budecort respules | 0.5 mg respules, Rs 115 - pack of 5 |
+| | Ciclesonide | Rotacaps | Cipla - Ciclohale | 400 mcg - 30 capsules, Rs 195 |
+| | | Metered dose inhaler | Cipla-Ciclohale,\<br\>Ranbaxy - Osonide | Ciclohale- 160 mcg - Rs 350,\<br\>Osonide- 160 mcg - Rs 300 |
+| | | Respules | NA | |
+| **Triple therapy, combination drug ICS+LABA+LAMA** | beclometasone dipropionate/formoterol fumarate/glycopyrronium bromide (BDP/FF/G) | pressurized metered-dose inhaler | TRIMBOW®, Chiesi Farmaceutici SpA | Single dosage - 87/5/9 µg (two inhalations twice daily) |
+| | Fluticasone Furoate/Umeclidinium/Vilanterol FF/UMEC/VI | Multidose dry-powder inhaler (MDDPI) formulation to be delivered through the ELLIPTA inhaler device (SingleInhaler Triple Therapy (SITT)) | TRELEGY ELLIPTA®, GlaxoSmithKline | Single dosage - 92/22/55 µg (one inhalation per day) - Maintenance treatment of both asthma and COPD|
+| | GlaxoSmithKline FF/UMEC/VI | Dry powder inhaler | Trelegy Ellipta | Once daily - Maintenance treatment of COPD; ₹2822/box |
+| | AstraZeneca BDP/FOR/GP Beclomethasone/Formoterol/Glycopyrronium | pressurized metered-dose inhaler | BREZTRI | Twice daily (CJ: can't find this drug online; probably not sold in India yet) |
+| | Novartis IND/GLY/MF Indacaterol/Glycopyrronium/ Mometasone furoate | Dry powder inhaler | Enerzair Breezhaler | Once daily (CJ: can't find this drug online; probably not sold in India yet) |
+| | Glenmark GLY/FOR/FP Glycopyrronium/Formoterol/Fluticasone propionate | Dry powder inhaler | Airz-FF | Twice daily ; ₹535/box of 30 capsules |
+| | Cipla GLY/FOR/BUD Glycopyrronium/Formoterol/Budesonide | Dry powder inhaler | Glycohale-FB | Twice daily; ₹184.7/box of 10 rotacaps |
+| | Tiotropium/Formoterol/Ciclesonide (TFC) | Dry powder inhaler (DPI)/<br>Pressured metered dose inhaler (pMDI) | Triohale®, Cipla | 18 mcg/12 mcg/400 mcg - once-daily; ₹1132/ inhaler with 200 metered doses |
+| ICS and LABA-combination | Fluticasone and Salmeterol | Rotacaps | Macleods Pharma-Flutrol,<br>Zydus Cadila-Forair R cap,<br>Seroflo- 500 rotacaps | Flutrol rota capsule- 50/100 mcg- Rs 155,<br>Forair R cap- 100/50 mcg- Rs 361- for 30 capsules,<br>Seroflo500 rotacaps -500/50 mcg- Rs 472 |
+| | | Respules | Lupin Labs-Esiflo, | Esiflo- 100/50 mcg- 30 capsules Rs 108 |
+| | | Metered dose inhaler | Glenmark - Airtec SF,<br>Sun pharma-Combitide | Airtec SF- 50 mcg/100 mcg- Rs 330, Combitide - 25/125 mcg - Rs 292 |
+| (rapid onset) | Budesonide and Formoterol | Rotacaps, Respules | Zydus cadila - Formonide Resicaps, | Formonide resicaps- 200/6 mcg- Rs 147- for a bottle of 30 |
+| | | Metered dose inhaler | Kopran Pharma-VentFB inhaler | Vent FB inhaler - 100/6 mcg- Rs 134 |
+| | Fluticasone and Vilanterol | Rotacaps | | |
+| ICS and SABA combo | Budesonide(0.5 Mg) + Salbutamol/Albuterol(1.25 Mg) | | | Budesal 0.5mg 2ml Packet Of 5 Respules for ~ Rs 240<br><br>Derisal 0.5mg 2ml Packet Of 7 Respules for ~ RS 340 |
+| | Levosalbutamol (50mcg) + Beclometasone (50mcg) | | Cipla | Aerocort Inhaler for ~Rs 270 / 1 Packet 200 MDI Inhaler |
+| | | Respules | | |
+| | | Metered dose inhaler | | |
+| LABA+LAMA | Formoterol Fum. | single inhaler device disposable | Tioform | Dosage- 6 or 12 µg (18/12 mcg; 9/6 mcg); ₹677 |
+| Prednisolone | | (40-50mg) | various brands<br>Depomax S 40mg Injection,<br>Mpss 40mg Injection | 40mg oral - avg Rs 25/ strip of 10 tablets<br><br>Rs 100-150 |

@@ -82,7 +82,7 @@ const SelectContent = ({ className = "", children, isOpen, selectedValue, onValu
           className={`absolute top-full left-0 z-50 w-full mt-1 rounded-md border bg-popover text-popover-foreground shadow-md overflow-hidden ${className}`}
           {...props}
         >
-          <div className="p-1 max-h-60 overflow-auto">
+          <div className="p-1 max-h-60 bg-white overflow-auto">
             {React.Children.map(children, (child) => {
               if (child.type === SelectItem) {
                 return React.cloneElement(child, { 
@@ -112,6 +112,7 @@ const SelectItem = ({ value, className = "", children, selectedValue, onValueCha
     >
       {isSelected && (
         <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+          
           <FiCheck className="h-4 w-4" />
         </span>
       )}

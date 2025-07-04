@@ -1,100 +1,554 @@
-# Disease Name : Heart_failure
+#L1
+**Heart Failure Pathway**
+#L2
+**Definition**
+#L3
+- Divided into heart failure with reduced ejection fraction (HFrEF) and heart failure with
+#L4
+  preserved ejection fraction (HFpEF)
+#L5
+- HFrEF and HFpEF present with similar symptoms
+#L6
+**Background**
+#L7
+- In India, burden of HF is high
+#L8
 
-### Overview and Contextualization of Heart Failure (HF)
+  o [Estimate from 2010, 1.3-4.6 million](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3913650/#:~:text=The%20burden%20of%20HF%20in,of%20491%20600%E2%80%931.8%20million.)
+#L9
+  o Likely higher now
+#L10
+- 1 year mortality from HF in India is [23%](https://www.sciencedirect.com/science/article/pii/S2214109X17301961)
+#L11
+- IHD is the [leading cause of mortality](https://www.healthdata.org/india) in India
+#L12
+- Burden not just directly from IHD, but the sequelae of cardiac ischemia, including heart
+#L13
 
-Heart failure is broadly categorized into two types: heart failure with reduced ejection fraction (HFrEF) and heart failure with preserved ejection fraction (HFpEF). Despite differing in underlying mechanisms, both HFrEF and HFpEF manifest with similar clinical symptoms, making differentiation based on presentation alone challenging. In the Indian context, the burden of heart failure is significant. Estimates from 2010 suggest a prevalence between 1.3 to 4.6 million cases, though the current figures are likely higher. The one-year mortality rate from heart failure in India stands at 23%, highlighting the severity of the condition. Ischemic heart disease (IHD) is the leading cause of mortality in the country, and its contribution extends beyond direct effects to include sequelae such as heart failure.
- This heart failure management pathway should be integrated with related clinical protocols including those addressing risk factor modification, hypertension (HTN), diabetes, chest pain, and ischemic heart disease (IHD), among others. Critical contextual questions include understanding how heart failure is currently managed at CSA partner sites and identifying the barriers to effective heart failure treatment in India—particularly financial constraints. The overarching goal remains to provide the best adapted solution to the problem at hand.
+  failure
+#L14
+**Links to other pathways**
+#L15
+- This pathway should be considered in conjunction with (mostly to be written)
+#L16
+  o Risk factor modification pathway
+#L17
+  o HTN pathway
+#L18
+  o Diabetes pathway
+#L19
+  o Chest pain pathway
+#L20
+  o IHD pathway
+#L21
+  o Others?
+#L22
+**Questions for contextualisation**
+#L23
+- How do we treat HF at CSA partner sites?
+#L24
+- What are the barriers to HF management in India?
+#L25
+  o Financial
+#L26
+  o Can these be overcome?
+#L27
+- “The best adapted solution to the problem at hand”
+#L28
+**Outpatient management of HFrEF**
+#L29
 
-### Outpatient Management of Heart Failure with Reduced Ejection Fraction (HFrEF)
+<u>Establish diagnosis</u>
 
-The outpatient management of HFrEF begins with establishing a diagnosis through clinical signs suggestive of heart failure, supported by ECG findings that may reveal left ventricular hypertrophy or evidence of previous ischemia. A definitive diagnosis requires an echocardiogram showing a left ventricular ejection fraction (LVEF) of less than 40%, which may necessitate referral to the nearest district hospital, depending on the echocardiographic capabilities at partner sites. Pregnant patients require pregnancy-specific management and should not be managed using this pathway.
- The severity of heart failure should be assessed using the NYHA classification system (see appendix). Concurrently, comorbid conditions should be evaluated and managed appropriately. These include ischemic heart disease (a common sequela of coronary artery disease), hypertension, diabetes, arrhythmias (particularly atrial fibrillation), valvular disease (requiring specialist referral), cardiomyopathy, anaemia, and smoking.
- For symptomatic management, diuretics such as furosemide at a dose of 20–40 mg once or twice daily can be used. It is advised to administer the drug in the morning and at midday to avoid nocturnal diuresis. Renal function should be monitored weekly, and the diuretic dose should be titrated to the minimum required to eliminate signs of fluid retention. A weighing scale may be provided to assist with monitoring.
+#L30
+- Clinical signs suggestive of HF
+#L31
+- ECG may show LV hypertrophy, evidence or previous ischaemia
+#L32
+- Echocardiogram with LVEF < 40% consistent with HFrEF
+#L33
+  o This will likely require referral to nearest district hospital
+#L34
+  o **Echocardiogram ability of partner locations to be determined**
+#L35
+- Pregnant patients require pregnancy specific management – this pathway cannot be used
+#L36
 
-### Disease-Modifying Management of HFrEF
+<u>Assessment of severity</u>
+#L37
+- See appendix (NYHA Class)
+#L38
+<u>Assess and manage comorbid conditions</u>
+#L39
+- Ischaemic heart disease
+#L40
+  o HF is common sequelae of coronary artery disease
+#L41
+  o **Risk reduction and symptomatic management as per CSA IHD pathway (TBD)**
+#L42
+- Hypertension
+#L43
+  o **Manage as per CSA hypertension pathway (TBD)**
+#L44
+- Diabetes
+#L45
+- Arrythmias
 
-For patients diagnosed with heart failure with reduced ejection fraction (HFrEF), disease-modifying treatment should begin immediately with drugs from each of the core therapeutic classes. The preferred regimen includes an angiotensin receptor-neprilysin inhibitor (ARNI), a beta-blocker (BB), a mineralocorticoid receptor antagonist (MRA), and a sodium-glucose co-transporter 2 (SGLT2) inhibitor, as this combination has shown the greatest mortality benefit and is recommended by the CSA. Dosages and initiation sequence are detailed in Appendix I.
- Within the ARNI/ACEI/ARB class, sacubitril-valsartan (ARNI) is preferred when feasible, though its cost can be a significant barrier. Alternatives include ACE inhibitors such as captopril, enalapril, lisinopril, and ramipril—lisinopril and ramipril offer the advantage of once-daily dosing—or ARBs like candesartan, losartan, and valsartan. While use in patients with an eGFR < 30 is not contraindicated, it should be approached with caution 
- Evidence-based beta-blockers include bisoprolol, carvedilol, and extended-release metoprolol. For MRA therapy, spironolactone or eplerenone may be used, with careful monitoring of serum potassium levels to down-titrate or discontinue if elevated. These are contraindicated in patients with eGFR < 30 or potassium > 5.
- SGLT2 inhibitors such as dapagliflozin and empagliflozin are effective but have contraindications including type 1 diabetes, symptomatic hypotension, frequent urinary tract infections, high risk of foot amputation, and reduced kidney function (eGFR < 30 for dapagliflozin and < 20 for empagliflozin). Blood pressure and electrolytes should be monitored after initiation, and systolic blood pressure should be above 100 mmHg.
- If certain medications are unavailable at CSA partner sites due to accessibility or cost, alternative regimens may be used. Specifically, if ARNIs are not accessible, ACE inhibitors or ARBs can be used as substitutes. However, no alternative exists for SGLT2 inhibitors if they are unavailable
+#L46
+  o Particularly AF
+#L47
+- Valvular disease
+#L48
+  o Refer to specialist
+#L49
+- Cardiomyopathy
+#L50
+- Anaemia
+#L51
+- Smoking
+#L52
+<u>Symptomatic management</u>
+#L53
+- Diuretic
+#L54
+  - furosemide 20-40mg once or twice a day
+#L55
+    o Morning and midday dosing to avoid nocturnal diuresis
+#L56
+    o Monitor renal function once a week
+#L57
+    o Titrate to minimum dose required to eliminate evidence of fluid retention
+#L58
+    o Can provide a weigh scale to facilitate this
+#L59
+**IF HFrEF**
+#L60
+**Disease modifying management**
+#L61
+- [Drug from each of the below classes should be initiated at time of diagnosis](https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063#d53151679e1)
+#L62
+  o Dosages and sequence of initiation in Appendix I
+#L63
+  o See below if specific therapies unavailable at CSA partner site
+#L64
+- Angiotensin receptor-neprilysin inhibitor (ARNI), angiotensin converting enzyme (ACE)
+#L65
+  inhibitor, or angiotensin receptor blocker (ARB)
+#L66
+  o ARNI: Sacubitril-Valsartan
+#L67
+    ▪︎ Preference for ARNI if possible – however, significant barriers due to cost
+#L68
+  o ACE inhibitor: Captopril, enalapril, lisinopril, ramipril
+#L69
+    ▪︎ Lisinopril and ramipril and once daily dosing, which may be preferable
+#L70
+  o ARB
+#L71
+    ▪︎ Candesartan, losartan, valsartan
+#L72
+  o The use of ARNI/ACE/ARB in patients with eGFR < 30 is not contraindicated,
+#L73
+    but caution should be exercised
+#L74
+- [**Beta blocker**](https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063#d1e3406)
+#L75
+  o Evidence based beta-blockers: Bisoprolol, carvedilol, metoprolol XR
+#L76
+- [**Mineralocorticoid receptor antagonists (MRA)**](https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063#d1e3406)
+#L77
+  o Spironolactone or eplerenone
+#L78
+  o Monitor serum potassium, down titrate or discontinue if serum potassium elevated
 
-### Use of Digoxin in HFrEF – Caution Advised
-
-Digoxin is frequently used in India for managing heart failure; however, strong evidence supporting its effectiveness in heart failure with reduced ejection fraction (HFrEF) is lacking. While it may help reduce hospitalizations, it does not appear to improve mortality. This limited benefit must be weighed against the risks associated with digoxin therapy, including the potential for toxicity and the challenges of monitoring drug levels in rural settings. Therefore, the routine use of digoxin in heart failure is not recommended, especially when evidence-based treatments are available. If digoxin must be used, the starting dose should be 0.125 mg daily for patients with eGFR ≥ 30, and 0.125 mg every second day or 0.0625 mg daily for those with eGFR < 30, the elderly, or individuals with low body weight. Electrolytes, especially potassium, should be checked before starting therapy. Extra caution is required when digoxin is used alongside drugs that reduce heart rate (such as beta-blockers) or increase digoxin concentration (such as furosemide). Clinicians should maintain a high suspicion for signs of digoxin toxicity, such as nausea, vomiting, visual disturbances, or arrhythmias.
-
-### Other Considerations in the Management of HFrEF
-
-In patients with heart failure with reduced ejection fraction (HFrEF) who have recently experienced a myocardial infarction (MI), it is important to note that most major HFrEF studies have excluded this population. However, clinical evidence supports the use of ACE inhibitors (ACEI), angiotensin receptor blockers (ARB), beta-blockers, and mineralocorticoid receptor antagonists (MRA) in such patients. Angiotensin receptor-neprilysin inhibitors (ARNI) have not shown superiority over ACEIs in the post-MI setting, and the benefits of sodium-glucose cotransporter-2 (SGLT2) inhibitors during the post-MI period are still under investigation. Lifestyle modifications remain crucial and should be guided by the CSA risk factor and lifestyle modification pathway. Cardiac rehabilitation should be encouraged, with referrals made to a physiotherapist or local rehab program, and patients can also be provided with educational materials for home-based rehabilitation. Additionally, vaccinations—such as pneumococcal and influenza vaccines—should be considered as part of comprehensive heart failure care.
-
-### Indications for Referral to Specialist Cardiology Services
-
-Referral to specialist cardiology services should be considered in patients with heart failure who present with specific complications or treatment challenges. These include heart failure that is refractory to standard therapy, persistent hypotension, or coexisting renal failure. Patients with heart failure accompanied by atrial fibrillation, those who have experienced two or more episodes of decompensation within the past 12 months, or those with valvular or structural heart disease should also be referred. Additional indications include an inability to tolerate guideline-directed medical therapy, diagnostic uncertainty, and patients who may be candidates for device-based therapies such as implantable cardioverter-defibrillators or cardiac resynchronization therapy.
-
-### Outpatient Management of HFpEF
-
-The diagnosis of heart failure with preserved ejection fraction (HFpEF) requires confirmation via echocardiogram. Unlike HFrEF, therapeutic options for HFpEF are limited. Once HFpEF is confirmed, the primary focus should be on managing comorbid conditions such as hypertension, atrial fibrillation, coronary artery disease risk factors, atherosclerotic disease, hyperlipidaemia, obesity, anaemia, diabetes, chronic kidney disease, and obstructive sleep apnoea. If the patient has signs of fluid overload, diuretics like furosemide 20–40 mg can be initiated and titrated to achieve euvolaemia. In cases of confirmed HFpEF, SGLT2 inhibitors should be considered as a first-line treatment. If the patient has HFpEF with elevated BNP levels, both SGLT2 inhibitors and mineralocorticoid receptor antagonists (MRAs) can be considered. Certain drugs such as ARNIs, ACE inhibitors, ARBs, calcium channel blockers, and digoxin should generally be avoided unless prescribed for other conditions like hypertension, as none have shown improved clinical outcomes specifically in HFpEF.
-
+#L79
+  o Contraindications: eGFR < 30 or potassium > 5
+#L80
+- [**SGLT2 inhibitor**](https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063#d1e3406)
+#L81
+  o Dapagliflozin or empagliflozin
+#L82
+  o Contraindications: T1DM, symptomatic hypotension, frequent UTI, risk factors
+#L83
+    for foot amputation, eGFR < 30 (dapagliflozin), eGFR < 20 (empagliflozin)
+#L84
+- Monitor blood pressure and electrolytes post initiation
+#L85
+- Ensure SBP > 100
+#L86
+**Alternative treatment regimens**
+#L87
+- On the basis of current evidence, combination therapy with an ARNI, BB, MRA and
+#L88
+  SGLT2 inhibitor has the greatest mortality benefit for patients with HFrEF, and is the
+#L89
+  CSA preferred regimen
+#L90
+- However, some of these drugs may not be available at CSA partner sites, due to location
+#L91
+  or cost
+#L92
+- If the above medications are not available, the below alternative regimens can be
+#L93
+  considered (Appendix II)
+#L94
+- If ARNI unavailable
+#L95
+  o Replace ARNI with ACEi (e.g. ramipril) or ARB (e.g. valsartan)
+#L96
+- If SGLT2 unavailable
+#L97
+  o No comparative alternative
+#L98
+**Drugs to use with caution**
+#L99
+- Digoxin is commonly used for the treatment of heart failure in India
+#L100
+  o Robust evidence to support the use of digoxin in HFrEF is lacking
+#L101
+  o Digoxin use [does not appear to reduce mortality, but may reduce hospitalisations](https://www.nejm.org/doi/full/10.1056/NEJM199702203360801)
+#L102
+  o This should be balanced against the risks of digoxin therapy (i.e. digoxin
+#L103
+    toxicity), and difficulty with monitoring drug levels in the rural Indian setting
+#L104
+- In general, we do not recommend the use of digoxin in heart failure, especially if any of
+#L105
+  the above therapies are available
+#L106
+- If digoxin is to be used (not evidence based), starting dose:
+#L107
+  o 0.125mg daily if eGFR ≥ 30
+#L108
+  o 0.125mg every second day or 0.0625mg daily if eGFR < 30, or elderly, or low
+#L109
+    body weight
+#L110
+  o Check electrolytes (particularly potassium) prior to initiation
+#L111
+- Exercise particular caution if digoxin used in conjunction with drugs that suppress heart
+#L112
+  rate (e.g. beta blockers), or increase digoxin concentration (e.g. furosemide)
+#L113
+- Have a high index of suspicion for digoxin toxicity (e.g. vomiting/nausea, visual
+#L114
+  disturbances, arrhythmias)
+#L115
+**Other considerations**
+#L116
+- Patients with recent myocardial infarction and HFrEF
+#L117
+  o Major studies of HFrEF have excluded patients with recent myocardial infarction
+#L118
+  o ACEI/ARB, beta blockers and MRAs have been shown to be beneficial in these
+#L119
+    patients
+#L120
+  o [ARNI is not superior to ACEI in](https://www.nejm.org/doi/10.1056/NEJMoa2104508) the setting of recent myocardial infarction
+#L121
+  o The impact of SGLT2 in the post-MI period [still being studied](https://jamanetwork.com/journals/jamacardiology/fullarticle/2795765?guestAccessKey=da0dbf78-f7e9-4ad1-abdc-a1ebdd2d1ccd&utm_source=twitter&utm_medium=social_jamacard&utm_term=7520032259&utm_campaign=article_alert&linkId=179485921)
+#L122
+- Lifestyle modifications (see CSA risk factor/lifestyle modification pathway)
+#L123
+- Cardiac rehab
+#L124
+  o Refer to physiotherapist/local cardiac rehab program
+#L125
+  o Can give education materials for home cardiac rehab
+#L126
+- Vaccinations
+#L127
+  o Pneumococcal, influenza, COVID
+#L128
+- Smoking cessation
+#L129
+**Indications for referral to specialist cardiology services (adapted from [Maddox et al, 2021](https://www.jacc.org/doi/10.1016/j.jacc.2020.11.022))**
+#L130
+- Heart failure refractory to therapy
+#L131
+- Persistent hypotension
+#L132
+- Renal failure
+#L133
+- Heart failure with atrial fibrillation
+#L134
+- 2+ issues of decompensation in previous 12 months
+#L135
+- Valvular or structural heart disease
+#L136
+- Inability to tolerate medical therapy for heart failure
+#L137
+- Diagnostic uncertainty
+#L138
+- Patients who are potential candidates for device-based therapies
+#L139
+**Outpatient management of HFpEF**
+#L140
+- The diagnosis of heart failure with preserved ejection fraction requires an
+#L141
+  echocardiogram
+#L142
+- Unlike HFrEF, there are limited therapeutic options in HFpEF
+#L143
+- [**If HFpEF confirmed:**](https://www.uptodate.com/contents/treatment-and-prognosis-of-heart-failure-with-preserved-ejection-fraction?search=hfpef&source=search_result&selectedTitle=1~150&usage_type=default&display_rank=1)
+#L144
+  o Manage comorbid conditions
+#L145
+    ▪︎ Hypertension, AF, CAD risk management, AD, hyperlipidaemia, obesity,
+#L146
+      anaemia, diabetes, CKD, OSA
+#L147
+- If fluid overload, diuretics
+#L148
+  o Titrate to euvolaemia
+#L149
+  o furosemide 20-40mg as starting dose
+#L150
+  o If HFpEF
+#L151
+    ▪︎ Consider SGLT2 inhibitor as first line
+#L152
+- If HFpEF with elevated BNP
+#L153
+  o Consider SGLT2 inhibitor and MRA
+#L154
+- Avoid the following drugs unless prescribed for other conditions such as hypertension:
+#L155
+  o ARNI, ACEi, ARB, calcium channel blocker, digoxin
+#L156
+  o None of the above classes of drugs have been shown to improve clinical outcomes
+#L157
+    in HFpEF
+#L158
+**Appendices** 
+#L159
+**Appendix I**
+#L160
+Sequence of Initiation and Starting and Target doses of Pharmacotherapies for HFrEF (adapted from [Maddox et al, 2021](https://www.jacc.org/doi/10.1016/j.jacc.2020.11.022))
+#T1
 ### Starting and Target Doses of Pharmacotherapies for HFrEF
 
-Under the Beta-Blockers category, Bisoprolol starts at 1.25 mg once daily with a target dose of 10 mg once daily. Carvedilol begins at 3.125 mg twice daily and should be titrated to 25 mg twice daily for individuals weighing less than 85 kg and 50 mg twice daily for those weighing 85 kg or more. Metoprolol succinate is started at 12.5–25 mg daily and increased to a target dose of 200 mg daily.
- In the ARNI (Angiotensin Receptor-Neprilysin Inhibitor) class, Sacubitril/valsartan is initiated at 24/26 mg to 49/51 mg twice daily and titrated up to 97/103 mg twice daily.
- For ACE inhibitors, Captopril begins at 6.25 mg three times daily and can be increased to 50 mg three times daily. Enalapril starts at 2.5 mg twice daily with a target of 10–20 mg twice daily. Lisinopril is initiated at 2.5–5 mg daily and titrated to 20–40 mg daily. Ramipril begins at 1.25 mg daily and increases to 10 mg daily.
- Within the ARBs (Angiotensin Receptor Blockers), Candesartan starts at 4–8 mg daily with a target of 32 mg daily. Losartan begins at 25–50 mg daily and is titrated to 150 mg daily. Valsartan is initiated at 40 mg twice daily and increased to 160 mg twice daily.
- Aldosterone antagonists include Eplerenone, which starts at 25 mg daily and increases to 50 mg daily, and Spironolactone, which is started at 12.5–25 mg daily and titrated to 25–50 mg daily. 
-Lastly, in the class of SGLT2 inhibitors, both Dapagliflozin and Empagliflozin are administered at a consistent dose of 10 mg daily, with no titration required.
+| Drug | Starting Dose | Target Dose |
+| :--- | :--- | :--- |
+| **Beta-Blockers** | | |
+| Bisoprolol | 1.25 mg once daily | 10 mg once daily |
+| Carvedilol | 3.125 mg twice daily | 25 mg twice daily for weight <85 kg and 50 mg twice daily for weight ≥85 kg |
+| Metoprolol succinate | 12.5–25 mg daily | 200 mg daily |
+| **ARNIs** | | |
+| Sacubitril/valsartan | 24/26 mg–49/51 mg twice daily | 97/103 mg twice daily |
+| **ACEIs** | | |
+| Captopril | 6.25 mg 3× daily | 50 mg 3× daily |
+| Enalapril | 2.5 mg twice daily | 10–20 mg twice daily |
+| Lisinopril | 2.5–5 mg daily | 20–40 mg daily |
+| Ramipril | 1.25 mg daily | 10 mg daily |
+| **ARBs** | | |
+| Candesartan | 4–8 mg daily | 32 mg daily |
+| Losartan | 25–50 mg daily | 150 mg daily |
+| Valsartan | 40 mg twice daily | 160 mg twice daily |
+| **Aldosterone antagonists** | | |
+| Eplerenone | 25 mg daily | 50 mg daily |
+| Spironolactone | 12.5–25 mg daily | 25–50 mg daily |
+| **SGLT2 inhibitors** | | |
+| Dapagliflozin | 10 mg daily | 10 mg daily |
+| Empagliflozin | 10 mg daily | 10 mg daily |
 
-### Sequence of Pharmacotherapy Initiation and Monitoring in HFrEF
+#L161
+**Sequence of initiation**
+#L162
+- For all patients commencing pharmacotherapy, monitor:
+#L163
+  o Blood pressure
+#L164
+  o Electrolytes
+#L165
+  o Renal function
+#L166
+  o Potassium
+#L167
+- **ARNI or ACEI/ARB AND**
+#L168
+  o If starting ARNI, ensure no history of angioedema
+#L169
+  o Commence starting dose, then assess tolerability every 2 weeks. If dose is
+#L170
+    tolerated, then double dose every 2 weeks until target dose
+#L171
+  o Tolerability defined as SBP > 100, lack of symptomatic hypotension
+#L172
+- **Beta Blocker AND**
+#L173
+  o Commence at starting dose, doubling every 2 weeks until target dose
+#L174
+  o Only bisoprolol, carvedilol and metoprolol have demonstrated mortality benefits
+#L175
+    in HFrEF – avoid other beta blockers
+#L176
+- **Diuretics AND**
+#L177
+- **Aldosterone antagonist AND**
+#L178
+  o Commence starting dose, then assess tolerability. Dose can be doubled every 2
+#L179
+    weeks until target dose
+#L180
+  o Check electrolytes/potassium and renal function 2-3 days post initiation, then 7
+#L181
+    days after initiation, and then at least every 3 months thereafter
+#L182
+- **SGLT2 inhibitor AND**
+#L183
+  o Commence at starting dose, no titration is required
+#L184
+  o Ensure eGFR ≥ 30ml/min for dapagliflozin
+#L185
+  o Ensure eGFR ≥ 20ml/min for empagliflozin
+#L186
+**Appendix II**
+#L187
+**Sample treatment regimens for HFrEF**
+#L188
+CSA preferred regimen
+#L189
+- Based on recent clinical trials, and in accordance with most updated global guidelines
+#L190
+- Sacubitril/Valsartan AND beta blocker (e.g. bisoprolol) AND MRA (e.g. spironolactone
+#L191
+  or eplerenone) AND SGLT2 inhibitor (dapagliflozin or empagliflozin)
+#L192
+- **Approx annual cost of this regimen: ₹77k**
+#L193
+If sacubitril/valsartan unavailable
+#L194
+- E.g. due to cost, then use:
+#L195
+- ACEI (e.g. ramipril) or ARB (e.g. valsartan) AND beta blocker (e.g. bisoprolol) AND
+#L196
+  MRA (e.g. spironolactone) AND SGLT2 inhibitor (e.g. dapagliflozin)
+#L197
+- **Approx annual cost: ₹10k**
+#L198
+If sacubitril/valsartan AND SGLT2 inhibitors unavailable
+#L199
+- E.g. due to cost, then use:
+#L200
+- ACEI (e.g. ramipril) or ARB (e.g. valsartan) AND beta blocker (e.g. bisoprolol) AND
+#L201
+  MRA (e.g. spironolactone)
+#L202
+- There are no alternative agents for SGLT2 inhibitors
+#L203
+- **Approx annual cost: ₹3k**
 
-When initiating pharmacotherapy for patients with heart failure with reduced ejection fraction (HFrEF), it is essential to monitor blood pressure, electrolytes, renal function, and potassium levels. For patients starting on an angiotensin receptor–neprilysin inhibitor (ARNI) or an angiotensin-converting enzyme inhibitor (ACEI)/angiotensin receptor blocker (ARB), it is important to ensure there is no history of angioedema before beginning ARNI therapy. The starting dose should be commenced and tolerability should be assessed every two weeks. If the patient tolerates the dose, defined by a systolic blood pressure greater than 100 mmHg and the absence of symptomatic hypotension, the dose can be doubled every two weeks until the target dose is reached.
- Beta-blockers should also be initiated at their starting dose and doubled every two weeks until the target dose is achieved. Only bisoprolol, carvedilol, and metoprolol have shown mortality benefits in HFrEF, and other beta-blockers should be avoided.
- Diuretics should be introduced alongside therapy to manage fluid overload. Aldosterone antagonists should be started at their initial dose and their tolerability assessed in the same manner, with potential dose doubling every two weeks. Electrolytes, potassium, and renal function should be checked 2 to 3 days after initiation, then again 7 days post-initiation, and subsequently at least every three months.
- SGLT2 inhibitors, including dapagliflozin and empagliflozin, should be commenced at their standard dose without the need for titration. It is essential to confirm that the estimated glomerular filtration rate (eGFR) is at least 30 ml/min for dapagliflozin and at least 20 ml/min for empagliflozin before initiation.
+#T2
+### Sample Treatment Regimens
 
-### Sample Treatment Regimens for HFrEF and Associated Costs
+| Regimen | RAAS | BB | MRA | SGLT2 | Diuretic | Monitoring |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **CSA Preferred** | Sacubitril-Valsartan | Bisoprolol * | Eplerenone | Dapagliflozin | furosemide | Electrolytes<br>Renal Function |
+| **Alternate #1** | Ramipril or Valsartan ** | Bisoprolol * | Spironolactone | Dapagliflozin | furosemide | Electrolytes<br>Renal Function |
+| **Alternate #2** | Ramipril or Valsartan ** | Bisoprolol * | Spironolactone | None | furosemide | Electrolytes<br>Renal Function |
 
-The preferred regimen for treating heart failure with reduced ejection fraction (HFrEF), as per recent clinical trials and the most current global guidelines, includes a combination of sacubitril/valsartan, a beta blocker such as bisoprolol, a mineralocorticoid receptor antagonist (MRA) like spironolactone or eplerenone, and an SGLT2 inhibitor such as dapagliflozin or empagliflozin. This comprehensive regimen has an approximate annual cost of ₹77,000. 
- If sacubitril/valsartan is unavailable, often due to cost constraints, an alternative regimen involves the use of an ACE inhibitor like ramipril or an ARB such as valsartan, in addition to a beta blocker (e.g. bisoprolol), an MRA (e.g. spironolactone), and an SGLT2 inhibitor (e.g. dapagliflozin). This regimen reduces the annual cost to approximately ₹10,000.
- In cases where both sacubitril/valsartan and SGLT2 inhibitors are unavailable, again typically due to affordability, the treatment should include an ACEI (e.g. ramipril) or an ARB (e.g. valsartan), a beta blocker (e.g. bisoprolol), and an MRA (e.g. spironolactone). There are currently no alternative agents for SGLT2 inhibitors. The estimated annual cost for this limited regimen is around ₹3,000.
+#L204
+*Bisoprolol can be replaced with carvedilol or metoprolol XR
+#L205
+**Ramipril can be replaced with alternate ACE inhibitor, valsartan can be replaced with
+#L206
+alternate angiotensin receptor blocker
+#L207
+**Appendix III**
+#L208
+**Key Evidence Summaries**
+#L209
+- [PARADIGM](https://www.nejm.org/doi/full/10.1056/nejmoa1409077) study (2014)
+#L210
+  o 8442 patients with NYHA Class II-IV HFrEF (EF < 40%) randomized to
+#L211
+    sacubitril-valsartan vs enalapril, in addition to regular therapy
+#L212
+  o Sacubitril-valsartan reduced risk of death and hospitalisation compared to
+#L213
+    enalapril
+#L214
+- [EMPEROR-reduced](https://www.nejm.org/doi/full/10.1056/NEJMoa2022190) (2020)
+#L215
+  o 3730 patients with NYHA Class II-IV HFrEF (EF < 40%) randomized to
+#L216
+    empagliflozin or placebo, in addition to recommended therapy
+#L217
+  o Empagliflozin reduced risk of cardiovascular death or hospitalization for heart
+#L218
+    failure compared to placebo, regardless of diabetes status
+#L219
+- [DAPA-HF](https://www.nejm.org/doi/full/10.1056/NEJMoa1911303) (2019)
+#L220
+  o 4744 patients with NYHA Class II-IV HFrEF (EF < 40%) randomized to
+#L221
+    dapagliflozin vs placebo, in addition to recommended therapy
+#L222
+  o Dapagliflozin reduced risk of worsening heart failure or death from
+#L223
+    cardiovascular causes compared to placebo
+#L224
+- [EMPHASIS study](https://www.nejm.org/doi/full/10.1056/nejmoa1009492) 2011
+#L225
+  o 2737 patients with NYHA Class II HFrEF (EF < 35%) randomized to eplerenone
+#L226
+    vs placebo, in addition to regular therapy
+#L227
+  o Eplerenone reduced risk of death and hospitalisation compared to placebo
+#L228
+- Estimated lifetime benefits of comprehensive disease-modifying medical therapies in
+#L229
+  HFrEF ([Vaduganathan 2020](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(20)30748-0/fulltext))
+#L230
+  o Treatment with ARNI + MRA + SGLT2 inhibitor superior to conventional therapy
+#L231
+    with ACEI/ARB and BB
+#L232
+  o Estimate magnitude of benefit for comprehensive disease-modifying therapy:
+#L233
+    between 2.7 additional years (for an 80-year-old) to 8.3 additional years (for a 55-
+#L234
+    year-old) before cardiovascular death or first hospital admission for heart failure
+#L235
+    to 1.4 additional years (for an 80-year-old) to 6.3 additional years (for a 55-year-
+#L236
+    old) of survival compared to conventional therapy
 
-### CSA Sample Treatment Regimens for HFrEF
+#L237
+    Estimation of relative treatment effects of comprehensive disease-modifying pharmacological 
+#L238
+    therapy on key cardiovascular events (from Vaduganathan 2020) 
+#I1
+the estimated relative treatment effects of comprehensive versus conventional disease-modifying pharmacological therapy on four key cardiovascular events, presenting the hazard ratio and 95% confidence interval for each. The results for all measured outcomes favour comprehensive therapy, as indicated by hazard ratios and confidence intervals that are entirely below 1.0. For the combined endpoint of cardiovascular death or hospital admission for heart failure, the hazard ratio is approximately 0.4. For cardiovascular death alone, the hazard ratio is centered around 0.6. For hospital admission for heart failure, the hazard ratio is approximately 0.35. Finally, for all-cause mortality, the hazard ratio is also around 0.6. The caption clarifies that comprehensive therapy consists of an ARNI, a β blocker, an MRA, and an SGLT2 inhibitor, whereas conventional therapy includes an ACE inhibitor or an ARB and a β blocker. The provided definitions are: ACE inhibitor for angiotensin-converting enzyme inhibitor, ARB for angiotensin receptor blocker, ARNI for angiotensin receptor-neprilysin inhibitor, MRA for mineralocorticoid receptor antagonist, and SGLT2 inhibitor for sodium/glucose cotransporter 2 inhibitor.
 
-The CSA preferred treatment regimen for heart failure with reduced ejection fraction (HFrEF) includes Sacubitril/Valsartan for RAAS inhibition, Bisoprolol as the beta blocker, Eplerenone as the mineralocorticoid receptor antagonist (MRA), Dapagliflozin as the SGLT2 inhibitor, and Furosemide as the diuretic. Regular monitoring of electrolytes and renal function is required.
- Alternate Regimen #1 substitutes Sacubitril/Valsartan with either Ramipril or Valsartan. Bisoprolol remains the beta blocker, and it is accompanied by Spironolactone as the MRA and Dapagliflozin as the SGLT2 inhibitor, with Furosemide included as a diuretic. Electrolytes and renal function should be routinely monitored.
- Alternate Regimen #2 also uses Ramipril or Valsartan in place of Sacubitril/Valsartan. It retains Bisoprolol and Spironolactone, but excludes any SGLT2 inhibitor. Furosemide is used as the diuretic, and ongoing monitoring of electrolytes and renal function remains necessary.
- It is noted that Bisoprolol can be replaced with Carvedilol or Metoprolol XR, while Ramipril can be substituted with another ACE inhibitor and Valsartan can be replaced with an alternative angiotensin receptor blocker.
+#I2
+the risk reduction with combination therapy for HFrEF, presenting data across three different subgroups based on Left Ventricular Ejection Fraction (LVEF). For the LVEF group of 45 to 54%, combination therapy resulted in a 51% risk reduction for the combined endpoint of CV Death and HF Hospitalization, a 52% reduction for CV Death alone, and a 62% reduction for HF Hospitalization. In the LVEF group of 55 to 64%, there was a 46% risk reduction for CV Death plus HF Hospitalization and a 56% risk reduction for HF Hospitalization alone, although the benefit for CV death by itself was not statistically clear as the confidence intervals crossed 1.0. For the final group with an LVEF of ≥65%, the therapies, including switching to ARNI, adding MRA, adding SGLT2i, and combination therapy, did not show a clear benefit, as the hazard ratio confidence intervals for all three outcomes—CV Death + HF Hospitalization, CV Death, and HF Hospitalization—were wide and crossed the line of no effect. The number of patients for each therapy is also listed, such as n=1,651 for switching to ARNI in the 45-54% LVEF group and n=985 in the ≥65% LVEF group.
 
-### Key Evidence Supporting Pharmacotherapy in HFrEF
+#I3
+the impact of a combination therapy, consisting of an ARNI, MRA, and SGLT2i, on the outcome of "Time-to-First CV Death + HF Hospitalization," with the results stratified by Left Ventricular Ejection Fraction (LVEF). The graph shows a continuous relationship where the Hazard Ratio for the combination treatment effect increases as LVEF rises. At lower LVEF values, starting from 15%, the therapy shows a significant benefit, with a hazard ratio of approximately 0.40 and the entire 95% confidence interval falling well below the 1.00 line of no effect. As the LVEF increases, the treatment benefit diminishes, and the 95% confidence interval begins to cross the 1.00 line at an LVEF of approximately 60%. The point estimate of the hazard ratio itself continues to rise, eventually crossing 1.00 at an LVEF of around 73%, indicating that the therapeutic benefit is attenuated and lost in patients with higher ejection fractions.
+#L239
+**Appendix IV – Assessment of Heart Failure Severity**
+#T3
+**NYHA Functional Classification**
 
-Several landmark clinical trials have established the efficacy of various pharmacological agents in the treatment of heart failure with reduced ejection fraction (HFrEF). The PARADIGM study (2014), which involved 8,442 patients with NYHA Class II-IV HFrEF (EF < 40%), demonstrated that sacubitril-valsartan significantly reduced the risk of death and hospitalization compared to enalapril, when both were added to standard therapy.
- The EMPEROR-Reduced trial (2020) evaluated 3,730 patients with NYHA Class II-IV HFrEF (EF < 40%) and found that empagliflozin reduced the risk of cardiovascular death or hospitalization for heart failure versus placebo, regardless of whether patients had diabetes.
- Similarly, the DAPA-HF trial (2019), which included 4,744 patients with NYHA Class II-IV HFrEF (EF < 40%), showed that dapagliflozin reduced the risk of worsening heart failure or death from cardiovascular causes compared to placebo. 
- In the EMPHASIS study (2011), 2,737 patients with NYHA Class II HFrEF (EF < 35%) were randomized to receive eplerenone or placebo, in addition to their regular therapy. The study found that eplerenone significantly reduced the risk of death and hospitalization compared to placebo.
- Furthermore, a 2020 analysis by Vaduganathan estimated the lifetime benefits of comprehensive disease-modifying medical therapy in HFrEF. The study concluded that treatment combining ARNI, MRA, and an SGLT2 inhibitor provided superior outcomes compared to conventional therapy with ACE inhibitors or ARBs and beta blockers. The estimated benefit ranged from 2.7 additional years of event-free survival (for an 80-year-old) to 8.3 years (for a 55-year-old) before cardiovascular death or first hospital admission, and from 1.4 to 6.3 additional years of overall survival when compared to standard therapy.
+| Class | Symptoms |
+| :--- | :--- |
+| **I** | No limitation of physical activity. Ordinary physical activity does not cause undue fatigue, palpitation, dyspnea (shortness of breath). |
+| **II** | Slight limitation of physical activity. Comfortable at rest. Ordinary physical activity results in fatigue, palpitation, dyspnea (shortness of breath). |
+| **III** | Marked limitation of physical activity. Comfortable at rest. Less than ordinary activity causes fatigue, palpitation, or dyspnea. |
+| **IV** | Unable to carry on any physical activity without discomfort. Symptoms of heart failure at rest. If any physical activity is undertaken, discomfort increases. |
 
-### Benefits of Comprehensive Pharmacological Therapy in HFrEF (Vaduganathan 2020)
+#L240
+**Appendix V**
+#L241
+ **Challenges to be addressed (for innovation workstream)**
 
-The 2020 analysis by Vaduganathan provides strong evidence supporting the effectiveness of comprehensive disease-modifying pharmacological therapy for patients with heart failure with reduced ejection fraction (HFrEF). This comprehensive regimen includes an angiotensin receptor–neprilysin inhibitor (ARNI), a beta blocker, a mineralocorticoid receptor antagonist (MRA), and a sodium-glucose cotransporter 2 (SGLT2) inhibitor. In contrast, conventional therapy typically consists of an angiotensin-converting enzyme inhibitor (ACEI) or an angiotensin receptor blocker (ARB) combined with a beta blocker. 
- The figure from the study presents hazard ratios with 95% confidence intervals for several key cardiovascular outcomes. These outcomes include cardiovascular death or hospital admission for heart failure, cardiovascular death alone, hospital admission for heart failure alone, and all-cause mortality. In each category, comprehensive therapy demonstrated superior results compared to conventional therapy. 
- Specifically, comprehensive therapy significantly lowered the risk of cardiovascular death or hospital admission for heart failure. It also reduced the individual risks of cardiovascular death and heart failure hospitalization. Furthermore, there was a notable reduction in all-cause mortality among patients receiving comprehensive therapy. All hazard ratios were well below 1.0, indicating a clear benefit of comprehensive therapy over conventional treatment strategies.
- Overall, this analysis strongly supports the routine use of the full combination of ARNI, beta blocker, MRA, and SGLT2 inhibitor in the management of HFrEF, emphasizing its role in improving survival and reducing hospital admissions.
+#L242
+- Cost of medications for HF
 
-### Risk Reduction with Combination Therapy in HFrEF Across LVEF Ranges
+#L243
+- Can HF drugs be added to the government essential drug list?
 
-the impact of combination pharmacological therapy—comprising angiotensin receptor-neprilysin inhibitor (ARNI), mineralocorticoid receptor antagonist (MRA), and SGLT2 inhibitor—on key cardiovascular outcomes in patients with heart failure across different left ventricular ejection fraction (LVEF) categories.
- In patients with LVEF between 45% and 54%, combination therapy demonstrated a 51% risk reduction in cardiovascular death or heart failure hospitalization, a 52% reduction in cardiovascular death, and a 62% reduction in heart failure hospitalization. These results were superior to the outcomes of single interventions such as switching to ARNI, adding an MRA, or adding an SGLT2 inhibitor individually.
- Among patients with LVEF between 55% and 64%, the benefit of combination therapy persisted, with a 46% risk reduction in cardiovascular death or heart failure hospitalization, a notable reduction in cardiovascular death, and a 56% reduction in heart failure hospitalization. Although individual therapies showed benefit, the combined approach consistently delivered superior outcomes. 
- In patients with preserved ejection fraction (LVEF ≥65%), the benefit of combination therapy was less pronounced. While the hazard ratios still favored combination treatment over individual therapies, the confidence intervals were wider and approached or crossed the line of no effect, indicating diminished statistical significance. 
- Overall, these data support the robust benefits of comprehensive combination therapy, especially in patients with mid-range to mildly reduced ejection fraction (LVEF 45–64%). The effectiveness diminishes in patients with LVEF ≥65%, suggesting that such therapy may be most impactful in those with reduced or mildly reduced ejection fraction.
-
-### Effectiveness of Combination Therapy on Cardiovascular Outcomes in HFrEF Patients Across LVEF Spectrum
-
-the effect of combination therapy—using ARNI, MRA, and SGLT2 inhibitors—on reducing the risk of cardiovascular death and heart failure hospitalization in patients with heart failure with reduced ejection fraction (HFrEF), based on different levels of left ventricular ejection fraction (LVEF). 
- The treatment effect is strongest in patients with lower LVEF values, particularly below 50%, where the risk of cardiovascular death or heart failure hospitalization is significantly reduced. As LVEF increases beyond this level, the benefit of the therapy begins to decrease. In individuals with higher LVEF, especially those nearing or above 60%, the reduction in risk becomes smaller, and the consistency of benefit becomes less certain.
- Overall, this data supports that combination therapy with ARNI, MRA, and SGLT2 inhibitors provides the most significant benefit in terms of reducing cardiovascular death and heart failure hospitalization in patients with lower LVEF, and the impact of treatment is progressively reduced in those with higher LVEF.
-
-### Assessment of Heart Failure Severity and Challenges to be addressed
-
-The severity of heart failure is commonly assessed using the NYHA Functional Classification, which categorizes patients based on the degree of physical activity limitation caused by heart failure symptoms. In Class I, there is no limitation of physical activity. Ordinary physical activity does not cause undue fatigue, palpitations, or dyspnea (shortness of breath). In Class II, there is a slight limitation of physical activity, although patients remain comfortable at rest. However, ordinary activity may lead to fatigue, palpitations, or dyspnea. Class III indicates a marked limitation in physical activity, with patients still comfortable at rest, but less than ordinary activity causes symptoms such as fatigue, palpitations, or dyspnea. In Class IV, patients are unable to carry out any physical activity without discomfort. Symptoms of heart failure may be present even at rest, and any activity tends to worsen discomfort.
- There are several key challenges that need to be addressed to improve innovation in heart failure treatment. These include the high cost of medications used for managing heart failure and the potential to include heart failure drugs in government essential drug lists to improve accessibility. Additionally, an important area for development is the integration of point-of-care (POC) electrolyte testing into treatment pathways, which could help in timely decision-making and better clinical management.
-
+#L244
+- **How do we integrate POC electrolytes into our treatment pathways?**

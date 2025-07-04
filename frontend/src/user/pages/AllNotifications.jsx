@@ -249,7 +249,7 @@ const AllNotificationsContent = () => {
       <div className="p-6 space-y-6">
         {/* Filters and Search */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-6 bg-white rounded-lg">
             <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
               <div className="flex items-center gap-4">
                 <Select
@@ -259,8 +259,8 @@ const AllNotificationsContent = () => {
                     setCurrentPage(1);
                   }}
                 >
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
+                  <SelectTrigger className="w-80 px-5 gap-3">
+                    <SelectValue placeholder={filter === "all" ? "All notifications" : "Unread only"} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All notifications</SelectItem>
@@ -303,7 +303,7 @@ const AllNotificationsContent = () => {
         <div className="space-y-4">
           {notifications.length === 0 ? (
             <Card>
-              <CardContent className="p-12 text-center">
+              <CardContent className="p-12 text-center bg-white rounded-lg">
                 <FiBell className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                 <h3 className="text-lg font-medium text-gray-700 mb-2">
                   No notifications found
@@ -329,7 +329,7 @@ const AllNotificationsContent = () => {
                     !notification.read ? "bg-blue-50/50 border-blue-200" : ""
                   }`}
                 >
-                  <CardContent className="p-6">
+                  <CardContent className="p-6 bg-white rounded-lg">
                     <div className="flex items-start gap-4">
                       <div className={`p-2 rounded-lg ${iconColor}`}>
                         <Icon className="w-5 h-5" />
@@ -392,7 +392,7 @@ const AllNotificationsContent = () => {
                               "bg-opacity-20 "
                             )}
                           >
-                            {notification.type}
+                            {notification.type.charAt(0).toUpperCase() + notification.type.slice(1)}
                           </Badge>
                         </div>
                       </div>

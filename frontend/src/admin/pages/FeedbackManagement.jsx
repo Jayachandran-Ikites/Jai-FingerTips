@@ -160,7 +160,7 @@ const FeedbackManagementContent = () => {
               onClick={() => {}} 
               expanded={sidebarOpen}
             />
-            <NavItem 
+            {/* <NavItem 
               icon={FiMessageSquare} 
               label="Reviewer Panel" 
               isActive={false} 
@@ -173,7 +173,7 @@ const FeedbackManagementContent = () => {
               isActive={false} 
               onClick={() => navigate("/admin/analytics")} 
               expanded={sidebarOpen}
-            />
+            /> */}
           </nav>
         </div>
 

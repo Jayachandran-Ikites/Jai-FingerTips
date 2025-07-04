@@ -174,7 +174,7 @@ const PromptManagementContent = () => {
   if (!canEdit) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md bg-white shadow-lg rounded-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FiAlertCircle className="w-5 h-5 text-yellow-500" />
@@ -211,10 +211,12 @@ const PromptManagementContent = () => {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   Prompt Management
                 </h1>
-                <p className="text-sm text-gray-600">Customize your AI assistant's behavior</p>
+                <p className="text-sm text-gray-600">
+                  Customize your AI assistant's behavior
+                </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate("/chat")}
@@ -230,23 +232,18 @@ const PromptManagementContent = () => {
 
       <div className="p-6 space-y-6">
         {/* Current Prompt */}
-        <Card>
+        <Card className="bg-white shadow-lg rounded-lg">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 Current Prompt
                 {activePrompt && (
-                  <Badge variant="info">
-                    Version {activePrompt.version}
-                  </Badge>
+                  <Badge variant="info">Version {activePrompt.version}</Badge>
                 )}
               </CardTitle>
               <div className="flex gap-2">
                 {!isEditing ? (
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsEditing(true)}
-                  >
+                  <Button variant="outline" onClick={() => setIsEditing(true)}>
                     <FiEdit3 className="w-4 h-4 mr-2" />
                     Edit
                   </Button>
@@ -289,17 +286,18 @@ const PromptManagementContent = () => {
                 {activePrompt?.prompt_text || "No prompt configured"}
               </div>
             )}
-            
+
             {activePrompt && (
               <div className="mt-4 text-xs text-gray-500">
-                Last updated: {new Date(activePrompt.updated_at).toLocaleString()}
+                Last updated:{" "}
+                {new Date(activePrompt.updated_at).toLocaleString()}
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* Quick Actions */}
-        <Card>
+        <Card className="bg-white shadow-lg rounded-lg">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
@@ -319,7 +317,7 @@ const PromptManagementContent = () => {
 
         {/* Version History */}
         {promptHistory.length > 0 && (
-          <Card>
+          <Card className="bg-white shadow-lg rounded-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FiClock className="w-5 h-5" />
@@ -332,18 +330,23 @@ const PromptManagementContent = () => {
                   <div
                     key={prompt._id}
                     className={`p-4 rounded-lg border ${
-                      prompt.is_active 
-                        ? "border-blue-200 bg-blue-50" 
+                      prompt.is_active
+                        ? "border-blue-200 bg-blue-50"
                         : "border-gray-200 bg-gray-50"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant={prompt.is_active ? "info" : "secondary"}>
+                        <Badge
+                          variant={prompt.is_active ? "info" : "secondary"}
+                        >
                           Version {prompt.version}
                         </Badge>
                         {prompt.is_active && (
-                          <Badge variant="success" className="flex items-center gap-1">
+                          <Badge
+                            variant="success"
+                            className="flex items-center gap-1"
+                          >
                             <FiCheck className="w-3 h-3" />
                             Active
                           </Badge>
@@ -376,7 +379,7 @@ const PromptManagementContent = () => {
         )}
 
         {/* Help and Information */}
-        <Card>
+        <Card className="bg-white shadow-lg rounded-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FiInfo className="w-5 h-5" />
@@ -386,12 +389,15 @@ const PromptManagementContent = () => {
           <CardContent>
             <div className="space-y-4">
               <p className="text-gray-600">
-                Prompts define how the AI assistant behaves and responds to your questions. 
-                As a Power User, you can customize your prompt to better suit your needs.
+                Prompts define how the AI assistant behaves and responds to your
+                questions. As a Power User, you can customize your prompt to
+                better suit your needs.
               </p>
-              
+
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h4 className="font-medium text-blue-800 mb-2">Customization Tips</h4>
+                <h4 className="font-medium text-blue-800 mb-2">
+                  Customization Tips
+                </h4>
                 <ul className="list-disc list-inside space-y-1 text-blue-700">
                   <li>Be specific about the tone and style you want</li>
                   <li>Include any special instructions or constraints</li>
@@ -399,9 +405,11 @@ const PromptManagementContent = () => {
                   <li>You can always revert to previous versions</li>
                 </ul>
               </div>
-              
+
               <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                <h4 className="font-medium text-yellow-800 mb-2">Important Notes</h4>
+                <h4 className="font-medium text-yellow-800 mb-2">
+                  Important Notes
+                </h4>
                 <ul className="list-disc list-inside space-y-1 text-yellow-700">
                   <li>Changes only affect your conversations</li>
                   <li>Prompt changes take effect immediately</li>

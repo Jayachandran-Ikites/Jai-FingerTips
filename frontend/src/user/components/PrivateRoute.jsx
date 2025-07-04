@@ -2,9 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import axios from "axios";
+import AuthVerificationLoader from "./loaders/auth-verification-loader.jsx";
 
 const PrivateRoute = ({ children }) => {
-  const { token, logout } = useContext(AuthContext);
+  const { token, logout, setUserId } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [isValid, setIsValid] = useState(false);
 
@@ -26,10 +27,11 @@ const PrivateRoute = ({ children }) => {
             withCredentials: true,
           }
         );
-        
+
         if (isMounted) {
           if (res.status === 200 && res.data.success) {
             setIsValid(true);
+            setUserId(res?.data?.user_id);
           } else {
             logout();
           }
@@ -52,11 +54,7 @@ const PrivateRoute = ({ children }) => {
   }, [token, logout]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-lg">Checking authentication...</div>
-      </div>
-    );
+    return <AuthVerificationLoader />;
   }
 
   if (!isValid) {

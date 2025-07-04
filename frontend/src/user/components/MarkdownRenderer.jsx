@@ -1,13 +1,14 @@
-import React from 'react';
-import ReactMarkdown from 'react-markdown';
+// src/components/MarkdownRenderer.jsx
+import React from "react";
+import ReactMarkdown from "react-markdown";
 
 // remark plugins
-import remarkGfm from 'remark-gfm';
-import remarkSmartypants from 'remark-smartypants';
+import remarkGfm from "remark-gfm";
+import remarkSmartypants from "remark-smartypants";
 
 // rehype plugins
-import rehypeRaw from 'rehype-raw';
-import rehypeHighlight from 'rehype-highlight';
+import rehypeRaw from "rehype-raw";
+import rehypeHighlight from "rehype-highlight";
 
 export default function MarkdownRenderer({ content }) {
   return (
@@ -19,18 +20,27 @@ export default function MarkdownRenderer({ content }) {
       components={{
         // one 1.5em gap after each paragraph
         p({ children }) {
-          return <p style={{ marginBottom: '1.5em' }}>{children}</p>;
+          return (
+            <p
+              style={{ marginBottom: "1.5em" }}
+              className="text-sm md:text-base"
+            >
+              {children}
+            </p>
+          );
         },
         // slightly smaller gap for list items
         li({ children }) {
-          return <li style={{ marginBottom: '1em' }}>{children}</li>;
+          return <li style={{ marginBottom: "1em" }}>{children}</li>;
         },
         // styled tables (optional)
         table({ children }) {
           return (
-            <table className="min-w-full divide-y divide-gray-200 mb-4">
-              {children}
-            </table>
+            <div className="overflow-x-auto max-w-full border-2 border-gray-200 rounded-lg bg-white shadow-md my-4 inline-block">
+              <table className="max-w-full divide-y divide-gray-200 mb-4">
+                {children}
+              </table>
+            </div>
           );
         },
         thead({ children }) {
@@ -57,7 +67,9 @@ export default function MarkdownRenderer({ content }) {
           );
         },
         td({ children }) {
-          return <td className="px-6 py-4 whitespace-nowrap">{children}</td>;
+          return (
+            <td className="text-sm px-6 py-4 whitespace-nowrap">{children}</td>
+          );
         },
       }}
     >
