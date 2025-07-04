@@ -8,7 +8,7 @@ import {
   FiMail,
   FiTrendingUp,
   FiEye,
-  FiEdit,
+  FiEdit3,
   FiTrash2,
   FiSearch,
   FiFilter,
@@ -42,6 +42,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "../../user/components/
 import { Button } from "../../user/components/ui/button";
 import { Badge } from "../../user/components/ui/badge";
 import AdminAnalytics from "../components/AdminAnalytics";
+import DynamicCharts from "../components/DynamicCharts";
 import MarkdownRenderer from "../../user/components/MarkdownRenderer.jsx";
 
 const api = axios.create({
@@ -67,6 +68,7 @@ const EnhancedAdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [timeRange, setTimeRange] = useState("30");
 
   // Notification form state
   const [notificationForm, setNotificationForm] = useState({
@@ -84,7 +86,7 @@ const EnhancedAdminDashboard = () => {
     }
     
     loadDashboardData();
-  }, [token, navigate]);
+  }, [token, navigate, timeRange]);
 
   const loadDashboardData = async () => {
     try {
@@ -449,6 +451,8 @@ const EnhancedAdminDashboard = () => {
             <DashboardOverview
               stats={dashboardStats}
               onSendNotification={() => setShowNotificationModal(true)}
+              timeRange={timeRange}
+              onTimeRangeChange={setTimeRange}
             />
           )}
 
@@ -542,7 +546,7 @@ const NavItem = ({ icon: Icon, label, isActive, onClick, expanded, className = "
 };
 
 // Dashboard Overview Component
-const DashboardOverview = ({ stats, onSendNotification }) => {
+const DashboardOverview = ({ stats, onSendNotification, timeRange, onTimeRangeChange }) => {
   if (!stats) return <div>Loading stats...</div>;
 
   const statCards = [
@@ -613,24 +617,12 @@ const DashboardOverview = ({ stats, onSendNotification }) => {
         ))}
       </div>
 
-      {/* User Growth Chart */}
-      <Card className="bg-white/80 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-gray-800">User Growth (Last 30 Days)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64 flex items-end justify-between space-x-1">
-            {stats.users.growth.map((day, index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-t from-blue-500 to-purple-500 rounded-t flex-1 min-h-[4px]"
-                style={{ height: `${Math.max(4, (day.count / Math.max(...stats.users.growth.map(d => d.count))) * 100)}%` }}
-                title={`${day.date}: ${day.count} users`}
-              />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Dynamic Chart */}
+      <DynamicCharts 
+        data={stats} 
+        timeRange={timeRange}
+        onTimeRangeChange={onTimeRangeChange}
+      />
     </div>
   );
 };
