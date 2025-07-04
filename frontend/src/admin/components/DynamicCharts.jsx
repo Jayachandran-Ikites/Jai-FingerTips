@@ -287,10 +287,10 @@ const DynamicCharts = ({ data, timeRange, onTimeRangeChange }) => {
             {getChartTitle()} ({timeRange} Days)
           </CardTitle>
           
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             <Select value={dataType} onValueChange={setDataType}>
               <SelectTrigger className="w-36 h-9">
-                <SelectValue placeholder="Select data" />
+                <SelectValue placeholder="Select data type"/>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="users">Users</SelectItem>

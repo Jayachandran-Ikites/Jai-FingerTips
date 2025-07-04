@@ -130,8 +130,10 @@ const ConversationsManagement = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">Conversations Management</h2>
-        
+        <h2 className="text-2xl font-bold text-gray-800">
+          Conversations Management
+        </h2>
+
         <div className="flex gap-2">
           <div className="relative">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -147,14 +149,14 @@ const ConversationsManagement = ({
       </div>
 
       {/* Filters */}
-      <Card className="bg-white/80 backdrop-blur-sm">
+      <Card className="bg-white/80 backdrop-blur-sm relative z-50">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Filter by User
               </label>
-              <Select
+              {/* <Select
                 value={userFilter}
                 onValueChange={(value) => {
                   setUserFilter(value);
@@ -172,7 +174,33 @@ const ConversationsManagement = ({
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </Select> */}
+              {/* <div className="flex items-center gap-2"> */}
+                <Select
+                  value={userFilter}
+                  onValueChange={(value) => {
+                    setUserFilter(value);
+                    handleFilterChange();
+                  }}
+                >
+                  <SelectTrigger className="w-48 h-9 gap-5 px-10">
+                    <SelectValue placeholder="Filter by user">
+                      {userFilter
+                        ? users.find((u) => u._id === userFilter)?.name ||
+                          users.find((u) => u._id === userFilter)?.email
+                        : null}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All users</SelectItem>
+                    {users.map((user) => (
+                      <SelectItem key={user._id} value={user._id}>
+                        {user.name || user.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              {/* </div> */}
             </div>
 
             <div className="flex-1">
@@ -219,7 +247,9 @@ const ConversationsManagement = ({
           ) : conversations.length === 0 ? (
             <div className="text-center py-12">
               <FiMessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-medium text-gray-800 mb-2">No conversations found</h3>
+              <h3 className="text-lg font-medium text-gray-800 mb-2">
+                No conversations found
+              </h3>
               <p className="text-gray-600">
                 {userFilter || dateFilter || searchTerm
                   ? "Try adjusting your filters or search terms"
@@ -260,7 +290,9 @@ const ConversationsManagement = ({
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{conv.user?.name || conv.user?.email || "Unknown"}</div>
+                        <div className="text-sm text-gray-900">
+                          {conv.user?.name || conv.user?.email || "Unknown"}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {conv.message_count}

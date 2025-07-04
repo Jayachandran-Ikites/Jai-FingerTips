@@ -193,14 +193,14 @@ const NotificationsManagement = ({
       </div>
 
       {/* Filters */}
-      <Card className="bg-white/80 backdrop-blur-sm">
+      <Card className="bg-white/80 backdrop-blur-sm relative z-50">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Filter by User
               </label>
-              <Select
+              {/* <Select
                 value={userFilter}
                 onValueChange={(value) => {
                   setUserFilter(value);
@@ -218,7 +218,33 @@ const NotificationsManagement = ({
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </Select> */}
+              {/* <div className="flex items-center gap-2"> */}
+                <Select
+                  value={userFilter}
+                  onValueChange={(value) => {
+                    setUserFilter(value);
+                    handleFilterChange();
+                  }}
+                >
+                  <SelectTrigger className="w-48 h-9 gap-5 px-10">
+                    <SelectValue placeholder="Filter by user">
+                      {userFilter
+                        ? users.find((u) => u._id === userFilter)?.name ||
+                          users.find((u) => u._id === userFilter)?.email
+                        : null}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All users</SelectItem>
+                    {users.map((user) => (
+                      <SelectItem key={user._id} value={user._id}>
+                        {user.name || user.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              {/* </div> */}
             </div>
 
             <div className="flex-1">
@@ -233,7 +259,11 @@ const NotificationsManagement = ({
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="All types" />
+                  <SelectValue placeholder="All types">
+                    {typeFilter
+                      ? typeFilter.charAt(0).toUpperCase() + typeFilter.slice(1)
+                      : "All types"}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All types</SelectItem>
@@ -245,7 +275,7 @@ const NotificationsManagement = ({
               </Select>
             </div>
 
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Search
               </label>
@@ -257,14 +287,11 @@ const NotificationsManagement = ({
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="flex-1"
                 />
-                <Button 
-                  onClick={handleFilterChange}
-                  variant="outline"
-                >
+                <Button onClick={handleFilterChange} variant="outline">
                   <FiSearch className="w-4 h-4" />
                 </Button>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {(userFilter || typeFilter || searchTerm) && (
@@ -296,7 +323,9 @@ const NotificationsManagement = ({
           <Card className="bg-white/80 backdrop-blur-sm">
             <CardContent className="p-12 text-center">
               <FiInfo className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-medium text-gray-800 mb-2">No notifications found</h3>
+              <h3 className="text-lg font-medium text-gray-800 mb-2">
+                No notifications found
+              </h3>
               <p className="text-gray-600 mb-6">
                 {userFilter || typeFilter || searchTerm
                   ? "Try adjusting your filters or search terms"
@@ -315,10 +344,14 @@ const NotificationsManagement = ({
           notifications.map((notification) => {
             const Icon = getNotificationIcon(notification.type);
             const colorClass = getNotificationColor(notification.type);
-            
+
             // Find user info
-            const targetUser = users.find(u => u._id === notification.user_id);
-            const creatorUser = users.find(u => u._id === notification.created_by);
+            const targetUser = users.find(
+              (u) => u._id === notification.user_id
+            );
+            const creatorUser = users.find(
+              (u) => u._id === notification.created_by
+            );
 
             return (
               <motion.div
@@ -327,9 +360,7 @@ const NotificationsManagement = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card
-                  className="bg-white/80 backdrop-blur-sm hover:shadow-md transition-all"
-                >
+                <Card className="bg-white/80 backdrop-blur-sm hover:shadow-md transition-all">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className={`p-2 rounded-lg ${colorClass}`}>
@@ -345,24 +376,38 @@ const NotificationsManagement = ({
                             <span>{notification.read ? "Read" : "Unread"}</span>
                             <span>•</span>
                             <span>
-                              {new Date(notification.created_at).toLocaleDateString()}
+                              {new Date(
+                                notification.created_at
+                              ).toLocaleDateString()}
                             </span>
                           </div>
                         </div>
 
-                        <p className="text-gray-600 mb-3">{notification.message}</p>
+                        <p className="text-gray-600 mb-3">
+                          {notification.message}
+                        </p>
 
                         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                           <div className="flex items-center gap-1">
                             <FiUser className="w-4 h-4" />
-                            <span>To: {targetUser?.name || targetUser?.email || notification.user?.email || "Unknown"}</span>
+                            <span>
+                              To:{" "}
+                              {targetUser?.name ||
+                                targetUser?.email ||
+                                notification.user?.email ||
+                                "Unknown"}
+                            </span>
                           </div>
-                          
+
                           <div className="flex items-center gap-1">
                             <FiCalendar className="w-4 h-4" />
-                            <span>{new Date(notification.created_at).toLocaleTimeString()}</span>
+                            <span>
+                              {new Date(
+                                notification.created_at
+                              ).toLocaleTimeString()}
+                            </span>
                           </div>
-                          
+
                           <Badge variant="secondary" className={colorClass}>
                             {notification.type}
                           </Badge>

@@ -121,14 +121,16 @@ const AdminAnalytics = () => {
       {/* Header Controls */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Analytics Dashboard</h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Analytics Dashboard
+          </h2>
           <p className="text-gray-600">Performance metrics and insights</p>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="relative">
             <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-32">
+              <SelectTrigger className="w-32 bg-[#fefeff] text-gray-800 border border-gray-300 hover:border-gray-400 transition-colors">
                 <SelectValue placeholder="Select time range" />
               </SelectTrigger>
               <SelectContent>
@@ -138,15 +140,15 @@ const AdminAnalytics = () => {
               </SelectContent>
             </Select>
           </div>
-          
-          <Button
+
+          {/* <Button
             onClick={() => exportData(activeMetric)}
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-[#fefeff] text-gray-800 hover:bg-gray-100 transition-colors"
           >
             <FiDownload className="w-4 h-4" />
             Export
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -158,11 +160,13 @@ const AdminAnalytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-lg transition-shadow bg-[#fefeff] rounded-lg shadow-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Avg Response Time</p>
+                    <p className="text-sm text-gray-600 mb-1">
+                      Avg Response Time
+                    </p>
                     <p className="text-2xl font-bold text-gray-800">
                       {analytics.latency_stats.avg_latency?.toFixed(0)}ms
                     </p>
@@ -190,7 +194,7 @@ const AdminAnalytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-lg transition-shadow bg-[#fefeff] rounded-lg shadow-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -199,7 +203,8 @@ const AdminAnalytics = () => {
                       {formatCurrency(analytics.cost_stats.total_cost)}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      Avg per query: {formatCurrency(analytics.cost_stats.avg_cost_per_query)}
+                      Avg per query:{" "}
+                      {formatCurrency(analytics.cost_stats.avg_cost_per_query)}
                     </p>
                   </div>
                   <div className="p-3 rounded-lg bg-green-100">
@@ -217,11 +222,13 @@ const AdminAnalytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-lg transition-shadow bg-[#fefeff] rounded-lg shadow-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">User Satisfaction</p>
+                    <p className="text-sm text-gray-600 mb-1">
+                      User Satisfaction
+                    </p>
                     <div className="flex items-center gap-2">
                       <p className="text-2xl font-bold text-gray-800">
                         {analytics.feedback_stats.avg_rating?.toFixed(1)}
@@ -231,7 +238,8 @@ const AdminAnalytics = () => {
                           <FiStar
                             key={i}
                             className={`w-4 h-4 ${
-                              i < Math.round(analytics.feedback_stats.avg_rating)
+                              i <
+                              Math.round(analytics.feedback_stats.avg_rating)
                                 ? "fill-yellow-400 text-yellow-400"
                                 : "text-gray-300"
                             }`}
@@ -257,16 +265,18 @@ const AdminAnalytics = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow bg-[#fefeff] rounded-lg shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Total Queries</p>
                   <p className="text-2xl font-bold text-gray-800">
-                    {analytics?.latency_stats?.total_requests?.toLocaleString() || 0}
+                    {analytics?.latency_stats?.total_requests?.toLocaleString() ||
+                      0}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    Avg tokens: {analytics?.latency_stats?.avg_tokens?.toFixed(0) || 0}
+                    Avg tokens:{" "}
+                    {analytics?.latency_stats?.avg_tokens?.toFixed(0) || 0}
                   </p>
                 </div>
                 <div className="p-3 rounded-lg bg-purple-100">
@@ -281,7 +291,7 @@ const AdminAnalytics = () => {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Response Time Trends */}
-        <Card>
+        <Card className="hover:shadow-lg transition-shadow bg-[#fefeff] rounded-lg shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FiTrendingUp className="w-5 h-5" />
@@ -293,13 +303,13 @@ const AdminAnalytics = () => {
               <AreaChart data={analytics?.trends || []}>
                 <defs>
                   <linearGradient id="colorLatency" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="_id" 
+                <XAxis
+                  dataKey="_id"
                   tick={{ fontSize: 12 }}
                   tickFormatter={(value) => {
                     try {
@@ -310,7 +320,7 @@ const AdminAnalytics = () => {
                   }}
                 />
                 <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip 
+                <Tooltip
                   labelFormatter={(value) => {
                     try {
                       return new Date(value).toLocaleDateString();
@@ -318,14 +328,17 @@ const AdminAnalytics = () => {
                       return value;
                     }
                   }}
-                  formatter={(value) => [`${value?.toFixed(2)}ms`, 'Avg Latency']}
+                  formatter={(value) => [
+                    `${value?.toFixed(2)}ms`,
+                    "Avg Latency",
+                  ]}
                 />
-                <Area 
-                  type="monotone" 
-                  dataKey="avg_latency" 
-                  stroke="#3B82F6" 
-                  fillOpacity={1} 
-                  fill="url(#colorLatency)" 
+                <Area
+                  type="monotone"
+                  dataKey="avg_latency"
+                  stroke="#3B82F6"
+                  fillOpacity={1}
+                  fill="url(#colorLatency)"
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -333,7 +346,7 @@ const AdminAnalytics = () => {
         </Card>
 
         {/* Daily Query Volume */}
-        <Card>
+        <Card className="hover:shadow-lg transition-shadow bg-[#fefeff] rounded-lg shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FiMessageSquare className="w-5 h-5" />
@@ -344,8 +357,8 @@ const AdminAnalytics = () => {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={analytics?.trends || []}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="_id" 
+                <XAxis
+                  dataKey="_id"
                   tick={{ fontSize: 12 }}
                   tickFormatter={(value) => {
                     try {
@@ -356,7 +369,7 @@ const AdminAnalytics = () => {
                   }}
                 />
                 <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip 
+                <Tooltip
                   labelFormatter={(value) => {
                     try {
                       return new Date(value).toLocaleDateString();
@@ -364,18 +377,22 @@ const AdminAnalytics = () => {
                       return value;
                     }
                   }}
-                  formatter={(value) => [value, 'Queries']}
+                  formatter={(value) => [value, "Queries"]}
                 />
-                <Bar dataKey="request_count" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="request_count"
+                  fill="#8B5CF6"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
-        {/* Feedback Distribution */}
+      {/* Feedback Distribution */}
       {analytics?.feedback_stats?.rating_distribution && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
+          <Card className="hover:shadow-lg transition-shadow bg-[#fefeff] rounded-lg shadow-sm">
             <CardHeader>
               <CardTitle>Rating Distribution</CardTitle>
             </CardHeader>
@@ -383,21 +400,30 @@ const AdminAnalytics = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={Object.entries(analytics.feedback_stats.rating_distribution).map(([rating, count]) => ({
+                    data={Object.entries(
+                      analytics.feedback_stats.rating_distribution
+                    ).map(([rating, count]) => ({
                       name: `${rating} Stars`,
                       value: count,
-                      rating: parseInt(rating)
+                      rating: parseInt(rating),
                     }))}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {Object.entries(analytics.feedback_stats.rating_distribution).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    {Object.entries(
+                      analytics.feedback_stats.rating_distribution
+                    ).map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -406,7 +432,7 @@ const AdminAnalytics = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-lg transition-shadow bg-[#fefeff] rounded-lg shadow-sm">
             <CardHeader>
               <CardTitle>Performance Summary</CardTitle>
             </CardHeader>
@@ -432,7 +458,9 @@ const AdminAnalytics = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-green-600">
-                      {formatCurrency(analytics?.cost_stats?.avg_cost_per_query || 0)}
+                      {formatCurrency(
+                        analytics?.cost_stats?.avg_cost_per_query || 0
+                      )}
                     </p>
                     <p className="text-xs text-gray-500">Per Query</p>
                   </div>
@@ -458,9 +486,12 @@ const AdminAnalytics = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-purple-600">
-                      {analytics?.latency_stats?.total_requests?.toLocaleString() || 0}
+                      {analytics?.latency_stats?.total_requests?.toLocaleString() ||
+                        0}
                     </p>
-                    <p className="text-xs text-gray-500">Last {timeRange} days</p>
+                    <p className="text-xs text-gray-500">
+                      Last {timeRange} days
+                    </p>
                   </div>
                 </div>
               </div>
@@ -470,7 +501,7 @@ const AdminAnalytics = () => {
       )}
 
       {/* Export Section */}
-      <Card>
+      <Card className="hover:shadow-lg transition-shadow bg-[#fefeff] rounded-lg shadow-sm">
         <CardHeader>
           <CardTitle>Data Export</CardTitle>
         </CardHeader>
@@ -484,10 +515,12 @@ const AdminAnalytics = () => {
               <FiDownload className="w-4 h-4" />
               <div className="text-left">
                 <p className="font-medium">Latency Data</p>
-                <p className="text-xs text-gray-500">Response times & performance</p>
+                <p className="text-xs text-gray-500">
+                  Response times & performance
+                </p>
               </div>
             </Button>
-            
+
             <Button
               onClick={() => exportData("costs")}
               variant="outline"
@@ -499,7 +532,7 @@ const AdminAnalytics = () => {
                 <p className="text-xs text-gray-500">Usage costs & billing</p>
               </div>
             </Button>
-            
+
             <Button
               onClick={() => exportData("feedback")}
               variant="outline"
