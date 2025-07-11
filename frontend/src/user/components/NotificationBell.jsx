@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { io } from "socket.io-client";
 import { AuthContext } from "../context/AuthContext.jsx";
 import {
   FiBell,
@@ -42,17 +43,58 @@ const NotificationBell = () => {
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     if (token) {
       loadNotifications();
-      // Poll for new notifications every 30 seconds
-      const interval = setInterval(loadNotifications, 30000);
-      return () => clearInterval(interval);
+      // Initialize WebSocket connection
+      initializeSocket();
+      
+      return () => {
+        if (socket) {
+          socket.disconnect();
+        }
+      };
     }
-  }, [token, filter]);
+  }, [token]);
+  
+  // Initialize WebSocket connection
+  const initializeSocket = () => {
+    const newSocket = io(import.meta.env.VITE_API_URL, {
+      transports: ['websocket'],
+      auth: {
+        token: `Bearer ${token}`
+      }
+    });
+    
+    newSocket.on('connect', () => {
+      console.log('WebSocket connected for notifications');
+    });
+    
+    newSocket.on('connect_error', (error) => {
+      console.error('WebSocket connection error:', error);
+    });
+    
+    newSocket.on(`notification_update_${auth.userId}`, (data) => {
+      console.log('Received notification update:', data);
+      if (data.unread_count !== undefined) {
+        setUnreadCount(data.unread_count);
+      }
+      loadNotifications();
+    });
+    
+    newSocket.on(`new_notification_${auth.userId}`, (data) => {
+      console.log('Received new notification:', data);
+      loadNotifications();
+    });
+    
+    setSocket(newSocket);
+  };
+  
   const toIST = (utc) =>{
-    return new Date(utc).toLocaleString("en-IN", {
+    const date = new Date(utc);
+    return date.toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
       hour12: true,
       year: "numeric",
@@ -195,6 +237,8 @@ const NotificationBell = () => {
   const formatTimeAgo = (dateString) => {
     const now = new Date();
     const date = new Date(dateString);
+    // Convert to IST for display
+    const istDate = new Date(date.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
     const diffInSeconds = Math.floor((now - date) / 1000);
 
     if (diffInSeconds < 60) return "Just now";
@@ -392,8 +436,8 @@ const NotificationBell = () => {
                                     </div>
                                   </div>
                                 </div>
-
-                                <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+                                        toIST(notification.created_at)
+                                      )}
                                   {notification.message}
                                 </p>
 

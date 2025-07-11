@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { io } from "socket.io-client";
 import { AuthContext } from "../context/AuthContext.jsx";
 import {
   FiBell,
@@ -54,6 +55,7 @@ const AllNotificationsContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     if (!token) {
@@ -61,7 +63,48 @@ const AllNotificationsContent = () => {
       return;
     }
     loadNotifications();
+    initializeSocket();
+    
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
   }, [token, filter, currentPage]);
+  
+  // Initialize WebSocket connection
+  const initializeSocket = () => {
+    const newSocket = io(import.meta.env.VITE_API_URL, {
+      transports: ['websocket'],
+      auth: {
+        token: `Bearer ${token}`
+      }
+    });
+    
+    newSocket.on('connect', () => {
+      console.log('WebSocket connected for notifications page');
+    });
+    
+    newSocket.on('connect_error', (error) => {
+      console.error('WebSocket connection error:', error);
+    });
+    
+    newSocket.on(`notification_update_${auth.userId}`, (data) => {
+      console.log('Received notification update:', data);
+      if (data.unread_count !== undefined) {
+        setUnreadCount(data.unread_count);
+      }
+      loadNotifications();
+    });
+    
+    newSocket.on(`new_notification_${auth.userId}`, (data) => {
+      console.log('Received new notification:', data);
+      loadNotifications();
+      toast.success("New notification received!");
+    });
+    
+    setSocket(newSocket);
+  };
 
   const loadNotifications = async () => {
     try {
@@ -196,8 +239,17 @@ const AllNotificationsContent = () => {
   };
 
   const formatDate = (dateString) => {
+    // Convert UTC to IST
     const date = new Date(dateString);
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+    return date.toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour12: true,
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   if (loading && notifications.length === 0) {
@@ -387,7 +439,7 @@ const AllNotificationsContent = () => {
                         <div className="flex items-center gap-4 text-sm text-gray-500">
                           <div className="flex items-center gap-1">
                             <FiCalendar className="w-4 h-4" />
-                            {formatDate(notification.created_at)}
+                            {formatDate(notification.created_at)} (IST)
                           </div>
                           <Badge
                             variant="secondary"

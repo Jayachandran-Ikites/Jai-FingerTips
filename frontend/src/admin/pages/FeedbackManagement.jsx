@@ -411,10 +411,15 @@ const FeedbackManagementContent = () => {
                             <div className="bg-white p-3 rounded border">
                               <div className="mb-3 pb-3 border-b border-gray-100">
                                 <span className="text-xs text-gray-500">Message:</span>
-                                <p className="text-sm text-gray-800 mt-1">
-                                  {selectedConversation.messages?.find(m => m.id === item.message_id)?.text || 
-                                   "Message not found"}
-                                </p>
+                                {selectedConversation.messages?.find(m => m.id === item.message_id) ? (
+                                  <p className="text-sm text-gray-800 mt-1">
+                                    {selectedConversation.messages.find(m => m.id === item.message_id).text}
+                                  </p>
+                                ) : (
+                                  <p className="text-sm text-gray-500 mt-1 italic">
+                                    Message not found
+                                  </p>
+                                )}
                               </div>
                               <div>
                                 <span className="text-xs text-gray-500">Feedback:</span>

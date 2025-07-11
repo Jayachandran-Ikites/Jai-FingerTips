@@ -6,6 +6,7 @@ from ..database import get_db
 import logging
 from ..routes.reviews import require_reviewer_or_admin
 from collections import defaultdict
+from ..app import socketio
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -462,6 +463,19 @@ def send_notification(admin_user_id):
         
         if notification_docs:
             result = notifications.insert_many(notification_docs)
+            
+            # Emit WebSocket events for each user
+            for user_id in target_user_ids:
+                unread_count = notifications.count_documents({"user_id": ObjectId(user_id), "read": False})
+                notification_data = {
+                    "title": title,
+                    "message": message,
+                    "type": notification_type,
+                    "created_at": datetime.utcnow().isoformat(),
+                    "unread_count": unread_count
+                }
+                socketio.emit(f'notification_update_{user_id}', notification_data)
+                socketio.emit(f'new_notification_{user_id}', notification_data)
             
             return jsonify({
                 "message": f"Notification sent to {len(target_user_ids)} users",

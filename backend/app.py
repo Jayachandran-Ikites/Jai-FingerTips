@@ -8,11 +8,13 @@ from .routes.feedback import feedback_bp
 from .routes.reviews import reviews_bp
 from .routes.analytics import analytics_bp
 from .routes.prompts import prompts_bp
+from flask_socketio import SocketIO
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins=os.getenv("FRONTEND_ORIGIN"))
 
 # Fixed CORS configuration - no wildcards when using credentials
 CORS(
@@ -47,7 +49,7 @@ def check_health():
 
 
 if __name__ == "__main__":
-    app.run(port=os.getenv("PORT"), debug=True)
+    socketio.run(app, port=int(os.getenv("PORT", "5000")), debug=True)
 
 
 # from flask import Flask
