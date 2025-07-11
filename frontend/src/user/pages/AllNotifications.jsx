@@ -76,7 +76,7 @@ const AllNotificationsContent = () => {
   const initializeSocket = () => {
     try {
       const newSocket = io(import.meta.env.VITE_API_URL, {
-        transports: ['websocket'],
+        transports: ["websocket"],
         auth: {
           token: `Bearer ${token}`
         }
@@ -90,8 +90,11 @@ const AllNotificationsContent = () => {
         console.error('WebSocket connection error:', error);
       });
       
-      if (auth && auth.userId) {
-        newSocket.on(`notification_update_${auth.userId}`, (data) => {
+      // Get userId from localStorage or context
+      const userId = localStorage.getItem("userId") || auth?.userId;
+      
+      if (userId) {
+        newSocket.on(`notification_update_${userId}`, (data) => {
           console.log('Received notification update:', data);
           if (data && data.unread_count !== undefined) {
             setUnreadCount(data.unread_count);
@@ -99,7 +102,7 @@ const AllNotificationsContent = () => {
           loadNotifications();
         });
         
-        newSocket.on(`new_notification_${auth.userId}`, (data) => {
+        newSocket.on(`new_notification_${userId}`, (data) => {
           console.log('Received new notification:', data);
           loadNotifications();
           toast.success("New notification received!");
@@ -244,7 +247,7 @@ const AllNotificationsContent = () => {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (utc) => {
     // Convert UTC to IST
     if (!utc) return "";
     try {

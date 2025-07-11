@@ -46,7 +46,7 @@ const NotificationBell = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    if (token && auth.userId) {
+    if (token && auth?.userId) {
       loadNotifications();
       // Initialize WebSocket connection
       initializeSocket();
@@ -76,7 +76,7 @@ const NotificationBell = () => {
       console.error('WebSocket connection error:', error);
     });
     
-    newSocket.on(`notification_update_${auth.userId}`, (data) => {
+    newSocket.on(`notification_update_${auth?.userId}`, (data) => {
       console.log('Received notification update:', data);
       if (data && data.unread_count !== undefined) {
         setUnreadCount(data.unread_count);
@@ -84,7 +84,7 @@ const NotificationBell = () => {
       loadNotifications();
     });
     
-    newSocket.on(`new_notification_${auth.userId}`, (data) => {
+    newSocket.on(`new_notification_${auth?.userId}`, (data) => {
       console.log('Received new notification:', data);
       if (data) {
         loadNotifications();
@@ -94,7 +94,7 @@ const NotificationBell = () => {
     setSocket(newSocket);
   };
   
-  const toIST = (utc) =>{
+  const toIST = (utc) => {
     const date = new Date(utc);
     try {
       return date.toLocaleString("en-IN", {
@@ -443,8 +443,7 @@ const NotificationBell = () => {
                                     </div>
                                   </div>
                                 </div>
-                                        toIST(notification.created_at)
-                                      )}
+                                <p className="text-sm text-gray-600 mb-2">
                                   {notification.message || ""}
                                 </p>
 

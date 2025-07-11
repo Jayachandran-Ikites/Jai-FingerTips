@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify, current_app
 from datetime import datetime, timedelta
 from bson import ObjectId
-from ..auth.utils import verify_token
 from ..database import get_db
 import logging
 from ..routes.reviews import require_reviewer_or_admin
 from collections import defaultdict
-from ..app import socketio
+
+# Import verify_token function
+from ..auth.utils import verify_token
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -451,6 +452,8 @@ def send_notification(admin_user_id):
         notification_docs = []
         for user_id in target_user_ids:
             notification_docs.append({
+            # Import socketio here to avoid circular import
+            from ..app import socketio
                 "user_id": ObjectId(user_id),
                 "title": title,
                 "message": message,

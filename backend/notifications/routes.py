@@ -4,7 +4,6 @@ from datetime import datetime
 from bson import ObjectId
 from ..database import get_db
 import logging
-from ..app import socketio
 from ..auth.utils import verify_token
 
 notifications_bp = Blueprint("notifications", __name__)
@@ -151,6 +150,8 @@ def mark_notification_read(notification_id):
         
         # Emit WebSocket event to update notification count
         if result.matched_count > 0:
+            # Import socketio here to avoid circular import
+            from ..app import socketio
             db = get_db()
             notifications = db["notifications"]
             unread_count = notifications.count_documents({"user_id": ObjectId(user_id), "read": False})
@@ -186,6 +187,8 @@ def mark_all_notifications_read():
         )
         
         # Emit WebSocket event to update notification count
+        # Import socketio here to avoid circular import
+        from ..app import socketio
         socketio.emit(f'notification_update_{user_id}', {'unread_count': 0})
         
         return jsonify({
@@ -221,6 +224,8 @@ def delete_notification(notification_id):
         
         # Emit WebSocket event to update notification count
         unread_count = notifications.count_documents({"user_id": ObjectId(user_id), "read": False})
+        # Import socketio here to avoid circular import
+        from ..app import socketio
         socketio.emit(f'notification_update_{user_id}', {'unread_count': unread_count})
         
         return jsonify({"message": "Notification deleted"})
