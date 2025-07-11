@@ -285,7 +285,7 @@ const AllNotificationsContent = () => {
                 )}
               </div>
 
-              <form
+              {/* <form
                 onSubmit={handleSearch}
                 className="flex gap-2 w-full md:w-auto"
               >
@@ -298,7 +298,7 @@ const AllNotificationsContent = () => {
                 <Button type="submit" variant="outline">
                   <FiSearch className="w-4 h-4" />
                 </Button>
-              </form>
+              </form> */}
             </div>
           </CardContent>
         </Card>
@@ -410,7 +410,7 @@ const AllNotificationsContent = () => {
         </div>
 
         {/* Pagination */}
-        {loading ? (
+        {loading ? <></> : (
           <>
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2">
@@ -442,8 +442,6 @@ const AllNotificationsContent = () => {
               </div>
             )}
           </>
-        ) : (
-          <></>
         )}
       </div>
     </div>

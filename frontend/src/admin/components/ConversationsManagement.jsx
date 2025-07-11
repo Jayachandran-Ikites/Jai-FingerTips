@@ -98,12 +98,13 @@ const ConversationsManagement = ({
         headers: { Authorization: `Bearer ${token}` },
         params: {
           page,
-          limit: 20,
+          limit: 15,
           user_id: userFilter || undefined,
           date: dateFilter || undefined,
-          search: debouncedSearchTerm || undefined,
+          // search: debouncedSearchTerm || undefined,
         },
       });
+      console.log("No. of conversations:", response.data.total);
       setConversations(response.data.conversations || []);
       setCurrentTotalPages(response.data.pages || 1);
       setLoading(false);
@@ -140,14 +141,120 @@ const ConversationsManagement = ({
     navigate(`/admin/conversations/${conversationId}`);
   };
 
+  const loadUserConversation = async (conversationId) => {
+    try {
+      
+      const token = localStorage.getItem("token");
+
+      // Load conversation details
+      const conversationResponse = await api.get(
+        `/admin/conversations/${conversationId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return conversationResponse.data;
+    } catch (error) {
+      console.error("Error loading conversation details:", error);
+      toast.error("Failed to load conversation details");
+    } 
+  };
+
+  // Helper: Convert JS Object to XML
+  // Updated convertToXML with ignoreSources support
+ 
+
+  const generateXML = (obj, indent = "", ignoreSources = true) => {
+    let xml = "";
+    for (let key in obj) {
+      if (ignoreSources && key === "sources") continue;
+
+      if (Array.isArray(obj[key])) {
+        obj[key].forEach((item) => {
+          xml += `${indent}<${key}>\n${generateXML(
+            item,
+            indent + "  ",
+            ignoreSources
+          )}${indent}</${key}>\n`;
+        });
+      } else if (typeof obj[key] === "object" && obj[key] !== null) {
+        xml += `${indent}<${key}>\n${generateXML(
+          obj[key],
+          indent + "  ",
+          ignoreSources
+        )}${indent}</${key}>\n`;
+      } else {
+        xml += `${indent}<${key}>${obj[key]}</${key}>\n`;
+      }
+    }
+    return xml;
+  };
+
+  // Helper to remove sources recursively from an object
+  const removeSources = (obj) => {
+    if (Array.isArray(obj)) {
+      return obj.map(removeSources);
+    } else if (typeof obj === "object" && obj !== null) {
+      const newObj = {};
+      for (let key in obj) {
+        if (key === "sources") continue;
+        newObj[key] = removeSources(obj[key]);
+      }
+      return newObj;
+    }
+    return obj;
+  };
+
+  // Trigger Download
+  const downloadFile = (data, filename, type) => {
+    const blob = new Blob([data], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Utility to sanitize filenames
+  const sanitizeFilename = (title) => {
+    return title.replace(/[<>:"/\\|?*\n\r]+/g, "").replace(/\s+/g, "_");
+  };
+
+  // Export handlers with title as filename
+  const handleExportJSON = async (conversationId,ignoreSources = true) => {
+    const obj = await loadUserConversation(conversationId);
+    const exportObj = ignoreSources ? removeSources(obj) : obj;
+    const fileTitle = sanitizeFilename(obj.title || "export");
+    const json = JSON.stringify(exportObj, null, 2);
+    downloadFile(json, `${fileTitle}.json`, "application/json");
+    toast.success("Conversation exported as JSON");
+  };
+  
+  const handleExportXML = async (conversationId,ignoreSources = true) => {
+    const obj = await loadUserConversation(conversationId);
+    const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    const xmlBody = generateXML(
+      ignoreSources ? removeSources(obj) : obj,
+      "  ",
+      ignoreSources
+    );
+    const fileTitle = sanitizeFilename(obj.title || "export");
+    const xml = xmlHeader + `<response>\n${xmlBody}</response>`;
+    downloadFile(xml, `${fileTitle}.xml`, "application/xml");
+    toast.success("Conversation exported as XML");
+  };
+ 
+
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800">
           Conversations Management
         </h2>
 
-        {/* <div className="flex gap-2">
+        <div className="flex gap-2">
           <div className="relative">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -158,8 +265,8 @@ const ConversationsManagement = ({
               className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
             />
           </div>
-        </div> */}
-      </div>
+        </div>
+      </div> */}
 
       {/* Filters */}
       <Card className="bg-white/80 backdrop-blur-sm relative z-50">
@@ -270,6 +377,9 @@ const ConversationsManagement = ({
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Export
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -307,6 +417,28 @@ const ConversationsManagement = ({
                           </Button>
                         </div>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => handleExportXML(conv._id)}
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-1"
+                          >
+                            {/* <FiExternalLink className="w-3 h-3" /> */}
+                            XML
+                          </Button>
+                          <Button
+                            onClick={() => handleExportJSON(conv._id)}
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-1"
+                          >
+                            {/* <FiExternalLink className="w-3 h-3" /> */}
+                            JSON
+                          </Button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -318,6 +450,8 @@ const ConversationsManagement = ({
 
       {/* Pagination */}
       {loading ? (
+        <></>
+      ) : (
         <>
           {currentTotalPages > 1 && (
             <div className="flex items-center justify-center gap-2">
@@ -349,10 +483,8 @@ const ConversationsManagement = ({
                 Next
               </Button>
             </div>
-          )}{" "}
+          )}
         </>
-      ) : (
-        <></>
       )}
     </div>
   );

@@ -1,0 +1,4 @@
+You’re a smart assistant. Given the first user message below, come up with a concise, human-readable chat title (no more than 5 words):
+
+
+“{first_message}”

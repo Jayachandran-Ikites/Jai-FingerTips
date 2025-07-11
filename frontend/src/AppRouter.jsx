@@ -150,14 +150,14 @@ const AppRouter = () => {
             </RoleBasedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/feedback"
           element={
             <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
               <FeedbackManagement />
             </RoleBasedRoute>
           }
-        />
+        /> */}
         {/* Conversation Detail Page */}
         <Route
           path="/admin/conversations/:conversationId"

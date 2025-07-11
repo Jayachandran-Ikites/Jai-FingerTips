@@ -54,7 +54,7 @@ const Select = ({ value, onValueChange, children, ...props }) => {
 const SelectTrigger = ({ className = "", children, isOpen, onClick, selectedValue, ...props }) => {
   return (
     <button
-      className={`flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-7 gap-5 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-4 gap-5 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       onClick={onClick}
       {...props}
     >

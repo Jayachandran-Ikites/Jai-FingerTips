@@ -51,6 +51,7 @@ export default function App() {
   const [isVerifying, setIsVerifying] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [conversationsLoaded, setConversationsLoaded] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState({
     isOpen: false,
     conversationId: null,
@@ -112,7 +113,7 @@ export default function App() {
 
   // Improve the loadChatMessages function to handle errors better
   const loadChatMessages = async (chatId) => {
-    if (!chatId) return;
+    if (!chatId || isLoadingMessages) return;
 
     try {
       setIsLoadingMessages(true);
@@ -156,6 +157,8 @@ export default function App() {
 
   // Improve the loadConversations function to handle errors better
   const loadConversations = async () => {
+    if (conversationsLoaded) return conversations;
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -169,36 +172,13 @@ export default function App() {
 
       const conversationsData = response.data || [];
       setConversations(conversationsData);
+      setConversationsLoaded(true);
       return conversationsData;
     } catch (error) {
       console.error("Error loading conversations:", error);
       return [];
     }
   };
-
-  // Effect to handle URL chat ID changes
-  useEffect(() => {
-    if (urlChatId && urlChatId !== convId) {
-      loadChatMessages(urlChatId);
-    } else if (!urlChatId) {
-      // If no chat ID in URL, start fresh
-      setConvId(null);
-      setHistory([]);
-      localStorage.removeItem("convId");
-      localStorage.removeItem("chatHistory");
-    }
-  }, [urlChatId]);
-
-  // Load from localStorage only if no URL chat ID
-  useEffect(() => {
-    if (!urlChatId) {
-      const savedConvId = localStorage.getItem("convId");
-      const savedHistory = localStorage.getItem("chatHistory");
-
-      if (savedConvId) setConvId(savedConvId);
-      if (savedHistory) setHistory(JSON.parse(savedHistory));
-    }
-  }, [urlChatId]);
 
   // Save to localStorage when history changes
   useEffect(() => {
@@ -243,6 +223,13 @@ export default function App() {
           // If there's a chat ID in the URL, load that chat's messages
           if (urlChatId) {
             await loadChatMessages(urlChatId);
+          } else {
+            // Load from localStorage only if no URL chat ID
+            const savedConvId = localStorage.getItem("convId");
+            const savedHistory = localStorage.getItem("chatHistory");
+
+            if (savedConvId) setConvId(savedConvId);
+            if (savedHistory) setHistory(JSON.parse(savedHistory));
           }
         } else {
           console.warn("Token invalid. Redirecting to login.");
@@ -258,22 +245,29 @@ export default function App() {
     verifyToken();
   }, [navigate, urlChatId]);
 
+  // Effect to handle URL chat ID changes (only after authentication)
+  useEffect(() => {
+    if (!isVerifying && urlChatId && urlChatId !== convId) {
+      loadChatMessages(urlChatId);
+    } else if (!isVerifying && !urlChatId) {
+      // If no chat ID in URL, start fresh
+      setConvId(null);
+      setHistory([]);
+      localStorage.removeItem("convId");
+      localStorage.removeItem("chatHistory");
+    }
+  }, [urlChatId, isVerifying, convId]);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [history]);
-
-  // Load conversations after authentication
-  useEffect(() => {
-    if (!isVerifying && auth.user?.token) {
-      loadConversations();
-    }
-  }, [isVerifying, auth.user?.token]);
 
   // Handle new chat
   const handleNewChat = () => {
     setConvId(null);
     setHistory([]);
     setSidebarOpen(false);
+    setConversationsLoaded(false); // Reset to allow refresh
     navigate("/chat"); // Navigate to base chat route
   };
 
@@ -292,10 +286,7 @@ export default function App() {
 
       setSidebarOpen(false);
 
-      // Immediately load messages before navigation
-      await loadChatMessages(conversationId);
-
-      // Then navigate to the specific chat route
+      // Navigate first, let the useEffect handle loading
       navigate(`/chat/${conversationId}`);
     } catch (error) {
       console.error("Error selecting conversation:", error);
@@ -314,6 +305,7 @@ export default function App() {
       setConversations((prev) =>
         prev.filter((conv) => conv.conversation_id !== conversationId)
       );
+      setConversationsLoaded(false); // Reset to allow refresh
 
       // If current conversation is deleted, start new chat
       if (convId === conversationId) {
@@ -342,6 +334,7 @@ export default function App() {
             : conv
         )
       );
+      setConversationsLoaded(false); // Reset to allow refresh
     } catch (error) {
       console.error("Error renaming conversation:", error);
     }
@@ -416,6 +409,7 @@ export default function App() {
       // Reload messages and conversations
       if (newConvId) {
         await loadChatMessages(newConvId);
+        setConversationsLoaded(false); // Reset to allow refresh
         await loadConversations(); // Refresh conversations list
         if (!convId) {
           navigate(`/chat/${newConvId}`);
@@ -470,6 +464,7 @@ export default function App() {
       // Reload messages and conversations
       if (newConvId) {
         await loadChatMessages(newConvId);
+        setConversationsLoaded(false); // Reset to allow refresh
         await loadConversations(); // Refresh conversations list
 
         // Redirect to dynamic route if this was a new conversation

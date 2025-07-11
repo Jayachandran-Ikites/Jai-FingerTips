@@ -9,7 +9,7 @@ import {
   HiOutlineEye,
   HiOutlineEyeOff,
 } from "react-icons/hi";
-import { FiMail, FiLock, FiCheck, FiX } from "react-icons/fi";
+import { FiMail, FiLock, FiCheck, FiX, FiUser } from "react-icons/fi";
 import { ImSpinner2 } from "react-icons/im";
 import { Toaster } from "react-hot-toast";
 // Create axios instance with proper configuration
@@ -29,6 +29,7 @@ function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    name: "",
   });
 
   // Password validation
@@ -51,11 +52,16 @@ function Login() {
     return minLength && hasLower && hasUpper && hasNumber && hasSpecial;
   };
 
+  // Add a function to check if the name is valid (not empty or whitespace)
+  const isValidName = (name) => {
+    return typeof name === "string" && name.trim().length > 0;
+  };
+
   // Disable button if fields are empty or invalid
   const isFormInvalid =
     !formData.email ||
     !formData.password ||
-    (isSignup && !isStrongPassword(formData.password));
+    (isSignup && (!isStrongPassword(formData.password) || !isValidName(formData.name)));
 
   const handlePasswordChange = (e) => {
     const password = e.target.value;
@@ -89,7 +95,7 @@ function Login() {
 
       console.log("Google auth response:", res.data);
       login(res.data);
-      toast.success("Welcome to Fingertip!");
+      toast.success(`Welcome to Fingertip${res.data.user?.name ? ', ' + res.data.user.name : ''}!`);
       navigate("/chat");
     } catch (err) {
       console.error("Google auth error:", err);
@@ -124,6 +130,7 @@ function Login() {
           registrationType: "email",
           email: formData.email,
           password: formData.password,
+          name: formData.name,
         }
       : {
           authType: "email",
@@ -134,7 +141,7 @@ function Login() {
     try {
       const res = await api.post(endpoint, payload);
       login(res.data);
-      toast.success(isSignup ? "Welcome to Fingertip!" : "Welcome back!");
+      toast.success(`Welcome to Fingertip${isSignup && res.data.user?.name ? ', ' + res.data.user.name : ''}!`);
       navigate("/chat");
     } catch (err) {
       console.error("Auth error:", err);
@@ -190,7 +197,7 @@ function Login() {
             </div>
 
             {/* Google Sign In Button */}
-            <div className="mb-6">
+            {!isSignup && <div className="mb-6">
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
@@ -200,10 +207,10 @@ function Login() {
                 text={isSignup ? "signup_with" : "signin_with"}
                 shape="rectangular"
               />
-            </div>
+            </div>}
 
             {/* Divider */}
-            <div className="relative mb-6">
+            {!isSignup && <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
               </div>
@@ -212,9 +219,27 @@ function Login() {
                   Or continue with email
                 </span>
               </div>
-            </div>
+            </div>}
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name Input (Signup only) */}
+              {isSignup && (
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiUser className="h-5 w-5 text-gray-600 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="User Name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required={isSignup}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 placeholder-gray-500"
+                  />
+                </div>
+              )}
+
               {/* Email Input */}
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -227,7 +252,7 @@ function Login() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm placeholder-gray-500"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 placeholder-gray-500"
                 />
               </div>
 
@@ -243,7 +268,7 @@ function Login() {
                   value={formData.password}
                   onChange={handlePasswordChange}
                   required
-                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm placeholder-gray-500"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 placeholder-gray-500"
                 />
                 <button
                   type="button"
@@ -335,7 +360,7 @@ function Login() {
                 type="button"
                 onClick={() => {
                   setIsSignup(!isSignup);
-                  setFormData({ email: "", password: "", username: "" });
+                  setFormData({ email: "", password: "", name: "" });
                   setPasswordErrors({
                     minLength: false,
                     hasLower: false,

@@ -12,6 +12,7 @@ const api = axios.create({
 
 const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const profileIconRef = useRef(null);
   const dropdownRef = useRef(null);
   const editDropdownRef = useRef(null);
 
@@ -21,7 +22,10 @@ const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
       // If click is inside ProfileDropdown or edit modal, do not close
       if (
         (dropdownRef.current && dropdownRef.current.contains(event.target)) ||
-        (editDropdownRef.current && editDropdownRef.current.contains(event.target))
+        (editDropdownRef.current &&
+          editDropdownRef.current.contains(event.target)) ||
+        (profileIconRef.current &&
+          profileIconRef.current.contains(event.target))
       ) {
         return;
       }
@@ -80,6 +84,7 @@ const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
     }
   };
 
+  console.log("showDropdown", showDropdown);
   return (
     <header className="py-2 px-4 md:py-4 md:px-6 bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100 sticky top-0 z-30 flex-shrink-0">
       <div className="flex items-center justify-between">
@@ -100,11 +105,11 @@ const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
         </div>
 
         {/* Right: Logout Button and Profile Icon */}
-        <div className="flex items-center gap-3 relative">
+        <div className="flex items-center gap-0 sm:gap-0 md:gap-2 lg:gap-3 2xl:gap-3">
           {/* <ThemeToggleButton /> */}
 
           {/* Prompt Editor Button - Only show for power users and admins */}
-          {(userRole === "power_user" || userRole === "admin") && (
+          {/* {(userRole === "power_user" || userRole === "admin") && (
             <button
               onClick={() => navigate("/prompts")}
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -112,7 +117,7 @@ const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
             >
               <FiEdit className="w-5 h-5 text-gray-600" />
             </button>
-          )}
+          )} */}
 
           <NotificationBell />
           {/* Admin Panel Button - Only show for admin users */}
@@ -125,15 +130,36 @@ const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
               <FiSettings className="w-5 h-5 text-gray-600" />
             </button>
           )}
+          {/* Pathways Button */}
+          <button
+            onClick={() => navigate("/pathways")}
+            className="p-2 rounded-lg hover:bg-blue-100 transition-colors"
+            title="Pathways"
+          >
+            <svg
+              className="w-5 h-5 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </button>
           <button
             onClick={() => setShowDropdown((prev) => !prev)}
+            ref={profileIconRef}
             className="ml-2 p-2 rounded-full bg-gray-100 hover:bg-blue-100 text-blue-600 transition flex items-center justify-center"
             title="View Profile"
           >
             <FiUser className="w-5 h-5" />
           </button>
           {showDropdown && (
-            <div ref={dropdownRef} style={{marginLeft:"-0.75rem"}} >
+            <div ref={dropdownRef} style={{ marginLeft: "-0.75rem" }}>
               <ProfileDropdown
                 user={auth.user}
                 onEditProfile={handleEditProfile}

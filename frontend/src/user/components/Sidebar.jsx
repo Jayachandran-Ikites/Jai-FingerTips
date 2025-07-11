@@ -95,7 +95,7 @@ const Sidebar = ({
             <div className="flex-1 overflow-y-auto w-full px-2">
               <div className="space-y-2">
                 {conversations && conversations.length > 0 ? (
-                  conversations.slice(0, 5).map((conv, index) => (
+                  conversations.map((conv, index) => (
                     <button
                       key={conv.conversation_id || `conv-${index}`}
                       onClick={() => handleConversationClick(conv)}

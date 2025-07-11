@@ -3,6 +3,8 @@ import { FiUser, FiMessageCircle } from "react-icons/fi";
 import { HiOutlineFingerPrint, HiOutlineLightBulb } from "react-icons/hi";
 import MarkdownRenderer from "../MarkdownRenderer.jsx";
 import SourcesModal from "./SourcesModal.jsx";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const ChatInterface = ({
   history,
@@ -23,9 +25,87 @@ const ChatInterface = ({
     msgIndex: null,
   });
   const [currentSources, setCurrentSources] = useState({});
+  const chatAreaRef = useRef(null);
+
+  const handleExportPDF = async () => {
+    if (!chatAreaRef.current) return;
+    const element = chatAreaRef.current;
+
+    // Remove overflow/height restrictions for export
+    const originalOverflow = element.style.overflow;
+    const originalHeight = element.style.height;
+    element.style.overflow = "visible";
+    element.style.height = "auto";
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Use high scale for clarity
+    const scale = 3;
+    const canvas = await html2canvas(element, { scale, useCORS: true });
+    const imgWidth = 595.28; // A4 width in pt
+    const pageHeight = 841.89; // A4 height in pt
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    // Calculate the number of pages
+    const pdf = new jsPDF({ orientation: "p", unit: "pt", format: "a4" });
+    let renderedHeight = 0;
+    let pageNum = 0;
+
+    while (renderedHeight < canvas.height) {
+      // Create a new canvas for each page
+      const pageCanvas = document.createElement("canvas");
+      pageCanvas.width = canvas.width;
+      // Calculate how many pixels fit on one PDF page
+      const pageCanvasHeight = Math.min(
+        canvas.height - renderedHeight,
+        Math.floor((pageHeight * canvas.width) / imgWidth)
+      );
+      pageCanvas.height = pageCanvasHeight;
+      const ctx = pageCanvas.getContext("2d");
+      // Draw the current slice
+      ctx.drawImage(
+        canvas,
+        0,
+        renderedHeight,
+        canvas.width,
+        pageCanvasHeight,
+        0,
+        0,
+        canvas.width,
+        pageCanvasHeight
+      );
+      const imgData = pageCanvas.toDataURL("image/png");
+      if (pageNum > 0) pdf.addPage();
+      pdf.addImage(
+        imgData,
+        "PNG",
+        0,
+        0,
+        imgWidth,
+        (pageCanvasHeight * imgWidth) / canvas.width
+      );
+      renderedHeight += pageCanvasHeight;
+      pageNum++;
+    }
+
+    pdf.save("chat-history.pdf");
+    // Restore styles
+    element.style.overflow = originalOverflow;
+    element.style.height = originalHeight;
+  };
 
   return (
     <main className="flex-1 overflow-hidden px-3 md:px-6 pt-3 md:pt-6 pb-[20px]">
+      {/* Export PDF Button */}
+      {/*history.length > 0 && (
+        <div className="flex justify-end mb-2 mt-[2rem]">
+          <button
+            onClick={handleExportPDF}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg shadow hover:from-blue-700 hover:to-purple-700 transition-all text-sm font-semibold"
+          >
+            Export Chat as PDF
+          </button>
+        </div>
+      )*/}
       {/* Sources Modal */}
       <SourcesModal
         open={sourcesModal.open}
@@ -34,7 +114,10 @@ const ChatInterface = ({
         history={history}
         sources={currentSources}
       />
-      <div className="h-full overflow-y-auto rounded-xl md:rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 p-3 md:p-6">
+      <div
+        ref={chatAreaRef}
+        className="h-full overflow-y-auto rounded-xl md:rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 p-3 md:p-6"
+      >
         {isLoadingMessages ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-3 md:p-6 text-gray-500">
             <div className="flex space-x-2 items-center">
@@ -69,7 +152,7 @@ const ChatInterface = ({
                 ))}
               </ul>
             </div>
-            
+
             {isLoading && (
               <div className="flex justify-start animate-fadeIn">
                 <div className="flex gap-2 md:gap-3 max-w-[85%]">
@@ -86,10 +169,9 @@ const ChatInterface = ({
                 </div>
               </div>
             )}
-            
+
             <div ref={bottomRef} />
-            </div>
-          
+          </div>
         ) : (
           <div className="space-y-4 md:space-y-6">
             {history.map((msg, i) => (

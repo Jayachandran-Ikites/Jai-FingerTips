@@ -956,6 +956,13 @@
                     ]
                 ]
             }
+        },
+        "Images":{
+            "I1":{
+                "type": "Image",
+                "after":"L56",
+                "content": "<img src='https://res.cloudinary.com/dyu9hu69f/image/upload/v1751540001/your_folder_on_cloudinary/Image1_asthma.jpg' alt='image1' />"
+            }
         }
     },
     "fever": {
@@ -1913,6 +1920,13 @@
                     ]
                 ]
             }
+        },
+        "Images":{
+            "I1":{
+                "type": "Image",
+                "after":"L206",
+                "content": "<img src='https://res.cloudinary.com/dyu9hu69f/image/upload/v1751540002/your_folder_on_cloudinary/Image1_fever.jpg' alt='image1' />"
+            }
         }
     },
     "pneumonia": {
@@ -2640,7 +2654,8 @@
                     ]
                 ]
             }
-        }
+        },
+        "Images":{}
     },
     "anaemia": {
         "description": "This document outlines the Anaemia Pathway in India, highlighting the high prevalence of anaemia among women (57.2%) and men (25%) based on NFHS5 data. It details past and current national programs to combat anaemia, acknowledges the persistent challenge despite these efforts, and identifies drivers and barriers to improvement. The pathway further delves into the causes of anaemia, emphasizing iron deficiency, and provides a sequence for diagnosis and management, including criteria for different MCV levels and treatment protocols for IDA, B12/folate deficiency, and specific considerations for thalassemia, sickle cell, and malaria-related anaemia.",
@@ -3470,7 +3485,14 @@
                 "content": "P. falciparum: Artemisinin combination therapy"
             }
         },
-        "Tables": {}
+        "Tables": {},
+        "Images":{
+            "I1":{
+                "type": "Image",
+                "after":"L62",
+                "content": "<img src='https://res.cloudinary.com/dyu9hu69f/image/upload/v1751539999/your_folder_on_cloudinary/Image1_anaemia.jpg' alt='image1' />"
+            }
+        }
     },
     "heart_failure": {
         "description": "This Heart Failure Pathway addresses HFrEF and HFpEF management in India, focusing on diagnosis, guideline-directed medical therapy, and local adaptations for resource limitations and cost.",
@@ -4640,6 +4662,23 @@
                     ]
                 ]
             }
+        },
+        "Images":{
+            "I1":{
+                "type": "Image",
+                "after":"L238",
+                "content": "<img src='https://res.cloudinary.com/dyu9hu69f/image/upload/v1751540003/your_folder_on_cloudinary/Image1_heart.jpg' alt='image1' />"
+            },
+            "I2":{
+                "type":"Image",
+                "after":"I1",
+                "content":"<img src='https://res.cloudinary.com/dyu9hu69f/image/upload/v1751540005/your_folder_on_cloudinary/Image2_heart.jpg' alt='image2' />"
+            },
+            "I3":{
+                "type":"Image",
+                "after":"I2",
+                "content":"<img src='https://res.cloudinary.com/dyu9hu69f/image/upload/v1751540006/your_folder_on_cloudinary/Image3_heart.jpg' alt='image2' />"
+            }
         }
     },
     "chestpain": {
@@ -5226,7 +5265,8 @@
                 "content": "outcomes across diverse settings in India."
             }
         },
-        "Tables": {}
+        "Tables": {},
+        "Images":{}
     },
     "copd": {
         "description": "This pathway addresses COPD in India, focusing on diagnosis challenges (spirometry, unique etiologies), cost/cultural barriers, and management including non-pharmacological, maintenance therapies, exacerbations, and interventions to avoid.",
@@ -6220,6 +6260,13 @@
                     ]
                 ]
             }
+        },
+        "Images":{
+            "I1":{
+                "type": "Image",
+                "after":"L92",
+                "content": "<img src='https://res.cloudinary.com/dyu9hu69f/image/upload/v1751540001/your_folder_on_cloudinary/Image1_copd.jpg' alt='image1' />"
+            }
         }
     },
     "stroke": {
@@ -6910,7 +6957,14 @@
                 "content": "- <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span> Is the epidemiology similar in India? Does this require further investigation? "
             }
         },
-        "Tables": {}
+        "Tables": {},
+        "Images":{
+            "I1":{
+                "type": "Image",
+                "after":"L171",
+                "content": "<img src='https://res.cloudinary.com/dyu9hu69f/image/upload/v1751540004/your_folder_on_cloudinary/image1_stroke.jpg' alt='image1' />"
+            }
+        }
     },
     "Diarrhoea": {
         "description": "This pathway addresses adult diarrhea in India, defining it and highlighting its high mortality burden. It discusses local challenges like antibiotic misuse and delves into causes, severity assessment, rehydration, and antimicrobial treatment, emphasizing appropriate testing and tailored regimens.",
@@ -7328,7 +7382,8 @@
                 "content": "Development of gross blood/mucus/pus in stool"
             }
         },
-        "Tables": {}
+        "Tables": {},
+        "Images":{}
     },
     "diabetic_foot_ulcer": {
         "description": "This pathway addresses Diabetic Foot Ulcers, covering their global burden, screening methods, physical examination findings (WIfI classification), and management principles including debridement, off-loading, wound dressings, and treatment for infection and peripheral arterial disease.",
@@ -7908,6 +7963,7 @@
                     ]
                 ]
             }
-        }
+        },
+        "Images":{}
     }
 }

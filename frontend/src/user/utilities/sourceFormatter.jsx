@@ -178,17 +178,17 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
     }
 
     return (
-      <div key={`table-${tableKey}`} className="my-6">
+      <div key={`table-${tableKey}`} className="my-6 w-full max-w-full overflow-x-auto">
         {table.title && (
           <h4
-            className="font-semibold text-lg mb-3 text-gray-800"
+            className="font-semibold text-base sm:text-lg mb-3 text-gray-800 break-words whitespace-normal"
             dangerouslySetInnerHTML={{ __html: table.title }}
           >
             {/* {table.title} */}
           </h4>
         )}
-        <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-300 bg-white">
+        <div className="overflow-x-auto w-full max-w-full">
+          <table className="min-w-full w-full max-w-full border border-gray-300 bg-white text-xs sm:text-sm">
             <tbody>
               {table.content.map((row, rowIndex) => (
                 <tr
@@ -201,7 +201,7 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
                     return (
                       <td
                         key={cellIndex}
-                        className={`border border-gray-300 px-4 py-2 text-sm ${
+                        className={`border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm break-words whitespace-normal ${
                           isSelected ? "bg-yellow-100 border-yellow-400" : ""
                         }`}
                         dangerouslySetInnerHTML={{ __html: cell }}
@@ -214,7 +214,7 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
           </table>
         </div>
         {sources?.tables?.[tableKey] && sources.tables[tableKey].length > 0 && (
-          <div className="mt-2 text-sm text-gray-600">
+          <div className="mt-2 text-xs sm:text-sm text-gray-600">
             <span className="font-medium">Highlighted cells:</span>{" "}
             {sources.tables[tableKey].join(", ")}
           </div>
@@ -222,6 +222,45 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
       </div>
     );
   };
+
+  // Create a map of images by their "after" line or image key
+  const imagesByLine = {};
+  if (topicData.Images) {
+    Object.keys(topicData.Images).forEach((imgKey) => {
+      const img = topicData.Images[imgKey];
+      img._origKey = imgKey; // Store the original key for recursion
+      if (img.after) {
+        if (!imagesByLine[img.after]) {
+          imagesByLine[img.after] = [];
+        }
+        imagesByLine[img.after].push(img);
+      }
+    });
+  }
+
+  // Helper to recursively render images after a given key
+  function renderImagesAfter(key, imagesByLine, prefix = "img") {
+    const imgs = imagesByLine[key];
+    if (!imgs) return [];
+    let result = [];
+    imgs.forEach((img, i) => {
+      const imgKey = img._origKey || `${prefix}-${key}-${i}`;
+      result.push(
+        <div key={imgKey} className="my-4 flex justify-center w-full max-w-full">
+          <span className="block w-full max-w-full">
+            <span
+              className="block w-full max-w-full"
+              style={{ display: 'flex', justifyContent: 'center' }}
+              dangerouslySetInnerHTML={{ __html: img.content.replace('<img ', '<img class=\'max-w-full h-auto rounded-lg border border-gray-200\' ') }}
+            />
+          </span>
+        </div>
+      );
+      // Recursively render images after this image using the original key
+      result = result.concat(renderImagesAfter(imgKey, imagesByLine, prefix));
+    });
+    return result;
+  }
 
   // Create a map of tables by their "after" line
   const tablesByLine = {};
@@ -255,7 +294,7 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
         elements.push(
           <div
             key={lineKey}
-            className={`font-bold text-lg mt-4 mb-2 flex leading-[24px] ml-[-5px] mt-[-5px] ${
+            className={`font-bold text-base sm:text-lg md:text-xl mt-4 mb-2 flex leading-[24px] ml-[-5px] mt-[-5px] break-words whitespace-normal ${
               isLineInSources ? "bg-yellow-100 p-2 rounded border-l-4 border-yellow-400" : ""
             }`}
             dangerouslySetInnerHTML={{ __html: line.content }}
@@ -270,7 +309,7 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
         elements.push(
           <div
             key={lineKey}
-            className={`font-bold text-xl mt-6 text-center mb-8 ${
+            className={`font-bold text-lg sm:text-xl md:text-2xl mt-6 text-center mb-8 break-words whitespace-normal ${
               isLineInSources ? "bg-yellow-100 p-2 rounded border-l-4 border-yellow-400" : ""
             }`}
             dangerouslySetInnerHTML={{ __html: line.content }}
@@ -311,13 +350,12 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
           currentList.push(
             <li
               key={lineKey}
-              className={`ml-4 my-1 flex leading-[24px] ${
+              className={`ml-4 my-1 flex leading-[24px] break-words whitespace-normal ${
                 isLineInSources ? "bg-yellow-100 p-1 rounded border-l-2 border-yellow-400" : ""
               }`}
               dangerouslySetInnerHTML={{
                 __html: line.content.replace(/^\s*-\s*/, ""),
               }}
-              // style={{maxHeight:"2.2rem"}}
             />
           );
         } else {
@@ -329,7 +367,7 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
           elements.push(
             <div
               key={lineKey}
-              className={`mb-2 ${
+              className={`mb-2 break-words whitespace-normal ${
                 isLineInSources ? "bg-yellow-100 p-2 rounded border-l-4 border-yellow-400" : ""
               }`}
               dangerouslySetInnerHTML={{ __html: line.content }}
@@ -353,6 +391,20 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
         tablesByLine[lineKey].forEach(({ table, tableKey }) => {
           elements.push(renderTable(table, tableKey));
         });
+      }
+
+      // Insert images AFTER the current line, recursively
+      if (imagesByLine[lineKey]) {
+        if (inList && currentList.length) {
+          elements.push(
+            <ul key={`ul-before-image-${lineKey}`}>{currentList}</ul>
+          );
+          currentList = [];
+          inList = false;
+        }
+        // Assign a unique _key to each image for recursion
+        imagesByLine[lineKey].forEach((img, i) => { img._key = `img-${lineKey}-${i}`; });
+        elements.push(...renderImagesAfter(lineKey, imagesByLine));
       }
 
       // If last line, flush list
@@ -448,6 +500,38 @@ export const renderAnswerSources = (filesData, topic, sources) => {
       </div>
     );
   };
+
+  // Create a map of images by their "after" line or image key
+  const imagesByLine = {};
+  if (topicData.Images) {
+    Object.keys(topicData.Images).forEach((imgKey) => {
+      const img = topicData.Images[imgKey];
+      img._origKey = imgKey;
+      if (img.after) {
+        if (!imagesByLine[img.after]) {
+          imagesByLine[img.after] = [];
+        }
+        imagesByLine[img.after].push(img);
+      }
+    });
+  }
+
+  // Helper to recursively render images after a given key
+  function renderImagesAfter(key, imagesByLine, prefix = "img-answer") {
+    const imgs = imagesByLine[key];
+    if (!imgs) return [];
+    let result = [];
+    imgs.forEach((img, i) => {
+      const imgKey = img._origKey || `${prefix}-${key}-${i}`;
+      result.push(
+        <div key={imgKey} className="my-4 flex justify-center">
+          <span dangerouslySetInnerHTML={{ __html: img.content }} />
+        </div>
+      );
+      result = result.concat(renderImagesAfter(imgKey, imagesByLine, prefix));
+    });
+    return result;
+  }
 
   // Create a map of tables by their "after" line
   const tablesByLine = {};
@@ -568,6 +652,13 @@ export const renderAnswerSources = (filesData, topic, sources) => {
           elements.push(renderTableCells(table, tableKey, selectedCells));
         }
       });
+    }
+
+    // Insert images AFTER the current line, recursively
+    if (imagesByLine[lineKey]) {
+      flushListIfNeeded();
+      imagesByLine[lineKey].forEach((img, i) => { img._key = `img-answer-${lineKey}-${i}`; });
+      elements.push(...renderImagesAfter(lineKey, imagesByLine));
     }
   });
 

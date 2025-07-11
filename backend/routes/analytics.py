@@ -121,14 +121,15 @@ def get_cost_analytics_data(user_id):
 def get_analytics_dashboard(user_id):
     """Get comprehensive analytics dashboard data"""
     try:
-        # Get date range (default to last 30 days)
-        end_date = datetime.utcnow()
-        start_date = end_date - timedelta(days=30)
-        
+        # G
+        days = request.args.get("days", default=30, type=int)
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=days)
+
         # Get all analytics
         latency_stats = get_latency_stats(start_date, end_date)
         cost_stats = get_cost_analytics(start_date, end_date)
-        trends = get_daily_latency_trends(30)
+        trends = get_daily_latency_trends(days)
         
         # Get feedback stats
         db = get_db()

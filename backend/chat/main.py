@@ -29,6 +29,10 @@ client = openai.OpenAI(api_key=API_KEY)
 PATHWAY_MODEL = os.getenv("PATHWAY_MODEL", "gpt-4.1-mini-2025-04-14")
 SUMMARIZATION_MODEL = os.getenv("SUMMARIZATION_MODEL", "gpt-4.1-2025-04-14")
 
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))
+)  # points to project root
+PROMPT_PATH = os.path.join(BASE_DIR, "constants", "prompts")
 # ─── Utility Functions ─────────────────────────────────────────────────────────
 
 def load_markdowns(folder: str) -> List[Tuple[str, str]]:
@@ -97,25 +101,37 @@ def parse_json_response(raw: str) -> Dict[str, Optional[str]]:
     except json.JSONDecodeError:
         logging.error("Failed to parse JSON from model response: %r", raw)
         return {"answer": None, "context": None, "disease":None,"source": None}
+    
+def read_ans_format_prompt_from_file(filepath: str, **kwargs) -> str:
+    """
+    Reads a prompt from a file and formats it using the provided keyword arguments.
+
+    Args:
+        filepath (str): Path to the text file containing the prompt.
+        **kwargs: Named variables to fill into the prompt template.
+
+    Returns:
+        str: Formatted prompt string.
+    """
+    try:
+        with open(filepath, "r", encoding="utf-8") as file:
+            template = file.read()
+            return template.format(**kwargs)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Prompt file not found: {filepath}")
+    except KeyError as e:
+        raise ValueError(f"Missing placeholder for: {e}")
+    except Exception as e:
+        raise RuntimeError(f"Error reading or formatting prompt file: {e}")
+
 
 def get_relevant_info(query: str, markdown: str, disease_name: str) -> Dict[str, Optional[str]]:
     """Extract answer/context/source from a single disease markdown."""
     # print("disease_name:",disease_name)
-    system_prompt = (
-        f"You are a medical assistant. "
-        f"Given a user query and a disease markdown, first determine if that markdown contains information that directly answers the query. "
-        f"You can get answer from image , lines and tables. So check everything properly"
-        f"• If it does NOT, respond with {{\"answer\": null, \"context\": null, \"disease\": null, \"source\": null}}. "
-        f"• If it DOES, extract the following four things:\n"
-        f"  1) \"answer\": the minimal excerpt that directly answers the query,\n"
-        f"  2) \"context\": one or two sentences of surrounding text for additional context,\n"
-        f"  3) \"disease\": \"{disease_name.replace('.md', '')}\",\n"
-        f"  4) \"source\": a JSON object with two keys:\n"
-        f"     - \"lines\": a list of line numbers and image numbers used in the answer, e.g. [\"L34\", \"L35\",\"I1\"],\n"
-        f"     - \"tables\": a dictionary where each key is the table identifier (e.g. \"T1\", \"T2\") and each value is a list of used cell coordinates in that table, e.g. {{\"T1\": [\"R1C1\", \"R2C2\"]}}.\n"
-        f"If no tables or lines  are used in the answer, then do not return that field .\n"
-        f"Always return valid JSON with exactly these keys: \"answer\", \"context\", \"disease\" and \"source\". The value of \"source\" must itself be a JSON object with \"lines\" (list) and \"tables\" (dictionary)."
-    )
+  
+    disease_clean = disease_name.replace(".md", "")
+
+    system_prompt = read_ans_format_prompt_from_file(os.path.join(PROMPT_PATH, "relevant_info_prompt.txt"), disease=disease_clean)
 
     # print(system_prompt)
     messages = [
@@ -136,13 +152,10 @@ def get_history_insights(query: str, history: List[Dict[str, str]]) -> Dict[str,
     Always outputs valid JSON.
     If the user's question cannot be confidently answered from history (e.g., because context shifted), return answer:null and provide refined_query for new context.
     """
-    system_prompt = (
-        "You are a medical assistant reviewing a conversation. "
-        "Given the user's query and the chat history, choose exactly one of the following actions:\n"
-        "1) If the question was already explicitly answered in history, return JSON {\"answer\": exact answer text, \"refined_query\": null}.\n"
-        "2) Otherwise (including when context has shifted), return JSON {\"answer\": null, \"refined_query\": clarified question that incorporates any relevant entities or context needed to search fresh source documents}.\n"
-        "Always output valid JSON with exactly these two keys and no additional text."
+    system_prompt = read_ans_format_prompt_from_file(
+        os.path.join(PROMPT_PATH, "history_insights_prompt.txt")
     )
+
     messages = [{"role": "system", "content": system_prompt}] + history + [
         {"role": "user", "content": f"User Query: {query}"}
     ]
@@ -152,10 +165,8 @@ def get_history_insights(query: str, history: List[Dict[str, str]]) -> Dict[str,
 
 # ─── Title Generation Helper ───────────────────────────────────────────────────
 def generate_conversation_title(first_message: str) -> str:
-    prompt = (
-        "You’re a smart assistant. Given the first user message below, come up with a concise, human-readable chat title "
-        "(no more than 5 words):\n\n"
-        f"“{first_message}”"
+    prompt = read_ans_format_prompt_from_file(
+        os.path.join(PROMPT_PATH, "conversation_title_prompt.txt"), first_message=first_message
     )
     title = call_model(
         SUMMARIZATION_MODEL,
@@ -199,22 +210,9 @@ def answer_medical_query(query: str, history: List[Dict[str, str]], markdown_fol
     }
 
     # print("sources1:",sources)
-    synth_system = (
-        "You are an Indian doctor working in a resource-constrained environment and an expert medical summarizer. Follow these steps:\n"
-        "1. If the user’s question is already answered in our conversation, respond immediately using that content.\n"
-        "2. Identify the key concepts in the question.\n"
-        "3. For each provided JSON object where “answer” is non-null and clearly relevant:\n"
-        "   • Integrate its “answer” and, if needed, its “context,” grouping related points under logical sub-headings.\n"
-        "   • Insert an inline citation in parentheses after each fact, e.g. “(Pathway X)”.\n"
-        "4. Discard any JSON objects whose “answer” or “context” aren’t directly helpful.\n"
-        "5. Begin your reply with a succinct overview statement (avoiding “Here’s a summary”).\n"
-        "6. Present detailed sections under clear markdown headings (e.g., “### Symptom Overview”, “### Treatment Guidelines”).\n"
-        "7. Use blank lines between paragraphs for readability, and ensure proper markdown formatting throughout.\n"
-        "8. If no objects are relevant, reply exactly: \"I’m sorry, I couldn’t find any information relevant to your question.\".\n"
+    synth_system = read_ans_format_prompt_from_file(
+        os.path.join(PROMPT_PATH, "medical_query_prompt.txt")
     )
-
-    
-
 
     messages = []
 

@@ -5,6 +5,7 @@ from ..auth.utils import verify_token
 from ..database import get_db
 import logging
 from ..routes.reviews import require_reviewer_or_admin
+from collections import defaultdict
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -56,26 +57,40 @@ def get_dashboard_stats(admin_user_id):
         today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
         week_ago = today - timedelta(days=7)
         month_ago = today - timedelta(days=30)
+        ninety_days_ago = today - timedelta(days=90)
         
         # User statistics
         total_users = users.count_documents({})
         new_users_today = users.count_documents({"created_at": {"$gte": today.timestamp()}})
         new_users_week = users.count_documents({"created_at": {"$gte": week_ago.timestamp()}})
         new_users_month = users.count_documents({"created_at": {"$gte": month_ago.timestamp()}})
-        
+        new_users_ninety_days = users.count_documents(
+            {"created_at": {"$gte": ninety_days_ago.timestamp()}}
+        )
         # Conversation statistics
         total_conversations = conversations.count_documents({})
         conversations_today = conversations.count_documents({"created_at": {"$gte": today}})
         conversations_week = conversations.count_documents({"created_at": {"$gte": week_ago}})
         conversations_month = conversations.count_documents({"created_at": {"$gte": month_ago}})
-        
+        conversations_ninety_days = conversations.count_documents({"created_at": {"$gte": ninety_days_ago}})
         # Message statistics
         total_messages = 0
         messages_today = 0
         messages_week = 0
         messages_month = 0
+        messages_ninety_days = 0
         
+        # Growth maps for charting
+        conversation_growth_map = defaultdict(int)
+        message_growth_map = defaultdict(int)
+                
         for conv in conversations.find({}):
+            # Conversation growth (based on created_at)
+            conv_time = conv.get("created_at")
+            if isinstance(conv_time, datetime) and conv_time >= ninety_days_ago:
+                date_key = conv_time.strftime("%Y-%m-%d")
+                conversation_growth_map[date_key] += 1
+                
             messages = conv.get("messages", [])
             total_messages += len(messages)
             
@@ -83,21 +98,24 @@ def get_dashboard_stats(admin_user_id):
                 msg_time = msg.get("timestamp", datetime.utcnow())
                 if isinstance(msg_time, str):
                     continue
-                    
+                date_key = msg_time.strftime("%Y-%m-%d")   
                 if msg_time >= today:
                     messages_today += 1
                 if msg_time >= week_ago:
                     messages_week += 1
                 if msg_time >= month_ago:
                     messages_month += 1
-        
+                if msg_time >= ninety_days_ago:
+                    messages_ninety_days += 1
+                    message_growth_map[date_key] += 1
+
         # Notification statistics
         total_notifications = notifications.count_documents({})
         unread_notifications = notifications.count_documents({"read": False})
         
-        # User growth data for chart (last 30 days)
+        # User growth data for chart (last 90 days)
         user_growth = []
-        for i in range(30):
+        for i in range(90):
             date = today - timedelta(days=i)
             count = users.count_documents({"created_at": {"$gte": date.timestamp(), "$lt": (date + timedelta(days=1)).timestamp()}})
             user_growth.append({
@@ -106,29 +124,54 @@ def get_dashboard_stats(admin_user_id):
             })
         user_growth.reverse()
         
+        conversation_growth = []
+        for i in range(90):
+            date = today - timedelta(days=i)
+            date_str = date.strftime("%Y-%m-%d")
+            conversation_growth.append(
+                {"date": date_str, "count": conversation_growth_map.get(date_str, 0)}
+            )
+        conversation_growth.reverse()
+        
+        # Message growth for last 90 days
+        message_growth = []
+        for i in range(90):
+            date = today - timedelta(days=i)
+            date_str = date.strftime("%Y-%m-%d")
+            message_growth.append(
+                {"date": date_str, "count": message_growth_map.get(date_str, 0)}
+            )
+        message_growth.reverse()
+        
         return jsonify({
             "users": {
                 "total": total_users,
                 "today": new_users_today,
                 "week": new_users_week,
                 "month": new_users_month,
+                "ninety_days": new_users_ninety_days,
                 "growth": user_growth
             },
             "conversations": {
                 "total": total_conversations,
                 "today": conversations_today,
                 "week": conversations_week,
-                "month": conversations_month
+                "month": conversations_month,
+                "ninety_days": conversations_ninety_days,
+                "growth": conversation_growth
             },
             "messages": {
                 "total": total_messages,
                 "today": messages_today,
                 "week": messages_week,
-                "month": messages_month
+                "month": messages_month,
+                "ninety_days": messages_ninety_days,
+                "growth": message_growth
             },
             "notifications": {
                 "total": total_notifications,
                 "unread": unread_notifications
+
             }
         })
     except Exception as e:

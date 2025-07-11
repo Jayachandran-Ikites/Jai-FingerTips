@@ -62,12 +62,13 @@ const AdminAnalytics = () => {
   }, [searchTerm]);
 
   const loadAnalytics = useCallback(async () => {
+    console.log("Loading analytics for time range:", timeRange);
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await api.get("/analytics/dashboard", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { days: timeRange, search: debouncedSearchTerm },
+        params: { days: timeRange },
       });
       setAnalytics(response.data);
     } catch (error) {

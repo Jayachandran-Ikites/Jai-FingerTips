@@ -1,9 +1,23 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { FiUser, FiLock, FiEye, FiEyeOff, FiCheckCircle, FiAlertCircle, FiChevronDown, FiLogOut } from "react-icons/fi";
+import {
+  FiUser,
+  FiLock,
+  FiEye,
+  FiEyeOff,
+  FiCheckCircle,
+  FiAlertCircle,
+  FiChevronDown,
+  FiLogOut,
+  FiChevronUp,
+  FiEdit,
+} from "react-icons/fi";
+import { GrEdit } from "react-icons/gr";
+import { CiEdit } from "react-icons/ci";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useToast } from "./ui/toast";
 import ReactDOM from "react-dom";
+import SpinnerLoader from "./loaders/spinner-loader";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -17,6 +31,8 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
   const [emailError, setEmailError] = useState("");
 
   const [oldPassword, setOldPassword] = useState("");
+  const [oldPasswordStatus, setOldPasswordStatus] = useState("idle"); // idle | checking | valid | invalid | error
+  const [oldPasswordMsg, setOldPasswordMsg] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showOld, setShowOld] = useState(false);
@@ -34,6 +50,9 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
 
   const editBtnRef = useRef(null);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [authType, setAuthType] = useState("");
 
   // When opening the edit dropdown, calculate its position
   useEffect(() => {
@@ -61,7 +80,8 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
     }
     // Use capture phase to ensure only the edit modal closes, not the parent dropdown
     window.addEventListener("mousedown", handleClickOutside, true);
-    return () => window.removeEventListener("mousedown", handleClickOutside, true);
+    return () =>
+      window.removeEventListener("mousedown", handleClickOutside, true);
   }, [editingName]);
 
   // Fetch user email and name on component mount or userId/token change
@@ -78,8 +98,10 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
         const res = await api.get(`/auth/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setEmail(res.data.email || "-");
-        setName(res.data.name || "");
+        console.log("Data : ",res.data)
+        setEmail(res?.data?.email || "-");
+        setName(res?.data?.name || "");
+        setAuthType(res?.data?.auth_type || "");
       } catch (err) {
         console.error("Failed to fetch email/name:", err);
         setEmailError("Failed to fetch email.");
@@ -91,8 +113,43 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
   }, [userId, token]);
 
   // Avatar and display name fallbacks
-  const avatarUrl = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || email || 'User')}&background=E0E7FF&color=4338CA`;
+  const avatarUrl =
+    user?.avatar ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      user?.name || email || "User"
+    )}&background=E0E7FF&color=4338CA`;
   const displayName = user?.name || email || "User";
+
+  // Debounced check for old password validity
+  useEffect(() => {
+    if (!oldPassword) {
+      setOldPasswordStatus("idle");
+      setOldPasswordMsg("");
+      return;
+    }
+    setOldPasswordStatus("checking");
+    setOldPasswordMsg("");
+    const handler = setTimeout(async () => {
+      try {
+        const res = await api.post(
+          "/auth/verify-password",
+          { user_id: userId, password: oldPassword },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (res.data.valid) {
+          setOldPasswordStatus("valid");
+          setOldPasswordMsg("");
+        } else {
+          setOldPasswordStatus("invalid");
+          setOldPasswordMsg("Incorrect password");
+        }
+      } catch (err) {
+        setOldPasswordStatus("error");
+        setOldPasswordMsg("Error verifying password");
+      }
+    }, 600); // 600ms debounce
+    return () => clearTimeout(handler);
+  }, [oldPassword, userId, token]);
 
   // Handle password change submission
   const handleSubmit = async (e) => {
@@ -108,7 +165,8 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
       setError("New passwords do not match.");
       return;
     }
-    if (newPassword.length < 6) { // Example: enforce minimum password length
+    if (newPassword.length < 6) {
+      // Example: enforce minimum password length
       setError("New password must be at least 6 characters long.");
       return;
     }
@@ -126,13 +184,15 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
         setNewPassword("");
         setConfirmPassword("");
       } else {
-        setError(res.data.error || "Failed to change password. Please try again.");
+        setError(
+          res.data.error || "Failed to change password. Please try again."
+        );
       }
     } catch (err) {
       console.error("Password change error:", err);
       setError(
         err.response?.data?.error ||
-        "Failed to change password. Please check your old password and try again."
+          "Failed to change password. Please check your old password and try again."
       );
     } finally {
       setLoading(false);
@@ -154,16 +214,22 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
         <div className="ml-3 flex-grow" style={{ position: "relative" }}>
           {/* Name Field */}
           <div className="flex items-center gap-2 mt-0.5">
-            <div className={`text-sm font-semibold text-gray-900 truncate ${!name ? 'italic text-gray-400' : ''}`}>{name || "Add user name"}</div>
+            <div
+              className={`text-sm font-semibold text-gray-900 truncate ${
+                !name ? "italic text-gray-400" : ""
+              }`}
+            >
+              {name || "Add user name"}
+            </div>
             <button
               type="button"
-              className="text-blue-500 hover:text-blue-700 text-xs px-1 py-0.5 rounded border border-blue-100 ml-1"
+              className="text-blue-500 hover:text-blue-700 text-xs px-1 py-0.5 rounded ml-1"
               onClick={() => setEditingName(true)}
               title={name ? "Edit name" : "Add name"}
               disabled={editingName}
               ref={editBtnRef}
             >
-              {name ? "Edit" : "Add"}
+              {name ? (<CiEdit className="w-5 h-5" />) : "Add"}
             </button>
           </div>
           {editingName &&
@@ -233,7 +299,13 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
             )}
           {/* Email */}
           <div className="text-xs text-gray-500 truncate mt-0.5">
-            {loadingEmail ? "Loading email..." : emailError ? <span className="text-red-500">{emailError}</span> : email}
+            {loadingEmail ? (
+              "Loading email..."
+            ) : emailError ? (
+              <span className="text-red-500">{emailError}</span>
+            ) : (
+              email
+            )}
           </div>
         </div>
       </div>
@@ -242,8 +314,13 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
       <div className="p-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           {/* Current Email Display Field */}
-          <div>
-            <label htmlFor="current-email" className="block text-xs font-medium text-gray-700 mb-1">Current Email</label>
+          {/* <div>
+            <label
+              htmlFor="current-email"
+              className="block text-xs font-medium text-gray-700 mb-1"
+            >
+              Current Email
+            </label>
             <input
               id="current-email"
               type="text"
@@ -251,115 +328,212 @@ export default function ProfileDropdown({ editDropdownRef, onLogout }) {
               readOnly
               className="w-full border border-gray-200 rounded-md px-3 py-2 bg-gray-50 text-gray-700 text-xs focus:outline-none cursor-not-allowed"
             />
-          </div>
-          <h2 className="text-sm font-bold text-blue-800 flex items-center gap-2">
-            <FiLock className="text-blue-500" /> Change Password
-          </h2>
-          {/* Old Password Field */}
-          <div>
-            <label htmlFor="old-password" className="block text-xs font-medium text-gray-700 mb-1">Old Password</label>
-            <div className="relative">
-              <input
-                id="old-password"
-                type={showOld ? "text" : "password"}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
-                value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors duration-200 focus:outline-none"
-                onClick={() => setShowOld((v) => !v)}
-                tabIndex={-1}
-                aria-label={showOld ? "Hide old password" : "Show old password"}
-              >
-                {showOld ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          {/* New Password Field */}
-          <div>
-            <label htmlFor="new-password" className="block text-xs font-medium text-gray-700 mb-1">New Password</label>
-            <div className="relative">
-              <input
-                id="new-password"
-                type={showNew ? "text" : "password"}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors duration-200 focus:outline-none"
-                onClick={() => setShowNew((v) => !v)}
-                tabIndex={-1}
-                aria-label={showNew ? "Hide new password" : "Show new password"}
-              >
-                {showNew ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Confirm New Password Field */}
-          <div>
-            <label htmlFor="confirm-password" className="block text-xs font-medium text-gray-700 mb-1">Confirm New Password</label>
-            <div className="relative">
-              <input
-                id="confirm-password"
-                type={showConfirm ? "text" : "password"}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors duration-200 focus:outline-none"
-                onClick={() => setShowConfirm((v) => !v)}
-                tabIndex={-1}
-                aria-label={showConfirm ? "Hide confirmed password" : "Show confirmed password"}
-              >
-                {showConfirm ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Error and Success Messages */}
-          {error && (
-            <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-md px-3 py-2 text-xs animate-fadeIn" role="alert">
-              <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
-              <span>{error}</span>
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-md font-semibold text-sm shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            disabled={loading}
+          </div> */}
+          {authType == "email"? <h2
+            className="text-sm font-bold text-blue-800 flex items-center gap-2 cursor-pointer select-none"
+            onClick={() => setShowPasswordSection((v) => !v)}
           >
-            {loading ? (
-              <>
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Changing...
-              </>
+            <FiLock className="text-blue-500" />
+            Change Password
+            {showPasswordSection ? (
+              <FiChevronUp className="ml-1" />
             ) : (
-              "Change Password"
+              <FiChevronDown className="ml-1" />
             )}
-          </button>
+          </h2> : null}
+          <div
+            className={`overflow-hidden transition-all duration-300 ${
+              showPasswordSection
+                ? "max-h-[1000px] opacity-100"
+                : "max-h-0 opacity-0 pointer-events-none"
+            }`}
+            style={{ willChange: "max-height, opacity" }}
+          >
+            <div className="flex flex-col gap-[0.5rem] pt-2">
+              {/* Old Password Field */}
+              <div>
+                <label
+                  htmlFor="old-password"
+                  className="block text-xs font-medium text-gray-700 mb-1"
+                >
+                  Old Password
+                </label>
+                <div className="relative flex items-center justify-center">
+                  <input
+                    id="old-password"
+                    type={showOld ? "text" : "password"}
+                    className={`w-[98%] border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 text-xs focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200 pr-10 margin-auto
+                      ${oldPasswordStatus === "valid" ? "focus:ring-green-500 border-green-500" : ""}
+                      ${oldPasswordStatus === "invalid" ? "focus:ring-red-500 border-red-500" : ""}
+                    `}
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors duration-200 focus:outline-none"
+                    onClick={() => setShowOld((v) => !v)}
+                    tabIndex={-1}
+                    aria-label={
+                      showOld ? "Hide old password" : "Show old password"
+                    }
+                  >
+                    {showOld ? (
+                      <FiEyeOff className="w-4 h-4" />
+                    ) : (
+                      <FiEye className="w-4 h-4" />
+                    )}
+                  </button>
+                  {/* Password check status icon */}
+                  {oldPasswordStatus === "checking" && (
+                    <span className="absolute right-8 top-1/2 -translate-y-1/2">
+                      <SpinnerLoader size="sm" />
+                    </span>
+                  )}
+                  {oldPasswordStatus === "valid" && (
+                    <FiCheckCircle className="w-4 h-4 text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                  )}
+                  {oldPasswordStatus === "invalid" && (
+                    <FiAlertCircle className="w-4 h-4 text-red-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                  )}
+                  {oldPasswordStatus === "error" && (
+                    <FiAlertCircle className="w-4 h-4 text-yellow-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                  )}
+                </div>
+                {oldPasswordMsg && (
+                  <div className="text-xs text-red-500 mt-1">
+                    {oldPasswordMsg}
+                  </div>
+                )}
+              </div>
+
+              {/* New Password Field */}
+              <div>
+                <label
+                  htmlFor="new-password"
+                  className="block text-xs font-medium text-gray-700 mb-1"
+                >
+                  New Password
+                </label>
+                <div className="relative px-[0.1rem]">
+                  <input
+                    id="new-password"
+                    type={showNew ? "text" : "password"}
+                    className="w-[98%] border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors duration-200 focus:outline-none"
+                    onClick={() => setShowNew((v) => !v)}
+                    tabIndex={-1}
+                    aria-label={
+                      showNew ? "Hide new password" : "Show new password"
+                    }
+                  >
+                    {showNew ? (
+                      <FiEyeOff className="w-4 h-4" />
+                    ) : (
+                      <FiEye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Confirm New Password Field */}
+              <div>
+                <label
+                  htmlFor="confirm-password"
+                  className="block text-xs font-medium text-gray-700 mb-1"
+                >
+                  Confirm New Password
+                </label>
+                <div className="relative px-[0.1rem]">
+                  <input
+                    id="confirm-password"
+                    type={showConfirm ? "text" : "password"}
+                    className="w-[98%] border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors duration-200 focus:outline-none"
+                    onClick={() => setShowConfirm((v) => !v)}
+                    tabIndex={-1}
+                    aria-label={
+                      showConfirm
+                        ? "Hide confirmed password"
+                        : "Show confirmed password"
+                    }
+                  >
+                    {showConfirm ? (
+                      <FiEyeOff className="w-4 h-4" />
+                    ) : (
+                      <FiEye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Error and Success Messages */}
+              {error && (
+                <div
+                  className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-md px-3 py-2 text-xs animate-fadeIn"
+                  role="alert"
+                >
+                  <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-md font-semibold text-sm shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Changing...
+                  </>
+                ) : (
+                  "Change Password"
+                )}
+              </button>
+            </div>
+          </div>
         </form>
       </div>
       {/* Logout Button */}
-      {typeof onLogout === 'function' && (
+      {typeof onLogout === "function" && (
         <div className="px-4 pb-4">
           <button
             onClick={onLogout}

@@ -31,7 +31,7 @@ export default function MarkdownRenderer({ content }) {
         },
         // slightly smaller gap for list items
         li({ children }) {
-          return <li style={{ marginBottom: "1em" }}>{children}</li>;
+          return <li className="text-sm md:text-base" style={{ marginBottom: "1em" }}>{children}</li>;
         },
         // styled tables (optional)
         table({ children }) {

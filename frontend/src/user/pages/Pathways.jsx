@@ -113,12 +113,12 @@ const Pathways = () => {
                   />
                 </svg>
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-900">
                 Medical Pathways
               </h1>
             </div>
             <div className="text-sm text-gray-500">
-              {pathways.length} pathways available
+              {pathways.length} pathways
             </div>
           </div>
         </div>

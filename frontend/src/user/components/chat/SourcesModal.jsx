@@ -6,7 +6,7 @@ import {
   renderSourceDocument,
   renderAnswerSources,
 } from "../../utilities/sourceFormatter";
-import filesData from "../../utilities/files_docs.json"
+import filesData from "../../utilities/files_docs.json";
 import EmptyState from "../EmptyState";
 
 const SourcesModal = ({ open, onClose, msgIndex, history, sources }) => {
@@ -59,15 +59,17 @@ const SourcesModal = ({ open, onClose, msgIndex, history, sources }) => {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-4xl max-h-[80vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-2 sm:p-4">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">Sources</h2>
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 border-b border-gray-200 gap-2 sm:gap-0 relative">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+            Sources
+          </h2>
+          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
             <button
               onClick={handleViewAllPathways}
-              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+              className="inline-flex items-center px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs sm:text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 w-full sm:w-auto justify-center sm:order-1"
             >
               <svg
                 className="w-4 h-4 mr-2"
@@ -84,10 +86,12 @@ const SourcesModal = ({ open, onClose, msgIndex, history, sources }) => {
               </svg>
               View All Pathways
             </button>
+            {/* Inline close button for sm and up, absolute for mobile */}
             <button
-              className="text-gray-400 hover:text-blue-500 text-2xl font-bold transition-colors"
+              className="absolute right-4 top-4 sm:top-[0.7rem] sm:static sm:order-2 text-gray-400 hover:text-blue-500 text-2xl font-bold transition-colors"
               onClick={onClose}
               aria-label="Close"
+              style={{ marginLeft: 0 }}
             >
               &times;
             </button>
@@ -96,21 +100,22 @@ const SourcesModal = ({ open, onClose, msgIndex, history, sources }) => {
 
         {/* Topic Selector */}
         {topics.length > 1 && (
-          <div className="p-4 border-b border-gray-200 flex flex-wrap gap-2 items-center">
-            <span className="text-sm font-medium text-gray-700 mr-2">
+          <div className="p-2 sm:p-4 border-b border-gray-200 flex flex-wrap gap-2 items-center">
+            <span className="text-xs sm:text-sm font-medium text-gray-700 mr-2">
               Source Documents:
             </span>
             {topics.map((topic) => (
               <button
                 key={topic}
                 onClick={() => setselected_topic(topic)}
-                className={`px-3 py-1 text-sm font-medium rounded-full transition-colors ${
+                className={`px-3 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors ${
                   selected_topic === topic
                     ? "bg-blue-600 text-white shadow"
                     : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                 }`}
               >
-                {topic.charAt(0).toUpperCase() + topic.slice(1)}
+                {topic.split("_").join(" ").charAt(0).toUpperCase() +
+                  topic.split("_").join(" ").slice(1)}
               </button>
             ))}
           </div>
@@ -161,7 +166,7 @@ const SourcesModal = ({ open, onClose, msgIndex, history, sources }) => {
         </div> */}
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-2 sm:p-6">
           {activeTab === "answer-sources" && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-800">

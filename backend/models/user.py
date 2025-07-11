@@ -4,13 +4,14 @@ from bson import ObjectId
 import time
 
 
-def create_user(email, password):
+def create_user(email, password,name):
     """Create a new user with email and password"""
     db = get_db()
     users_collection = db["users"]
     hashed_pw = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
     user = {
         "email": email,
+        "name": name,
         "password": hashed_pw,
         "auth_type": "email",
         "role": "user",

@@ -56,6 +56,24 @@ def chat():
             for m in convo.get("messages", [])
         ]
 
+        # Generate user message ID
+    user_message_id = str(ObjectId())
+
+    # Save the user message right after receiving it
+    conversations.update_one(
+        {"_id": ObjectId(conversation_id)},
+        {
+            "$push": {
+                "messages": {
+                    "id": user_message_id,
+                    "sender": "user",
+                    "text": user_message,
+                    "timestamp": datetime.utcnow(),
+                }
+            },
+            "$set": {"updated_at": datetime.utcnow()},
+        },
+    )
     # Get user's custom prompt if they're a power user
     user_prompt = get_user_active_prompt(user_id)
     if user_prompt:
@@ -74,35 +92,25 @@ def chat():
     # Estimate token count (rough approximation: 1 token ≈ 4 characters)
     estimated_tokens = (len(user_message) + len(bot_reply)) // 4
 
-    # Generate unique message IDs
-    user_message_id = str(ObjectId())
+    # Save messages
+    # Generate bot message ID
     bot_message_id = str(ObjectId())
 
-    # Save messages
+    # Save the bot response after generating it
     conversations.update_one(
-        {"_id": ObjectId(conversation_id)},
-        {
-            "$push": {
-                "messages": {
-                    "$each": [
-                        {
-                            "id": user_message_id,
-                            "sender": "user",
-                            "text": user_message,
-                            "timestamp": datetime.utcnow(),
-                        },
-                        {
-                            "id": bot_message_id,
-                            "sender": "bot",
-                            "text": bot_reply,
-                            "timestamp": datetime.utcnow(),
-                            "sources": sources,
-                        },
-                    ]
-                }
-            },
-            "$set": {"updated_at": datetime.utcnow()},
+    {"_id": ObjectId(conversation_id)},
+    {
+        "$push": {
+            "messages": {
+                "id": bot_message_id,
+                "sender": "bot",
+                "text": bot_reply,
+                "timestamp": datetime.utcnow(),
+                "sources": sources,
+            }
         },
+        "$set": {"updated_at": datetime.utcnow()}
+    }
     )
 
     # Track analytics

@@ -49,18 +49,29 @@ const DynamicCharts = ({ data, timeRange, onTimeRangeChange }) => {
   };
 
   // Get the appropriate data key based on selected data type
-  const getDataKey = () => {
-    switch (dataType) {
-      case "users":
-        return "count";
-      case "conversations":
-        return "conversations";
-      case "messages":
-        return "messages";
-      default:
-        return "count";
-    }
+  const getDataKey = () => "count";
+  // const getChartData = () => {
+  //   const growth = data?.[dataType]?.growth;
+  //   if (!growth || !Array.isArray(growth)) return [];
+
+  //   return growth.map((day) => ({
+  //     date: day.date,
+  //     count: day.count,
+  //   }));
+  // };
+  const getChartData = () => {
+    const growth = data?.[dataType]?.growth;
+    if (!growth || !Array.isArray(growth)) return [];
+
+    const range = parseInt(timeRange, 10);
+    const sorted = [...growth].sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    );
+    return sorted.slice(-range);
   };
+  
+  
+
 
   // Get chart title based on selected data type
   const getChartTitle = () => {
@@ -91,34 +102,18 @@ const DynamicCharts = ({ data, timeRange, onTimeRangeChange }) => {
   };
 
   // Get the appropriate data array based on selected data type
-  const getChartData = () => {
-    if (!data) return [];
+  // const getChartData = () => {
+  //   if (!data) return [];
 
-    switch (dataType) {
-      case "users":
-        return data.users?.growth || [];
-      case "conversations":
-        // Simulate conversation data if not available
-        if (!data.conversations?.daily) {
-          return data.users?.growth?.map(day => ({
-            date: day.date,
-            conversations: Math.floor(Math.random() * 5)
-          })) || [];
-        }
-        return data.conversations.daily;
-      case "messages":
-        // Simulate message data if not available
-        if (!data.messages?.daily) {
-          return data.users?.growth?.map(day => ({
-            date: day.date,
-            messages: Math.floor(Math.random() * 15 + 5)
-          })) || [];
-        }
-        return data.messages.daily;
-      default:
-        return [];
-    }
-  };
+  //   switch (dataType) {
+  //     case "users":
+  //       return data.users?.growth || [];
+  //     case "conversations":
+  //       return data.conversations.growth || [];
+  //     case "messages":
+  //       return data.messages.growth || [];
+  //   }
+  // };
 
   // Custom tooltip component
   const CustomTooltip = ({ active, payload, label }) => {
@@ -289,13 +284,13 @@ const DynamicCharts = ({ data, timeRange, onTimeRangeChange }) => {
           
           <div className="flex flex-wrap gap-3">
             <Select value={dataType} onValueChange={setDataType}>
-              <SelectTrigger className="w-36 h-9">
+              <SelectTrigger className="w-36 h-9 px-9">
                 <SelectValue placeholder="Select data type">
                   {dataType.charAt(0).toUpperCase() + dataType.slice(1)
                     .replace("s", "s")}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent >
                 <SelectItem value="users">Users</SelectItem>
                 <SelectItem value="conversations">Conversations</SelectItem>
                 <SelectItem value="messages">Messages</SelectItem>

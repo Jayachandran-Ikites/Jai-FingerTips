@@ -52,6 +52,7 @@ def signup():
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
+    name = data.get("name")
 
     if get_user_by_email(email):
         response = jsonify({"error": "User already exists"})
@@ -59,7 +60,7 @@ def signup():
             response.headers[key] = value
         return response, 400
 
-    create_user(email, password)
+    create_user(email, password, name)
 
     # Fetch the created user
     user = get_user_by_email(email)
@@ -390,4 +391,43 @@ def get_or_update_user_details(user_id):
         for key, value in get_cors_headers(origin).items():
             response.headers[key] = value
         return response, 200
+
+@auth_bp.route("/verify-password", methods=["POST", "OPTIONS"])
+def verify_password_api():
+    origin = request.headers.get('Origin')
+    if request.method == "OPTIONS":
+        response = make_response()
+        for key, value in get_cors_headers(origin).items():
+            response.headers[key] = value
+        return response, 200
+
+    data = request.get_json()
+    user_id = data.get("user_id")
+    password = data.get("password")
+    if not user_id or not password:
+        response = jsonify({"valid": False, "error": "Missing user_id or password"})
+        for key, value in get_cors_headers(origin).items():
+            response.headers[key] = value
+        return response, 400
+    try:
+        from ..models.user import get_user_by_id
+        user = get_user_by_id(user_id)
+        if not user:
+            response = jsonify({"valid": False, "error": "User not found"})
+            for key, value in get_cors_headers(origin).items():
+                response.headers[key] = value
+            return response, 404
+        if verify_password(user["password"], password):
+            response = jsonify({"valid": True})
+        else:
+            response = jsonify({"valid": False})
+        for key, value in get_cors_headers(origin).items():
+            response.headers[key] = value
+        return response, 200
+    except Exception as e:
+        print(f"Password verify error: {e}")
+        response = jsonify({"valid": False, "error": "Internal server error"})
+        for key, value in get_cors_headers(origin).items():
+            response.headers[key] = value
+        return response, 500
 

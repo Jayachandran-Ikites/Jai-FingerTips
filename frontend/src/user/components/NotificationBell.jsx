@@ -51,7 +51,19 @@ const NotificationBell = () => {
       return () => clearInterval(interval);
     }
   }, [token, filter]);
+  const toIST = (utc) =>{
+    return new Date(utc).toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour12: true,
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
 
+  
   const loadNotifications = async (pageNum = 1, reset = true) => {
     try {
       setLoading(true);
@@ -387,7 +399,9 @@ const NotificationBell = () => {
 
                                 <div className="flex items-center justify-between">
                                   <span className="text-xs text-gray-400">
-                                    {formatTimeAgo(notification.created_at)}
+                                    {formatTimeAgo(
+                                      toIST(notification.created_at)
+                                    )}
                                   </span>
 
                                   <Badge

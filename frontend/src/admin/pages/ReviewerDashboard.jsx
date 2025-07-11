@@ -81,6 +81,7 @@ const ReviewerDashboardContent = () => {
   const [userFilter, setUserFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [users, setUsers] = useState([]);
+  const [reviewerId, setReviewerId] = useState("");
 
   useEffect(() => {
     if (!token) {
@@ -229,6 +230,20 @@ const ReviewerDashboardContent = () => {
     }
   };
 
+  const getUserId = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get("/auth/verify", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data.user_id) {
+        return response.data.user_id;
+      }
+    } catch (error) {
+      console.error("Error getting user id:", error);
+    }
+  };
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
 
@@ -241,8 +256,8 @@ const ReviewerDashboardContent = () => {
       const token = localStorage.getItem("token");
       
       // Check if review already exists for this message
-      const existingReview = reviews.find(r => r.message_id === reviewForm.messageId);
-      
+      const existingReview = reviews.find(r => r.message_id === reviewForm.messageId && r.reviewer_id === reviewerId);
+
       if (existingReview) {
         // Update existing review
         await api.put(
@@ -294,6 +309,12 @@ const ReviewerDashboardContent = () => {
     loadConversations(1, { user : userFilter});
   }, [userFilter]);
 
+  useEffect(() => {
+    getUserId().then(id => {
+      setReviewerId(id);
+    });
+  }, []);
+
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <FiStar
@@ -310,7 +331,11 @@ const ReviewerDashboardContent = () => {
   };
 
   const getReviewsForMessage = (messageId) => {
-    return reviews.filter((item) => item.message_id === messageId);
+    return reviews.filter((item) => item.message_id === messageId );
+  };
+
+  const getReviewsForMessageForCurrentUser = (messageId) => {
+    return reviews.filter((item) => item.message_id === messageId && item.reviewer_id === reviewerId);
   };
 
   const toggleFeedbackExpand = (messageId) => {
@@ -329,8 +354,8 @@ const ReviewerDashboardContent = () => {
 
   const openReviewModal = (messageId) => {
     // Check if there's an existing review for this message
-    const existingReview = reviews.find(r => r.message_id === messageId);
-    
+    const existingReview = reviews.find(r => r.message_id === messageId && r.reviewer_id === reviewerId);
+
     if (existingReview) {
       // Pre-fill form with existing review data
       setReviewForm({
@@ -363,18 +388,21 @@ const ReviewerDashboardContent = () => {
         } bg-white/90 backdrop-blur-sm shadow-lg border-r border-blue-100 transition-all duration-300 flex flex-col h-screen sticky top-0`}
       >
         {/* Logo */}
-        <div className="p-4 border-b border-blue-100 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <HiOutlineFingerPrint className="w-8 h-8 text-blue-600" />
+        <div className="p-5 border-b border-blue-100 flex items-center justify-between">
             {sidebarOpen && (
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Reviewer Panel
-              </h1>
-            )}
+          <div className="flex items-center gap-3">
+              <>
+                <HiOutlineFingerPrint className="w-7 h-7 text-blue-600" />
+                <h1 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  Reviewer Panel
+                </h1>
+              </>
           </div>
+            )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1 rounded-lg hover:bg-gray-100 text-gray-500"
+            // className="p-1 rounded-lg hover:bg-gray-100 text-gray-500"
+            className="`w-full flex items-center justify-end px-3 py-3 rounded-lghover:bg-gray-100 transition-colors"
           >
             <FiMenu className="w-5 h-5" />
           </button>
@@ -512,6 +540,8 @@ const ReviewerDashboardContent = () => {
 
               {/* Pagination */}
               {loading ? (
+                <></>
+              ) : (
                 <>
                   {totalPages > 1 && (
                     <div className="flex items-center justify-center gap-2 mt-4">
@@ -545,10 +575,8 @@ const ReviewerDashboardContent = () => {
                         <FiChevronRight className="w-4 h-4" />
                       </Button>
                     </div>
-                  )}{" "}
+                  )}
                 </>
-              ) : (
-                <></>
               )}
             </div>
           </div>
@@ -699,7 +727,7 @@ const ReviewerDashboardContent = () => {
                                 className="flex items-center gap-1 bg-[#fefeff]"
                               >
                                 <FiEdit3 className="w-3 h-3 mr-1 " />
-                                {getReviewsForMessage(
+                                {getReviewsForMessageForCurrentUser(
                                   message.id || `msg-${index}`
                                 ).length > 0
                                   ? "Edit Review"
@@ -813,7 +841,8 @@ const ReviewerDashboardContent = () => {
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-800">
-                {getReviewsForMessage(reviewForm.messageId).length > 0
+                {getReviewsForMessageForCurrentUser(reviewForm.messageId)
+                  .length > 0
                   ? "Edit Review"
                   : "Add Review"}
               </h2>
@@ -888,7 +917,8 @@ const ReviewerDashboardContent = () => {
                 </Button>
                 <Button type="submit" variant="gradient" className="flex-1">
                   <FiSend className="w-4 h-4 mr-2" />
-                  {getReviewsForMessage(reviewForm.messageId).length > 0
+                  {getReviewsForMessageForCurrentUser(reviewForm.messageId)
+                    .length > 0
                     ? "Update Review"
                     : "Submit Review"}
                 </Button>
@@ -913,7 +943,9 @@ const NavItem = ({
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center px-3 py-3 rounded-lg transition-colors ${
+      className={`w-full flex items-center ${
+        expanded ? "" : "justify-center"
+      } px-3 py-3 rounded-lg transition-colors ${
         isActive
           ? "bg-blue-50 text-blue-700"
           : `text-gray-700 hover:bg-gray-100 ${className}`

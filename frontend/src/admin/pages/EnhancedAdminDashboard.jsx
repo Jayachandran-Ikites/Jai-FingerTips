@@ -50,6 +50,7 @@ import NotificationsManagement from "../components/NotificationsManagement";
 import NotificationForm from "../components/NotificationForm";
 import ConversationsManagement from "../components/ConversationsManagement";
 import AdminLoader from "../components/AdminLoader.jsx";
+import { use } from "react";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -70,7 +71,7 @@ const EnhancedAdminDashboardContent = () => {
   const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState(localStorage.getItem("tab") || "dashboard");
   const [loading, setLoading] = useState(true);
   const [dashboardStats, setDashboardStats] = useState(null);
   const [users, setUsers] = useState([]);
@@ -112,6 +113,7 @@ const EnhancedAdminDashboardContent = () => {
       return;
     }
     
+    
     loadDashboardData();
   }, [token, navigate]);
 
@@ -119,21 +121,26 @@ const EnhancedAdminDashboardContent = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      
-      // Load dashboard stats
-      const statsResponse = await api.get("/admin/dashboard", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setDashboardStats(statsResponse.data);
-      
-      // Load initial data based on active tab
+      console.log("Active Tab:", activeTab);
+      localStorage.setItem("tab", activeTab);
       if (activeTab === "users") {
         await loadUsers();
       } else if (activeTab === "conversations") {
         await loadConversations();
       } else if (activeTab === "notifications") {
         await loadNotifications();
-      }
+      }else if (activeTab === "dashboard") {
+      // Load dashboard stats
+      if(!dashboardStats) {
+      const statsResponse = await api.get("/admin/dashboard", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("Dashboard Stats:", statsResponse.data);
+      setDashboardStats(statsResponse.data);
+    }
+    }
+      // Load initial data based on active tab
+     
     } catch (error) {
       console.error("Error loading dashboard data:", error);
       if (error.response?.status === 403) {
@@ -149,7 +156,7 @@ const EnhancedAdminDashboardContent = () => {
       const token = localStorage.getItem("token");
       const response = await api.get("/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { page, limit: 20, search },
+        params: { page, limit: 15, search },
       });
       setUsers(response.data.users);
       setTotalPages(response.data.pages);
@@ -166,7 +173,7 @@ const EnhancedAdminDashboardContent = () => {
         headers: { Authorization: `Bearer ${token}` },
         params: { 
           page, 
-          limit: 20,
+          limit: 15,
           ...filters
         },
       });
@@ -185,7 +192,7 @@ const EnhancedAdminDashboardContent = () => {
         headers: { Authorization: `Bearer ${token}` },
         params: { 
           page, 
-          limit: 20,
+          limit: 15,
           ...filters
         },
       });
@@ -198,6 +205,8 @@ const EnhancedAdminDashboardContent = () => {
   };
 
   const handleTabChange = (tab) => {
+    
+    localStorage.setItem("tab", tab);
     setActiveTab(tab);
     setCurrentPage(1);
     setSearchTerm("");
@@ -211,6 +220,12 @@ const EnhancedAdminDashboardContent = () => {
       loadNotifications();
     }
   };
+
+  useEffect(() => {
+    if (activeTab === "dashboard") {
+    loadDashboardData();
+    }
+  },[activeTab]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -226,6 +241,8 @@ const EnhancedAdminDashboardContent = () => {
       loadConversations(page);
     } else if (activeTab === "notifications") {
       loadNotifications(page);
+    }else if(activeTab == "dashboard"){
+      loadDashboardData();
     }
   };
 
@@ -331,18 +348,22 @@ const EnhancedAdminDashboardContent = () => {
         } bg-white/90 backdrop-blur-sm shadow-lg border-r border-blue-100 transition-all duration-300 flex flex-col h-screen sticky top-0`}
       >
         {/* Logo */}
-        <div className="p-4 border-b border-blue-100 flex items-center justify-between">
+        <div className="p-5 border-b border-blue-100 flex items-center justify-between">
+          {sidebarOpen && (
           <div className="flex items-center gap-3">
-            <HiOutlineFingerPrint className="w-8 h-8 text-blue-600" />
-            {sidebarOpen && (
+            <>
+              <HiOutlineFingerPrint className="w-8 h-8 text-blue-600" />
+
               <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 Admin Panel
               </h1>
-            )}
-          </div>
+            </>
+        </div>
+          )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1 rounded-lg hover:bg-gray-100 text-gray-500"
+            // className="p-1 rounded-lg hover:bg-gray-100 text-gray-500"
+            className="`w-full flex items-center px-3 py-3 rounded-lg transition-colors"
           >
             <FiMenu className="w-5 h-5" />
           </button>
@@ -394,12 +415,12 @@ const EnhancedAdminDashboardContent = () => {
                 onClick={() => navigate("/reviewer")}
                 expanded={sidebarOpen}
               />
-              <NavItem
+              {/* <NavItem
                 icon={FiFileText}
                 label="Feedback"
                 onClick={() => navigate("/admin/feedback")}
                 expanded={sidebarOpen}
-              />
+              /> */}
             </div>
           </nav>
         </div>
@@ -539,16 +560,14 @@ const NavItem = ({ icon: Icon, label, isActive, onClick, expanded, className = "
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center px-3 py-3 rounded-lg transition-colors ${
-        isActive 
-          ? "bg-blue-50 text-blue-700" 
+      className={`w-full flex items-center ${expanded ? "" : "justify-center"} px-3 py-3 rounded-lg transition-colors ${
+        isActive
+          ? "bg-blue-50 text-blue-700"
           : `text-gray-700 hover:bg-gray-100 ${className}`
       }`}
     >
       <Icon className={`w-5 h-5 ${isActive ? "text-blue-600" : ""}`} />
-      {expanded && (
-        <span className="ml-3 text-sm font-medium">{label}</span>
-      )}
+      {expanded && <span className="ml-3 text-sm font-medium">{label}</span>}
     </button>
   );
 };
@@ -590,7 +609,7 @@ const DashboardOverview = ({ stats, onSendNotification, timeRange, onTimeRangeCh
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
         <Button
           onClick={onSendNotification}
@@ -600,7 +619,7 @@ const DashboardOverview = ({ stats, onSendNotification, timeRange, onTimeRangeCh
           <FiSend className="w-4 h-4" />
           Send Notification
         </Button>
-      </div>
+      </div> */}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -687,9 +706,9 @@ const UsersManagement = ({
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Role
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
-                  </th>
+                  </th> */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Created
                   </th>
@@ -731,7 +750,8 @@ const UsersManagement = ({
                         <option value="admin">Admin</option>
                       </select>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* Using This */}
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <select
                         value={user.status || "active"}
                         onChange={(e) => onUpdateStatus(user._id, e.target.value)}
@@ -740,7 +760,7 @@ const UsersManagement = ({
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
                       </select>
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
@@ -822,7 +842,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, loading }) => {
 const UserDetailsModal = ({ user, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-sm shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-800">User Details</h2>
@@ -848,7 +868,7 @@ const UserDetailsModal = ({ user, onClose }) => {
                 </h3>
                 <p className="text-gray-600">{user.user.email}</p>
                 <p className="text-sm text-gray-500">
-                  Joined {new Date(user.user.created_at).toLocaleDateString()}
+                  Joined {new Date(user.user.created_at * 1000).toLocaleDateString()}
                 </p>
               </div>
             </div>

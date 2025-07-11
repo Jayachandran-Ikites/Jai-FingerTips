@@ -51,7 +51,7 @@ const UserManagementContent = () => {
       const token = localStorage.getItem("token");
       const response = await api.get("/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { page, limit: 20, search },
+        params: { page, limit: 15, search },
       });
       setUsers(response.data.users);
       setTotalPages(response.data.pages);
@@ -215,9 +215,9 @@ const UserManagementContent = () => {
                     <th className="text-left py-3 px-4 font-medium text-gray-700">
                       Role
                     </th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">
+                    {/* <th className="text-left py-3 px-4 font-medium text-gray-700">
                       Status
-                    </th>
+                    </th> */}
                     <th className="text-left py-3 px-4 font-medium text-gray-700">
                       Created
                     </th>
@@ -272,7 +272,7 @@ const UserManagementContent = () => {
                           <option value="admin">Admin</option>
                         </select>
                       </td>
-                      <td className="py-4 px-4">
+                      {/* <td className="py-4 px-4">
                         <select
                           value={user.status || "active"}
                           onChange={(e) =>
@@ -283,7 +283,7 @@ const UserManagementContent = () => {
                           <option value="active">Active</option>
                           <option value="inactive">Inactive</option>
                         </select>
-                      </td>
+                      </td> */}
                       <td className="py-4 px-4 text-sm text-gray-500">
                         {new Date(user.created_at).toLocaleDateString()}
                       </td>
@@ -307,7 +307,7 @@ const UserManagementContent = () => {
         </Card>
 
         {/* Pagination */}
-        {loading ? (
+        {loading ? <></>:(
           <>
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2">
@@ -329,10 +329,8 @@ const UserManagementContent = () => {
                   Next
                 </Button>
               </div>
-            )}{" "}
+            )}
           </>
-        ) : (
-          <></>
         )}
       </div>
 

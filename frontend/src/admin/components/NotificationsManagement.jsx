@@ -107,7 +107,7 @@ const NotificationsManagement = ({
         headers: { Authorization: `Bearer ${token}` },
         params: { 
           page,
-          limit: 20,
+          limit: 15,
           user_id: userFilter || undefined,
           type: typeFilter || undefined,
           search: debouncedSearchTerm || undefined
@@ -197,7 +197,7 @@ const NotificationsManagement = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800">
           Notifications Management
         </h2>
@@ -209,7 +209,7 @@ const NotificationsManagement = ({
           <FiPlus className="w-4 h-4" />
           Send Notification
         </Button>
-      </div>
+      </div> */}
 
       {/* Filters */}
       <Card className="bg-white/80 backdrop-blur-sm relative z-50">
@@ -223,7 +223,6 @@ const NotificationsManagement = ({
                 value={userFilter}
                 onValueChange={(value) => {
                   setUserFilter(value);
-               
                 }}
               >
                 <SelectTrigger className="w-full">
@@ -254,7 +253,6 @@ const NotificationsManagement = ({
                 value={typeFilter}
                 onValueChange={(value) => {
                   setTypeFilter(value);
-                  
                 }}
               >
                 <SelectTrigger>
@@ -408,7 +406,7 @@ const NotificationsManagement = ({
                           </div>
 
                           <Badge variant="secondary" className={colorClass}>
-                            {notification.type}
+                            {notification.type.toUpperCase()}
                           </Badge>
                         </div>
                       </div>
@@ -422,45 +420,51 @@ const NotificationsManagement = ({
       </div>
 
       {/* Pagination */}
-      {loading ? <>
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            onClick={() => {
-              const newPage = Math.max(1, page - 1);
-              setPage(newPage);
-              onPageChange(newPage);
-            }}
-            disabled={page === 1 || loading}
-            variant="outline"
-            size="sm"
-          >
-            Previous
-          </Button>
-          <span className="px-4 py-2 text-sm text-gray-600">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            onClick={() => {
-              const newPage = Math.min(totalPages, page + 1);
-              setPage(newPage);
-              onPageChange(newPage);
-            }}
-            disabled={page === totalPages || loading}
-            variant="outline"
-            size="sm"
-          >
-            Next
-          </Button>
-        </div>
+      {loading ? (
+        <></>
+      ) : (
+        <>
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2">
+              <Button
+                onClick={() => {
+                  const newPage = Math.max(1, page - 1);
+                  setPage(newPage);
+                  onPageChange(newPage);
+                }}
+                disabled={page === 1 || loading}
+                variant="outline"
+                size="sm"
+                
+              >
+                Previous
+              </Button>
+              <span className="px-4 py-2 text-sm text-gray-600">
+                Page {page} of {totalPages}
+              </span>
+              <Button
+                onClick={() => {
+                  const newPage = Math.min(totalPages, page + 1);
+                  setPage(newPage);
+                  onPageChange(newPage);
+                }}
+                disabled={page === totalPages || loading}
+                variant="outline"
+                size="sm"
+              
+              >
+                Next
+              </Button>
+            </div>
+          )}
+        </>
       )}
-      </>:<></>}
 
       {/* Notification Modal */}
       {showNotificationModal && (
         <NotificationForm
-        form={notificationForm}
-        setForm={setNotificationForm}
+          form={notificationForm}
+          setForm={setNotificationForm}
           onSubmit={handleSendNotification}
           onClose={() => setShowNotificationModal(false)}
         />
