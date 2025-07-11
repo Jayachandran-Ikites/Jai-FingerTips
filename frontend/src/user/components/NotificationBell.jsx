@@ -46,7 +46,7 @@ const NotificationBell = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    if (token) {
+    if (token && auth.userId) {
       loadNotifications();
       // Initialize WebSocket connection
       initializeSocket();
@@ -57,7 +57,7 @@ const NotificationBell = () => {
         }
       };
     }
-  }, [token]);
+  }, [token, auth.userId]);
   
   // Initialize WebSocket connection
   const initializeSocket = () => {
@@ -78,7 +78,7 @@ const NotificationBell = () => {
     
     newSocket.on(`notification_update_${auth.userId}`, (data) => {
       console.log('Received notification update:', data);
-      if (data.unread_count !== undefined) {
+      if (data && data.unread_count !== undefined) {
         setUnreadCount(data.unread_count);
       }
       loadNotifications();
@@ -86,7 +86,9 @@ const NotificationBell = () => {
     
     newSocket.on(`new_notification_${auth.userId}`, (data) => {
       console.log('Received new notification:', data);
-      loadNotifications();
+      if (data) {
+        loadNotifications();
+      }
     });
     
     setSocket(newSocket);
@@ -94,15 +96,20 @@ const NotificationBell = () => {
   
   const toIST = (utc) =>{
     const date = new Date(utc);
-    return date.toLocaleString("en-IN", {
-      timeZone: "Asia/Kolkata",
-      hour12: true,
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    try {
+      return date.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        hour12: true,
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      console.error("Error converting to IST:", error);
+      return date.toLocaleString(); // Fallback to browser's locale
+    }
   }
 
   
@@ -438,14 +445,12 @@ const NotificationBell = () => {
                                 </div>
                                         toIST(notification.created_at)
                                       )}
-                                  {notification.message}
+                                  {notification.message || ""}
                                 </p>
 
                                 <div className="flex items-center justify-between">
                                   <span className="text-xs text-gray-400">
-                                    {formatTimeAgo(
-                                      toIST(notification.created_at)
-                                    )}
+                                    {notification.created_at ? formatTimeAgo(notification.created_at) : ""}
                                   </span>
 
                                   <Badge

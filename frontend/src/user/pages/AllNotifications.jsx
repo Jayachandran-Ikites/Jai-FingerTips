@@ -74,36 +74,42 @@ const AllNotificationsContent = () => {
   
   // Initialize WebSocket connection
   const initializeSocket = () => {
-    const newSocket = io(import.meta.env.VITE_API_URL, {
-      transports: ['websocket'],
-      auth: {
-        token: `Bearer ${token}`
+    try {
+      const newSocket = io(import.meta.env.VITE_API_URL, {
+        transports: ['websocket'],
+        auth: {
+          token: `Bearer ${token}`
+        }
+      });
+      
+      newSocket.on('connect', () => {
+        console.log('WebSocket connected for notifications page');
+      });
+      
+      newSocket.on('connect_error', (error) => {
+        console.error('WebSocket connection error:', error);
+      });
+      
+      if (auth && auth.userId) {
+        newSocket.on(`notification_update_${auth.userId}`, (data) => {
+          console.log('Received notification update:', data);
+          if (data && data.unread_count !== undefined) {
+            setUnreadCount(data.unread_count);
+          }
+          loadNotifications();
+        });
+        
+        newSocket.on(`new_notification_${auth.userId}`, (data) => {
+          console.log('Received new notification:', data);
+          loadNotifications();
+          toast.success("New notification received!");
+        });
       }
-    });
-    
-    newSocket.on('connect', () => {
-      console.log('WebSocket connected for notifications page');
-    });
-    
-    newSocket.on('connect_error', (error) => {
-      console.error('WebSocket connection error:', error);
-    });
-    
-    newSocket.on(`notification_update_${auth.userId}`, (data) => {
-      console.log('Received notification update:', data);
-      if (data.unread_count !== undefined) {
-        setUnreadCount(data.unread_count);
-      }
-      loadNotifications();
-    });
-    
-    newSocket.on(`new_notification_${auth.userId}`, (data) => {
-      console.log('Received new notification:', data);
-      loadNotifications();
-      toast.success("New notification received!");
-    });
-    
-    setSocket(newSocket);
+      
+      setSocket(newSocket);
+    } catch (error) {
+      console.error("Error initializing socket:", error);
+    }
   };
 
   const loadNotifications = async () => {
@@ -240,16 +246,22 @@ const AllNotificationsContent = () => {
 
   const formatDate = (dateString) => {
     // Convert UTC to IST
-    const date = new Date(dateString);
-    return date.toLocaleString("en-IN", {
-      timeZone: "Asia/Kolkata",
-      hour12: true,
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    if (!utc) return "";
+    try {
+      const date = new Date(utc);
+      return date.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        hour12: true,
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      console.error("Error converting to IST:", error);
+      return new Date(utc).toLocaleString(); // Fallback
+    }
   };
 
   if (loading && notifications.length === 0) {

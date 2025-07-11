@@ -2,10 +2,10 @@ from venv import logger
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 from bson import ObjectId
-from ..auth.utils import verify_token
 from ..database import get_db
 import logging
 from ..app import socketio
+from ..auth.utils import verify_token
 
 notifications_bp = Blueprint("notifications", __name__)
 
@@ -80,7 +80,6 @@ def subscribe_to_notifications():
 def get_user_notifications_poll():
     """Get notifications for the current user (legacy polling method)"""
     logger.info("Fetching user notifications")
-    """Get notifications for the current user"""
     auth_header = request.headers.get("Authorization")
     if not auth_header:
         return jsonify({"error": "Missing token"}), 401
@@ -105,6 +104,8 @@ def get_user_notifications_poll():
         
         # Get notifications with pagination
         skip = (page - 1) * limit
+        total = notifications.count_documents(query)
+        unread_count = notifications.count_documents({"user_id": ObjectId(user_id), "read": False})
         notif_list = list(notifications.find(query).sort("created_at", -1).skip(skip).limit(limit))
         
         # Format data
