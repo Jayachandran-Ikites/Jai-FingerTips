@@ -1,14 +1,13 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_socketio import SocketIO
 from .auth.routes import auth_bp
 from .chat.routes import chat_bp
 from .admin.routes import admin_bp
-from .notifications.routes import notifications_bp
 from .routes.feedback import feedback_bp
 from .routes.reviews import reviews_bp
 from .routes.analytics import analytics_bp
 from .routes.prompts import prompts_bp
-from flask_socketio import SocketIO
 import os
 from dotenv import load_dotenv
 
@@ -35,7 +34,11 @@ CORS(
 app.register_blueprint(auth_bp, url_prefix=os.getenv("BASE_URL")+"/auth")
 app.register_blueprint(chat_bp, url_prefix=os.getenv("BASE_URL"))
 app.register_blueprint(admin_bp, url_prefix=os.getenv("BASE_URL")+"/admin")
+
+# Import notifications_bp after creating socketio to avoid circular import
+from .notifications.routes import notifications_bp
 app.register_blueprint(notifications_bp, url_prefix=os.getenv("BASE_URL"))
+
 app.register_blueprint(feedback_bp, url_prefix=os.getenv("BASE_URL"))
 app.register_blueprint(reviews_bp, url_prefix=os.getenv("BASE_URL"))
 app.register_blueprint(analytics_bp, url_prefix=os.getenv("BASE_URL"))
