@@ -1,7 +1,6 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { io } from "socket.io-client";
 import { AuthContext } from "../context/AuthContext.jsx";
 import {
   FiBell,
@@ -37,6 +36,8 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { ToastProvider, useToast } from "../components/ui/toast";
+import { toIST } from "../components/NotificationBell.jsx";
+import { io } from "socket.io-client";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -45,7 +46,7 @@ const api = axios.create({
 
 // Create a wrapper component that uses the toast hook
 const AllNotificationsContent = () => {
-  const { token } = useContext(AuthContext);
+  const { token, userId } = useContext(AuthContext);
   const navigate = useNavigate();
   const { toast } = useToast();
   const [notifications, setNotifications] = useState([]);
@@ -55,66 +56,58 @@ const AllNotificationsContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [socket, setSocket] = useState(null);
+  const socketRef = useRef(null);
+ 
 
   useEffect(() => {
     if (!token) {
       navigate("/auth");
       return;
     }
+    console.log("UserId :",userId)
     loadNotifications();
     initializeSocket();
-    
+
     return () => {
-      if (socket) {
-        socket.disconnect();
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        console.log("WebSocket disconnected");
       }
     };
   }, [token, filter, currentPage]);
-  
-  // Initialize WebSocket connection
-  const initializeSocket = () => {
-    try {
-      const newSocket = io(import.meta.env.VITE_API_URL, {
-        transports: ["websocket"],
-        auth: {
-          token: `Bearer ${token}`
-        }
-      });
-      
-      newSocket.on('connect', () => {
-        console.log('WebSocket connected for notifications page');
-      });
-      
-      newSocket.on('connect_error', (error) => {
-        console.error('WebSocket connection error:', error);
-      });
-      
-      // Get userId from localStorage or context
-      const userId = localStorage.getItem("userId") || auth?.userId;
-      
-      if (userId) {
-        newSocket.on(`notification_update_${userId}`, (data) => {
-          console.log('Received notification update:', data);
-          if (data && data.unread_count !== undefined) {
-            setUnreadCount(data.unread_count);
-          }
-          loadNotifications();
-        });
-        
-        newSocket.on(`new_notification_${userId}`, (data) => {
-          console.log('Received new notification:', data);
-          loadNotifications();
-          toast.success("New notification received!");
-        });
-      }
-      
-      setSocket(newSocket);
-    } catch (error) {
-      console.error("Error initializing socket:", error);
-    }
-  };
 
+  const initializeSocket = () => {
+    const newSocket = io(import.meta.env.VITE_WS_URL, {
+      transports: ["websocket"],
+      auth: {
+        token: `Bearer ${token}`,
+      },
+    });
+
+    newSocket.on("connect", () => {
+      console.log("WebSocket connected for notifications page");
+    });
+
+    newSocket.on("connect_error", (error) => {
+      console.error("WebSocket connection error:", error);
+    });
+
+    newSocket.on(`notification_update_${userId}`, (data) => {
+      console.log("Received notification update:", data);
+      if (data.unread_count !== undefined) {
+        setUnreadCount(data.unread_count);
+      }
+      loadNotifications();
+    });
+
+    newSocket.on(`new_notification_${userId}`, (data) => {
+      console.log("Received new notification:", data);
+      loadNotifications();
+      toast.success("New notification received!");
+    });
+
+    socketRef.current = newSocket;
+  };
   const loadNotifications = async () => {
     try {
       setLoading(true);
@@ -160,7 +153,9 @@ const AllNotificationsContent = () => {
       // Update local state
       setNotifications((prev) =>
         prev.map((notif) =>
-          notif._id === notificationId ? { ...notif, read: true } : notif
+          notif._id === notificationId
+            ? { ...notif, read_by: [...(notif.read_by || []), userId] }
+            : notif
         )
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
@@ -185,8 +180,12 @@ const AllNotificationsContent = () => {
 
       // Update local state
       setNotifications((prev) =>
-        prev.map((notif) => ({ ...notif, read: true }))
-      );
+            prev.map((notif) =>
+              notif.read_by?.includes(userId)
+                ? notif
+                : { ...notif, read_by: [...(notif.read_by || []), userId] }
+            )
+          );
       setUnreadCount(0);
       toast.success("All notifications marked as read");
     } catch (error) {
@@ -210,9 +209,13 @@ const AllNotificationsContent = () => {
         prev.filter((notif) => notif._id !== notificationId)
       );
 
-      if (deletedNotif && !deletedNotif.read) {
-        setUnreadCount((prev) => Math.max(0, prev - 1));
-      }
+      if (
+            deletedNotif &&
+            (!notification.read_by?.includes(userId) ||
+              deletedNotif.read_by.length === 0)
+          ) {
+            setUnreadCount((prev) => Math.max(0, prev - 1));
+          }
 
       toast.success("Notification deleted");
     } catch (error) {
@@ -247,24 +250,9 @@ const AllNotificationsContent = () => {
     }
   };
 
-  const formatDate = (utc) => {
-    // Convert UTC to IST
-    if (!utc) return "";
-    try {
-      const date = new Date(utc);
-      return date.toLocaleString("en-IN", {
-        timeZone: "Asia/Kolkata",
-        hour12: true,
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch (error) {
-      console.error("Error converting to IST:", error);
-      return new Date(utc).toLocaleString(); // Fallback
-    }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
   };
 
   if (loading && notifications.length === 0) {
@@ -397,7 +385,9 @@ const AllNotificationsContent = () => {
                 <Card
                   key={notification._id}
                   className={`hover:shadow-md transition-all ${
-                    !notification.read ? "bg-blue-50/50 border-blue-200" : ""
+                    !notification.read_by?.includes(userId)
+                      ? "bg-blue-50/50 border-blue-200"
+                      : ""
                   }`}
                 >
                   <CardContent className="p-6 bg-white rounded-lg">
@@ -412,7 +402,7 @@ const AllNotificationsContent = () => {
                             {notification.title}
                           </h3>
                           <div className="flex items-center gap-3">
-                            {!notification.read && (
+                            {!notification.read_by?.includes(userId) && (
                               <Badge
                                 variant="info"
                                 className="bg-blue-100 text-blue-800"
@@ -421,7 +411,7 @@ const AllNotificationsContent = () => {
                               </Badge>
                             )}
                             <div className="flex items-center gap-2">
-                              {!notification.read && (
+                              {!notification.read_by?.includes(userId) && (
                                 <Button
                                   onClick={() => markAsRead(notification._id)}
                                   variant="ghost"
@@ -454,7 +444,7 @@ const AllNotificationsContent = () => {
                         <div className="flex items-center gap-4 text-sm text-gray-500">
                           <div className="flex items-center gap-1">
                             <FiCalendar className="w-4 h-4" />
-                            {formatDate(notification.created_at)} (IST)
+                            {formatDate(toIST(notification.created_at))}
                           </div>
                           <Badge
                             variant="secondary"
@@ -477,7 +467,9 @@ const AllNotificationsContent = () => {
         </div>
 
         {/* Pagination */}
-        {loading ? <></> : (
+        {loading ? (
+          <></>
+        ) : (
           <>
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2">

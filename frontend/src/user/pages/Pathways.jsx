@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Header from "../components/chat/Header";
+import { AuthContext } from "../context/AuthContext.jsx";
 import filesData from "../utilities/files_docs.json";
+// Material Design
+import { MdFavorite, MdBloodtype, MdOutlineWaterDrop, MdThermostat, MdOutlineMonitorHeart, MdOutlineCoronavirus, MdOutlinePsychology, MdMenuBook } from "react-icons/md";
+// Game Icons
+import { GiLungs, GiFootprint } from "react-icons/gi";
 
 const Pathways = () => {
   const [pathways, setPathways] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const { userRole } = useContext(AuthContext);
 
   useEffect(() => {
     // Extract pathway data from filesData
@@ -47,18 +54,18 @@ const Pathways = () => {
 
   const getPathwayIcon = (key) => {
     const icons = {
-      asthma: "🫁",
-      anaemia: "🩸",
-      chestpain: "💔",
-      copd: "🫁",
-      diabetic_foot_ulcer: "🦶",
-      Diarrhoea: "💧",
-      fever: "🌡️",
-      heart_failure: "❤️",
-      pneumonia: "🫁",
-      stroke: "🧠",
+      asthma: <GiLungs className="text-3xl" />,
+      anaemia: <MdBloodtype className="text-3xl" />,
+      chestpain: <MdFavorite className="text-3xl" />,
+      copd: <GiLungs className="text-3xl" />,
+      diabetic_foot_ulcer: <GiFootprint className="text-3xl" />,
+      Diarrhoea: <MdOutlineWaterDrop className="text-3xl" />,
+      fever: <MdThermostat className="text-3xl" />,
+      heart_failure: <MdOutlineMonitorHeart className="text-3xl" />,
+      pneumonia: <MdOutlineCoronavirus className="text-3xl" />,
+      stroke: <MdOutlinePsychology className="text-3xl" />,
     };
-    return icons[key] || "📋";
+    return icons[key] || <MdMenuBook className="text-3xl" />;
   };
 
   const getPathwayColor = (key) => {
@@ -90,42 +97,16 @@ const Pathways = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <button
-                onClick={handleBackClick}
-                className="mr-4 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <svg
-                  className="w-6 h-6 text-gray-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-              <h1 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-900">
-                Medical Pathways
-              </h1>
-            </div>
-            <div className="text-sm text-gray-500">
-              {pathways.length} pathways
-            </div>
-          </div>
-        </div>
-      </div>
+      <Header
+        sidebarOpen={false}
+        setSidebarOpen={() => {}}
+        auth={{ user: null, logout: null }}
+        navigate={navigate}
+        userRole={userRole}
+      />
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-2">
             Comprehensive Medical Guidelines

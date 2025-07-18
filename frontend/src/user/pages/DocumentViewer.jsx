@@ -1,11 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Header from "../components/chat/Header";
+import { AuthContext } from "../context/AuthContext.jsx";
 import filesData from "../utilities/files_docs.json";
 import { renderSourceDocument } from "../utilities/sourceFormatter";
+// Material Design
+import {
+  MdFavorite,
+  MdBloodtype,
+  MdOutlineWaterDrop,
+  MdThermostat,
+  MdOutlineMonitorHeart,
+  MdOutlineCoronavirus,
+  MdOutlinePsychology,
+  MdMenuBook,
+} from "react-icons/md";
+// Game Icons
+import { GiLungs, GiFootprint } from "react-icons/gi";
 
 const DocumentViewer = () => {
   const { documentId } = useParams();
   const navigate = useNavigate();
+  const { userRole } = useContext(AuthContext);
   const [documentData, setDocumentData] = useState(null);
   const [documentTitle, setDocumentTitle] = useState("");
   const [loading, setLoading] = useState(true);
@@ -25,18 +41,18 @@ const DocumentViewer = () => {
 
   const getDocumentIcon = (id) => {
     const icons = {
-      asthma: "🫁",
-      anaemia: "🩸",
-      chestpain: "💔",
-      copd: "🫁",
-      diabetic_foot_ulcer: "🦶",
-      Diarrhoea: "💧",
-      fever: "🌡️",
-      heart_failure: "❤️",
-      pneumonia: "🫁",
-      stroke: "🧠",
+      asthma: <GiLungs className="text-2xl sm:text-3xl" />, // match Pathways.jsx
+      anaemia: <MdBloodtype className="text-2xl sm:text-3xl" />,
+      chestpain: <MdFavorite className="text-2xl sm:text-3xl" />,
+      copd: <GiLungs className="text-2xl sm:text-3xl" />,
+      diabetic_foot_ulcer: <GiFootprint className="text-2xl sm:text-3xl" />,
+      Diarrhoea: <MdOutlineWaterDrop className="text-2xl sm:text-3xl" />,
+      fever: <MdThermostat className="text-2xl sm:text-3xl" />,
+      heart_failure: <MdOutlineMonitorHeart className="text-2xl sm:text-3xl" />,
+      pneumonia: <MdOutlineCoronavirus className="text-2xl sm:text-3xl" />,
+      stroke: <MdOutlinePsychology className="text-2xl sm:text-3xl" />,
     };
-    return icons[id] || "📋";
+    return icons[id] || <MdMenuBook className="text-2xl sm:text-3xl" />;
   };
 
   const getDocumentColor = (id) => {
@@ -58,6 +74,8 @@ const DocumentViewer = () => {
   const handleBackToPathways = () => {
     navigate("/pathways");
   };
+
+  console.log("userRole : - ", userRole)
 
   if (loading) {
     return (
@@ -94,66 +112,16 @@ const DocumentViewer = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-blue-50 text-gray-800 shadow-lg no-print fixed top-0 left-0 w-full z-30">
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-7 lg:px-8 xl:px-8 2xl:px-8">
-          <div className="flex sm:flex-row sm:items-center sm:justify-between py-[0.5rem] l:py-[1rem] lg:py-[1rem] 2xl:py-[1rem]">
-            <div className="flex flex-col sm:flex-row sm:items-center w-full">
-              <div className="flex items-center w-full">
-                <button
-                  onClick={handleBackToPathways}
-                  className="mr-2 sm:mr-4 p-2 pl-0 pr-0 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors flex-shrink-0"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                </button>
-                <span className="text-2xl sm:text-3xl mr-2 sm:mr-4">
-                  {getDocumentIcon(documentId)}
-                </span>
-                <div className="min-w-0">
-                  <h1 className="text-[0.9rem] sm:text-2xl font-bold truncate">{documentTitle}</h1>
-                  <p className="text-xs sm:text-sm italic whitespace-nowrap">Medical Pathway & Guidelines</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-end w-full sm:w-auto">
-              <button
-                onClick={() => window.print()}
-                className="flex items-center px-3 sm:px-4 py-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors w-auto sm:w-[4rem] md:w-auto xl:w-auto 2xl:w-auto justify-center border border-grey-500"
-              >
-                <svg
-                  className="w-5 h-5 mr-0 sm:mr-0 md:mr-2 xl:mr-2 2xl:mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
-                  />
-                </svg>
-                <span className="hidden sm:hidden md:block xl:block 2xl:block">Print</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Header
+        sidebarOpen={false}
+        setSidebarOpen={() => {}}
+        auth={{ user: null, logout: null }}
+        navigate={navigate}
+        userRole={userRole}
+      />
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-28">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-10">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           {/* Document Content */}
           <div className="p-8">
@@ -164,7 +132,7 @@ const DocumentViewer = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center no-print">
+        {/* <div className="mt-8 text-center no-print">
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
               Need Help?
@@ -180,7 +148,7 @@ const DocumentViewer = () => {
               View All Pathways
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

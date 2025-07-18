@@ -1,0 +1,38 @@
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  html, body {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  main, .flex, .flex-1, .overflow-hidden, .h-full, .min-h-screen, .max-h-screen {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  #chat-area {
+    position: static !important;
+    width: 100% !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+  .chat-message {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+
+@page {
+  margin-top: 32px;
+  margin-bottom: 32px;
+} 

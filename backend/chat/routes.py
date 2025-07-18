@@ -1,11 +1,15 @@
+import time 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson import ObjectId
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, Response
 from datetime import datetime
-import time
-from .main import answer_medical_query, generate_conversation_title
+from .main import answer_medical_query
+from .utils import generate_conversation_title
 from ..auth.utils import verify_token
 from ..database import get_db 
+from .utils import summarize_conversation
+from .pdf_export import conversation_to_pdf_bytes 
+
 from ..models.analytics import track_response_latency, track_query_cost
 from ..models.prompt import get_user_active_prompt, get_default_system_prompt
 
@@ -29,7 +33,6 @@ def chat():
 
     db = get_db()
     conversations = db["conversations"]
-
     # Track start time for latency measurement
     start_time = time.time()
 
@@ -55,8 +58,7 @@ def chat():
             {"role": "user" if m["sender"]=="user" else "assistant", "content": m["text"]}
             for m in convo.get("messages", [])
         ]
-
-        # Generate user message ID
+        
     user_message_id = str(ObjectId())
 
     # Save the user message right after receiving it
@@ -73,19 +75,12 @@ def chat():
             },
             "$set": {"updated_at": datetime.utcnow()},
         },
-    )
-    # Get user's custom prompt if they're a power user
-    user_prompt = get_user_active_prompt(user_id)
-    if user_prompt:
-        # Use custom prompt for power users
-        custom_history = [{"role": "system", "content": user_prompt["prompt_text"]}] + history
-        bot_answer = answer_medical_query(user_message, custom_history)
-    else:
-        # Use default system prompt
-        bot_answer = answer_medical_query(user_message, history)
+    )    
 
+    bot_answer = answer_medical_query(user_message, history)
     bot_reply=bot_answer.get("answer")
     sources=bot_answer.get("sources")
+
     # Track end time and calculate latency
     end_time = time.time()
     
@@ -110,10 +105,9 @@ def chat():
             }
         },
         "$set": {"updated_at": datetime.utcnow()}
-    }
-    )
-
-    # Track analytics
+    })
+    
+        # Track analytics
     try:
         track_response_latency(conversation_id, bot_message_id, start_time, end_time, estimated_tokens)
         track_query_cost(conversation_id, bot_message_id, estimated_tokens)
@@ -122,21 +116,14 @@ def chat():
 
     updated = conversations.find_one({"_id": ObjectId(conversation_id)})
     history_resp = [
-        {
-            "role": "user" if m["sender"] == "user" else "assistant", 
-            "content": m["text"], 
-            "timestamp": m["timestamp"].isoformat(),
-            "id": m.get("id", str(ObjectId()))
-        }
+        {"role": "user" if m["sender"] == "user" else "assistant", "content": m["text"], "timestamp": m["timestamp"].isoformat(),"id": m.get("id", str(ObjectId()))}
         for m in updated.get("messages", [])
     ]
 
     return jsonify({
         "reply": bot_reply,
         "conversation_id": str(conversation_id),
-        "history": history_resp,
-        "latency_ms": round((end_time - start_time) * 1000, 2),
-        "estimated_tokens": estimated_tokens
+        "history": history_resp
     })
 
 
@@ -284,8 +271,7 @@ def patch_conversation(conversation_id):
 
     db = get_db()
     conversations = db["conversations"]
-
-    # Update the conversation title
+        
     result = conversations.update_one(
         {
             "_id": ObjectId(conversation_id),
@@ -295,11 +281,79 @@ def patch_conversation(conversation_id):
             "$set": {
                 "title": new_title,
                 "updated_at": datetime.utcnow()
-            }
+        }
         }
     )
-
     if result.matched_count == 0:
+            return jsonify({"error": "Conversation not found"}), 404 
+        
+    return jsonify({"message": "Conversation renamed successfully"})
+       
+
+@chat_bp.route("/chat/conversation/<conversation_id>/summary", methods=["GET"])
+def summarize_conversation_endpoint(conversation_id):
+    # Authenticate the user
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        return jsonify({"error": "Missing token"}), 401
+    token = auth_header.split(" ")[1]
+    user_id = verify_token(token)
+    if not user_id:
+        return jsonify({"error": "Invalid or expired token"}), 403
+
+    # Load the conversation
+    db = get_db()
+    conversations = db["conversations"]
+    conversation = conversations.find_one({
+        "_id": ObjectId(conversation_id),
+        "user_id": ObjectId(user_id)
+    })
+    if not conversation:
         return jsonify({"error": "Conversation not found"}), 404
 
-    return jsonify({"message": "Conversation renamed successfully"})
+    # Build history for summarization
+    history = [
+        {"role": "user" if msg["sender"] == "user" else "assistant", "content": msg["text"]}
+        for msg in conversation.get("messages", [])
+    ]
+
+    # Generate summary
+    try:
+        summary_text = summarize_conversation(history).get("summary")
+        print(summary_text)
+    except Exception as e:
+        current_app.logger.error(f"Summarization failed: {e}")
+        return jsonify({"error": "Failed to summarize conversation"}), 500
+
+    return jsonify({
+        "conversation_id": conversation_id,
+        "summary": summary_text
+    })
+
+@chat_bp.route("/chat/conversation/<conversation_id>/export/pdf", methods=["GET"])
+def export_conversation_pdf(conversation_id):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        return jsonify({"error": "Missing token"}), 401
+    token = auth_header.split(" ")[1]
+    user_id = verify_token(token)
+    if not user_id:
+        return jsonify({"error": "Invalid or expired token"}), 403
+
+    db = get_db()
+    conversations = db["conversations"]
+    conversation = conversations.find_one({
+        "_id": ObjectId(conversation_id),
+        "user_id": ObjectId(user_id)
+    })
+    if not conversation:
+        return jsonify({"error": "Conversation not found"}), 404
+
+    title = conversation.get("title", "Chat Export")
+    messages = conversation.get("messages", [])
+    pdf_bytes = conversation_to_pdf_bytes(title, messages)
+    filename = f"{title.replace(' ', '_')}_chat.pdf"
+
+    response = Response(pdf_bytes, mimetype='application/pdf')
+    response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response

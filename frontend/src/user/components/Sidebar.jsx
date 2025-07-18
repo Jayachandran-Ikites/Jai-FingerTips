@@ -41,14 +41,14 @@ const Sidebar = ({
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed no-print inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
           onClick={onToggle}
         />
       )}
 
       <div
         className={`
-          fixed lg:relative left-0 top-0 h-full bg-white/95 backdrop-blur-sm border-r border-blue-100
+          fixed no-print lg:relative left-0 top-0 h-full bg-white/95 backdrop-blur-sm border-r border-blue-100
           shadow-xl z-50 transform transition-all duration-300 ease-in-out flex flex-col
           ${
             isOpen
@@ -75,7 +75,9 @@ const Sidebar = ({
           </button>
         </div>
         {!isOpen && (
-          <div className="hidden lg:flex flex-col items-center py-4 space-y-4 mt-[1.6rem]">
+          <div
+            className="hidden lg:flex flex-col items-center py-4 space-y-4 mt-[1.6rem] max-h-[90%]"
+          >
             <div
               onClick={onToggle}
               className="h-[35px] w-[35px] bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-gray-600 hover:bg-gray-100 transition-colors absolute top-3 flex items-center justify-center rounded-tr-[50%] rounded-br-[50%] left-0"
@@ -92,7 +94,9 @@ const Sidebar = ({
               <FiPlus className="w-5 h-5" />
             </button>
 
-            <div className="flex-1 overflow-y-auto w-full px-2">
+            <div
+              className="flex-1 overflow-y-auto w-full px-2"
+            >
               <div className="space-y-2">
                 {conversations && conversations.length > 0 ? (
                   conversations.map((conv, index) => (

@@ -18,7 +18,8 @@ import Pathways from "./user/pages/Pathways.jsx";
 import DocumentViewer from "./user/pages/DocumentViewer.jsx";
 import AdminDashboard from "./admin/pages/AdminDashboard.jsx";
 import ReviewerDashboard from "./admin/pages/ReviewerDashboard.jsx";
-
+import AnalyticsDashboard from "./admin/pages/AnalyticsDashboard.jsx";
+import UserManagement from "./admin/pages/UserManagement.jsx";
 import FeedbackManagement from "./admin/pages/FeedbackManagement.jsx";
 import ForgotPassword from "./user/pages/ForgotPassword.jsx";
 import ResetPassword from "./user/pages/ResetPassword.jsx";
@@ -26,7 +27,6 @@ import VerifyEmail from "./user/pages/VerifyEmail.jsx";
 import AllNotifications from "./user/pages/AllNotifications.jsx";
 import PromptManagement from "./user/pages/PromptManagement.jsx";
 import RoleBasedRoute from "./user/components/RoleBasedRoute.jsx";
-import { ThemeProvider } from "./user/components/ui/theme-provider.jsx";
 import ConversationDetailPage from "./admin/components/ConversationDetailPage.jsx";
 
 const AppRouter = () => {
@@ -133,8 +133,22 @@ const AppRouter = () => {
             </RoleBasedRoute>
           }
         />
-       
-       
+        <Route
+          path="/admin/users"
+          element={
+            <RoleBasedRoute allowedRoles={["admin"]}>
+              <UserManagement />
+            </RoleBasedRoute>
+          }
+        />
+        <Route
+          path="/admin/analytics"
+          element={
+            <RoleBasedRoute allowedRoles={["admin", "reviewer"]}>
+              <AnalyticsDashboard />
+            </RoleBasedRoute>
+          }
+        />
         {/* <Route
           path="/admin/feedback"
           element={

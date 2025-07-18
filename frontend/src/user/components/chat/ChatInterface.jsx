@@ -1,10 +1,78 @@
 import { useRef, useState, useEffect } from "react";
-import { FiUser, FiMessageCircle } from "react-icons/fi";
+import { FiUser, FiMessageCircle, FiPrinter, FiInfo } from "react-icons/fi";
 import { HiOutlineFingerPrint, HiOutlineLightBulb } from "react-icons/hi";
 import MarkdownRenderer from "../MarkdownRenderer.jsx";
 import SourcesModal from "./SourcesModal.jsx";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: { "Content-Type": "application/json" },
+});
+
+// Simple modal for summary
+function SummaryModal({ open, onClose, summary, isLoading }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-2 sm:p-4">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-full sm:max-w-2xl md:max-w-lg border border-blue-100 flex flex-col relative animate-fadeIn">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 relative">
+          <h2 className="text-xl sm:text-2xl font-bold text-blue-700 flex items-center gap-2">
+            <FiInfo className="w-6 h-6 text-blue-500" /> Chat Summary
+          </h2>
+          <button
+            className="absolute right-4 top-4 text-gray-400 hover:text-blue-500 text-2xl font-bold transition-colors"
+            onClick={onClose}
+            aria-label="Close"
+            style={{ marginLeft: 0 }}
+          >
+            &times;
+          </button>
+        </div>
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className="text-gray-700 text-base leading-relaxed whitespace-pre-line">
+            {isLoading ? "Loading summary..." : summary}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const exportChatAsPDF = async (convId) => {
+  try {
+    const token = localStorage.getItem('token');
+    const resp = await api.get(`/chat/conversation/${convId}/export/pdf`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      responseType: 'blob', // Important: receive as binary
+    });
+
+    // Try to get filename from Content-Disposition header
+    let filename = `CONV-${convId}.pdf`;
+    const disposition = resp.headers['content-disposition'];
+    if (disposition && disposition.indexOf('filename=') !== -1) {
+      filename = disposition.split('filename=')[1].replace(/["']/g, '');
+    }
+
+    // Create a URL for the file and download
+    const url = window.URL.createObjectURL(new Blob([resp.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => window.URL.revokeObjectURL(url), 500);
+  } catch (err) {
+    console.error('PDF export failed:', err);
+    alert('Failed to export chat as PDF.');
+  }
+};
+
 
 const ChatInterface = ({
   history,
@@ -26,86 +94,74 @@ const ChatInterface = ({
   });
   const [currentSources, setCurrentSources] = useState({});
   const chatAreaRef = useRef(null);
+  const [summaryOpen, setSummaryOpen] = useState(false);
 
-  const handleExportPDF = async () => {
-    if (!chatAreaRef.current) return;
-    const element = chatAreaRef.current;
-
-    // Remove overflow/height restrictions for export
-    const originalOverflow = element.style.overflow;
-    const originalHeight = element.style.height;
-    element.style.overflow = "visible";
-    element.style.height = "auto";
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    // Use high scale for clarity
-    const scale = 3;
-    const canvas = await html2canvas(element, { scale, useCORS: true });
-    const imgWidth = 595.28; // A4 width in pt
-    const pageHeight = 841.89; // A4 height in pt
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    // Calculate the number of pages
-    const pdf = new jsPDF({ orientation: "p", unit: "pt", format: "a4" });
-    let renderedHeight = 0;
-    let pageNum = 0;
-
-    while (renderedHeight < canvas.height) {
-      // Create a new canvas for each page
-      const pageCanvas = document.createElement("canvas");
-      pageCanvas.width = canvas.width;
-      // Calculate how many pixels fit on one PDF page
-      const pageCanvasHeight = Math.min(
-        canvas.height - renderedHeight,
-        Math.floor((pageHeight * canvas.width) / imgWidth)
-      );
-      pageCanvas.height = pageCanvasHeight;
-      const ctx = pageCanvas.getContext("2d");
-      // Draw the current slice
-      ctx.drawImage(
-        canvas,
-        0,
-        renderedHeight,
-        canvas.width,
-        pageCanvasHeight,
-        0,
-        0,
-        canvas.width,
-        pageCanvasHeight
-      );
-      const imgData = pageCanvas.toDataURL("image/png");
-      if (pageNum > 0) pdf.addPage();
-      pdf.addImage(
-        imgData,
-        "PNG",
-        0,
-        0,
-        imgWidth,
-        (pageCanvasHeight * imgWidth) / canvas.width
-      );
-      renderedHeight += pageCanvasHeight;
-      pageNum++;
+   const [summary, setSummary] = useState("");
+   const [isSummarizing, setIsSummarizing] = useState(false);
+ 
+   // Fetch summary from backend
+   const fetchSummary = async () => {
+    setIsSummarizing(true);
+    try {
+      const token = localStorage.getItem('token');
+      const resp = await api.get(`/chat/conversation/${convId}/summary`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // Axios puts the response data in resp.data
+      const data = resp.data;
+      setSummary(data.summary || 'No summary available.');
+    } catch (err) {
+      console.error(err);
+      setSummary('Error loading summary.');
+    } finally {
+      setIsSummarizing(false);
     }
-
-    pdf.save("chat-history.pdf");
-    // Restore styles
-    element.style.overflow = originalOverflow;
-    element.style.height = originalHeight;
   };
+ 
+   // Handle summary button click
+   const handleSummaryClick = () => {
+     setSummaryOpen(true);
+     fetchSummary();
+   };
+
 
   return (
-    <main className="flex-1 overflow-hidden px-3 md:px-6 pt-3 md:pt-6 pb-[20px]">
-      {/* Export PDF Button */}
-      {/*history.length > 0 && (
-        <div className="flex justify-end mb-2 mt-[2rem]">
+    <main className="flex-1 overflow-hidden px-3 md:px-6 pt-3 md:pt-6 pb-[20px] relative">
+      {/* Export PDF & Summary Buttons */}
+      {history.length > 0 && (
+        <div className="absolute rounded-full bottom-[2rem] right-[2.5rem] flex flex-col items-end gap-3 no-print z-10">
           <button
-            onClick={handleExportPDF}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg shadow hover:from-blue-700 hover:to-purple-700 transition-all text-sm font-semibold"
+            onClick={handleSummaryClick}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow hover:from-blue-700 hover:to-purple-700 transition-all text-sm font-semibold flex items-center justify-center h-[2.5rem] w-[2.5rem]"
+            title="Show Chat Summary"
+            disabled={isSummarizing}
           >
-            Export Chat as PDF
+            {isSummarizing ? (
+              <HiOutlineLightBulb className="w-5 h-5 animate-spin" />
+            ) : (
+              <FiInfo className="w-5 h-5" />
+            )}
+          </button>
+          <button
+            onClick={() => exportChatAsPDF(convId)}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow hover:from-blue-700 hover:to-purple-700 transition-all text-sm font-semibold flex items-center justify-center h-[2.5rem] w-[2.5rem]"
+            title="Export Chat as PDF"
+          >
+            <FiPrinter className="w-5 h-5" />
           </button>
         </div>
-      )*/}
+      )}
+
+      {/* Chat Summary Modal */}
+      <SummaryModal
+        open={summaryOpen}
+        onClose={() => setSummaryOpen(false)}
+        summary={summary}
+        isLoading={isSummarizing}
+      />
+
       {/* Sources Modal */}
       <SourcesModal
         open={sourcesModal.open}
@@ -114,9 +170,11 @@ const ChatInterface = ({
         history={history}
         sources={currentSources}
       />
+
       <div
         ref={chatAreaRef}
-        className="h-full overflow-y-auto rounded-xl md:rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 p-3 md:p-6"
+        id="chat-area"
+        className="h-full overflow-y-auto print:overflow-visible print:h-auto rounded-xl md:rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 p-3 md:p-6"
       >
         {isLoadingMessages ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-3 md:p-6 text-gray-500">
@@ -177,21 +235,23 @@ const ChatInterface = ({
             {history.map((msg, i) => (
               <div
                 key={i}
-                className={`flex ${
+                className={`chat-message flex ${
                   msg.role === "user"
                     ? "justify-end"
                     : "justify-start pb-[3rem]"
                 } animate-fadeIn`}
               >
                 <div
-                  className={`flex gap-2 md:gap-3 max-w-[85%] ${
-                    msg.role === "user" ? "flex-row-reverse" : ""
+                  className={`flex flex-col gap-2 md:gap-3 w-full sm:max-w-[85%] ${
+                    msg.role === "user"
+                      ? "items-end sm:items-end md:flex-row-reverse"
+                      : "md:flex-row"
                   }`}
                 >
                   <div
                     className={`h-8 w-8 md:h-10 md:w-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                       msg.role === "user"
-                        ? "bg-gradient-to-br from-blue-500 to-purple-500 text-white"
+                        ? "bg-gradient-to-br from-blue-500 to-purple-500 text-white mb-0 sm:mb-[0.25rem]"
                         : "bg-gradient-to-br from-blue-100 to-cyan-200 text-blue-700"
                     }`}
                   >
@@ -202,7 +262,7 @@ const ChatInterface = ({
                     )}
                   </div>
                   <div
-                    className={`relative rounded-xl md:rounded-2xl px-3 py-2 md:px-4 md:py-3 shadow-sm max-w-[calc(100%-3rem)] ${
+                    className={`relative rounded-xl md:rounded-2xl px-3 py-2 md:px-4 md:py-3 shadow-sm max-w-[100%] md:max-w-[calc(100%-3rem)] ${
                       msg.role === "user"
                         ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
                         : "bg-white border border-gray-100"
@@ -229,7 +289,7 @@ const ChatInterface = ({
                     {msg.role === "assistant" && (
                       <>
                         <button
-                          className="absolute left-0 translate-y-full mt-0 -mb-6 text-gray-400 hover:text-blue-500 flex items-center bg-white rounded-full shadow px-2 py-1 border border-blue-100"
+                          className="no-print absolute left-0 translate-y-full mt-0 -mb-6 text-gray-400 hover:text-blue-500 flex items-center bg-white rounded-full shadow px-2 py-1 border border-blue-100"
                           style={{ transform: "translateY(100%)" }}
                           title="Leave feedback"
                           onClick={() => {
@@ -244,7 +304,7 @@ const ChatInterface = ({
                           <span className="text-xs font-medium">Feedback</span>
                         </button>
                         <button
-                          className="absolute right-0 translate-y-full mt-0 -mb-6 text-gray-400 hover:text-blue-500 flex items-center bg-white rounded-full shadow px-[0.6rem] py-[0.37rem] text-[0.75rem] border border-blue-100 leading-4 font-medium"
+                          className="no-print absolute right-0 translate-y-full mt-0 -mb-6 text-gray-400 hover:text-blue-500 flex items-center bg-white rounded-full shadow px-[0.6rem] py-[0.37rem] text-[0.75rem] border border-blue-100 leading-4 font-medium"
                           onClick={() => {
                             setCurrentSources(msg?.sources || {});
                             setSourcesModal({ open: true, msgIndex: i });

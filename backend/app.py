@@ -1,12 +1,24 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_socketio import SocketIO
+from .auth.routes import auth_bp
+from .chat.routes import chat_bp
+from .admin.routes import admin_bp
+from .notifications.routes import notifications_bp
+from .routes.feedback import feedback_bp
+from .routes.reviews import reviews_bp
+from .routes.analytics import analytics_bp
+from .routes.prompts import prompts_bp
 import os
 from dotenv import load_dotenv
+from .socketio_instance import socketio
+
+# after registering all blueprints
+
 
 load_dotenv()
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins=os.getenv("FRONTEND_ORIGIN"))
+# Initialize socketio with app
+socketio.init_app(app)
 
 # Fixed CORS configuration - no wildcards when using credentials
 CORS(
@@ -22,24 +34,12 @@ CORS(
     },
 )
 
-# Import blueprints after socketio is created to avoid circular imports
-from .auth.routes import auth_bp
-from .chat.routes import chat_bp
-from .admin.routes import admin_bp
-from .routes.feedback import feedback_bp
-from .routes.reviews import reviews_bp
-from .routes.analytics import analytics_bp
-from .routes.prompts import prompts_bp
 
 # Register blueprints
 app.register_blueprint(auth_bp, url_prefix=os.getenv("BASE_URL")+"/auth")
 app.register_blueprint(chat_bp, url_prefix=os.getenv("BASE_URL"))
 app.register_blueprint(admin_bp, url_prefix=os.getenv("BASE_URL")+"/admin")
-
-# Import and register notifications_bp
-from .notifications.routes import notifications_bp
 app.register_blueprint(notifications_bp, url_prefix=os.getenv("BASE_URL"))
-
 app.register_blueprint(feedback_bp, url_prefix=os.getenv("BASE_URL"))
 app.register_blueprint(reviews_bp, url_prefix=os.getenv("BASE_URL"))
 app.register_blueprint(analytics_bp, url_prefix=os.getenv("BASE_URL"))
@@ -53,22 +53,7 @@ def check_health():
 
 
 if __name__ == "__main__":
-    socketio.run(app, port=int(os.getenv("PORT", "5000")), debug=True)
+    import eventlet
+    import eventlet.wsgi
+    socketio.run(app, port=os.getenv("PORT"), debug=True)
 
-
-# from flask import Flask
-# from flask_cors import CORS
-# from auth.routes import auth_bp
-# from chat.routes import chat_bp
-
-# app = Flask(__name__)
-
-# CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
-
-
-# # Register blueprints
-# app.register_blueprint(auth_bp, url_prefix="/auth")
-# app.register_blueprint(chat_bp, url_prefix="")
-
-# if __name__ == "__main__":
-#     app.run(port=5000, debug=True)

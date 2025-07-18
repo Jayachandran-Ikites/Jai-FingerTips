@@ -49,7 +49,6 @@
   }
 }
 
-
 #root {
   position: fixed;
   top: 0;
@@ -161,35 +160,92 @@
 }
 
 /* Avoid page break inside headings only */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   page-break-after: avoid;
   page-break-inside: avoid;
   break-after: avoid;
   break-inside: avoid;
 }
 /* Allow paragraphs, lists, and tables to break across pages */
-p, ul, ol, table, tr, td, th {
+p,
+ul,
+ol,
+table,
+tr,
+td,
+th {
   page-break-inside: auto !important;
   break-inside: auto !important;
 }
 
+@page {
+  border: 1px solid grey;
+  padding-bottom: 2rem;
+}
+
 /* Print styles */
 @media print {
-  body, html, #root {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
+  #chat-area {
+    border: 1px solid white;
+    margin-top: 2rem;
+  }
+
+  #chat-area,
+  .chat-message,
+  .prose,
+  .printable-content {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
     overflow: visible !important;
     height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    box-shadow: none !important;
+    background: white !important;
+    /* border: 5px solid green; */
+  }
+  .chat-message {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    /* border: 5px solid red; */
+  }
+  main,
+  .flex,
+  .flex-1,
+  .overflow-hidden,
+  .h-full,
+  .min-h-screen,
+  .max-h-screen {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  html,
+  body,
+  #root {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
     position: static !important;
   }
-  .max-w-4xl, .mx-auto, .px-4, .sm\:px-6, .lg\:px-8, .py-8 {
+  .max-w-4xl,
+  .mx-auto,
+  .px-4,
+  .sm\:px-6,
+  .lg\:px-8,
+  .py-8 {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
   }
-  .document-content, .prose {
+  .document-content,
+  .prose {
     max-width: 100% !important;
     width: 100% !important;
     overflow: visible !important;
@@ -199,19 +255,30 @@ p, ul, ol, table, tr, td, th {
     color: #222 !important;
   }
   /* Allow content to break across pages */
-  .document-content, .prose, .printable-content {
+  .document-content,
+  .prose,
+  .printable-content {
     page-break-inside: auto !important;
     break-inside: auto !important;
   }
   /* Avoid page break inside headings only */
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     page-break-after: avoid;
     page-break-inside: avoid;
     break-after: avoid;
     break-inside: avoid;
   }
   /* Allow paragraphs, lists, and tables to break across pages */
-  p, ul, ol, table, tr, td, th {
+  p,
+  ul,
+  ol,
+  table,
+  tr,
+  td,
+  th {
     page-break-inside: auto !important;
     break-inside: auto !important;
   }
@@ -219,15 +286,15 @@ p, ul, ol, table, tr, td, th {
     font-size: 12pt;
     line-height: 1.4;
   }
-  
+
   .document-content h1 {
     font-size: 18pt;
   }
-  
+
   .document-content h2 {
     font-size: 16pt;
   }
-  
+
   .document-content h3 {
     font-size: 14pt;
   }
@@ -260,5 +327,6 @@ p, ul, ol, table, tr, td, th {
 
 /* Smooth transitions for theme changes */
 * {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
 }

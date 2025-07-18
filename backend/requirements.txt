@@ -10,4 +10,7 @@ pymongo
 python-dotenv
 openai
 flask
-flask-socketio
+weasyprint
+markdown
+flask_socketio
+eventlet

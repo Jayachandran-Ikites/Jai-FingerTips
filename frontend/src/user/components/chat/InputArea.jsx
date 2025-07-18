@@ -11,7 +11,7 @@ const InputArea = ({
   const inputRef = useRef(null);
 
   return (
-    <div className="flex-shrink-0 bg-gradient-to-t from-blue-50/90 to-blue-50/70 backdrop-blur-sm py-2 md:py-3">
+    <div className="flex-shrink-0 no-print bg-gradient-to-t from-blue-50/90 to-blue-50/70 backdrop-blur-sm py-2 md:py-3">
       <div className="px-3 md:px-6">
         <div className="relative rounded-xl md:rounded-2xl shadow-lg bg-white/90 backdrop-blur-sm border border-blue-100 p-1.5 md:p-2">
           <form onSubmit={sendMessage} className="relative">

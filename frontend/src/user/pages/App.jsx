@@ -9,10 +9,9 @@ import {
   FiList,
 } from "react-icons/fi";
 import Sidebar from "../components/Sidebar.jsx";
-import NotificationBell from "../components/NotificationBell.jsx";
+import {NotificationBell} from "../components/NotificationBell.jsx";
 import PromptEditor from "../components/PromptEditor.jsx";
 
-import { ThemeToggleButton } from "../components/ThemeToggle.jsx";
 import {
   FiSend,
   FiUser,
@@ -29,6 +28,7 @@ import ChatInterface from "../components/chat/ChatInterface.jsx";
 import InputArea from "../components/chat/InputArea.jsx";
 import FeedbackModal from "../components/chat/FeedbackModal.jsx";
 import { ToastProvider } from "../components/ui/toast.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 // Create an axios instance pointing to your Flask backend
 const api = axios.create({
@@ -40,7 +40,7 @@ export default function App() {
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
   const { id: urlChatId } = useParams(); // Extract chat ID from URL
-  const [userRole, setUserRole] = useState("user"); // Default to 'user'
+  const { userRole, setUserRole } = useContext(AuthContext);
   const [convId, setConvId] = useState(urlChatId || null);
   const [message, setMessage] = useState("");
   const [history, setHistory] = useState([]);
@@ -52,6 +52,7 @@ export default function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [conversationsLoaded, setConversationsLoaded] = useState(false);
+  const {theme} = useTheme()
   const [feedbackModal, setFeedbackModal] = useState({
     isOpen: false,
     conversationId: null,
@@ -491,12 +492,12 @@ export default function App() {
     return <AuthVerificationLoader />;
   }
 
-  console.log("history", history);
+  console.log("history", history,"theme",theme);
   return (
     <>
       <ToastProvider>
         <Toaster position="top-right" reverseOrder={false} />
-        <div className="flex flex-col h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50">
+        <div className={`flex flex-col h-screen ${theme == "light" ? "bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50":"bg-white dark:bg-gray-950"}`}>
           {/* Decorative background elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-gradient-to-br from-purple-200/30 to-blue-200/30 blur-3xl"></div>
@@ -514,7 +515,7 @@ export default function App() {
           />
 
           {/* Main layout container */}
-          <div className="flex flex-1 overflow-hidden relative">
+          <div className="flex flex-1 overflow-hidden relative print:h-auto print:min-h-0 print:overflow-visible">
             {/* Sidebar */}
             <Sidebar
               isOpen={sidebarOpen}
@@ -529,7 +530,7 @@ export default function App() {
 
             {/* Main content area */}
             <div
-              className={`flex flex-col flex-1 overflow-hidden relative transition-all duration-300 ${
+              className={`flex flex-col flex-1 overflow-hidden relative transition-all duration-300 print:h-auto print:min-h-0 print:overflow-visible ${
                 sidebarOpen ? "lg:ml-0" : "lg:ml-0"
               }`}
             >

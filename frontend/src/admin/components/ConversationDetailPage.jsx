@@ -140,7 +140,7 @@ const ConversationDetailPageContent = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100 sticky top-0 z-30">
+      <header className="bg-white backdrop-blur-sm shadow-sm border-b border-blue-100 sticky top-0 z-30">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -380,7 +380,7 @@ const ConversationDetailPageContent = () => {
               </div>
             ))}
           </div>
-          <div ref={bottomRef} />
+          {/* <div ref={bottomRef} /> */}
         </main>
       </div>
     </div>

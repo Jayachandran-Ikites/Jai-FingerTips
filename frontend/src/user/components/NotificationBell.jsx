@@ -1,8 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { io } from "socket.io-client";
 import { AuthContext } from "../context/AuthContext.jsx";
 import {
   FiBell,
@@ -27,15 +26,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { DateTime } from "luxon";
+import { io } from "socket.io-client";
+import { useToast } from "./ui/toast.jsx";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { "Content-Type": "application/json" },
 });
+const toIST = (utcDateString) => {
+  return DateTime.fromISO(utcDateString, { zone: "utc" })
+    .setZone("Asia/Kolkata")
+    .toFormat("dd-MMM-yyyy hh:mm:ss a");
+};
 
 const NotificationBell = () => {
-  const { token } = useContext(AuthContext);
+  const { token, userId } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -43,76 +51,58 @@ const NotificationBell = () => {
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [socket, setSocket] = useState(null);
+  const socketRef = useRef(null);
+ 
 
   useEffect(() => {
-    if (token && auth?.userId) {
-      loadNotifications();
-      // Initialize WebSocket connection
-      initializeSocket();
-      
-      return () => {
-        if (socket) {
-          socket.disconnect();
-        }
-      };
+    if (!token) {
+      navigate("/auth");
+      return;
     }
-  }, [token, auth.userId]);
-  
-  // Initialize WebSocket connection
-  const initializeSocket = () => {
-    const newSocket = io(import.meta.env.VITE_API_URL, {
-      transports: ['websocket'],
-      auth: {
-        token: `Bearer ${token}`
+    console.log("UserId :",userId)
+    loadNotifications();
+    initializeSocket();
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        console.log("WebSocket disconnected");
       }
+    };
+  }, [token, filter]);
+
+  const initializeSocket = () => {
+    const newSocket = io(import.meta.env.VITE_WS_URL, {
+      transports: ["websocket"],
+      auth: {
+        token: `Bearer ${token}`,
+      },
     });
-    
-    newSocket.on('connect', () => {
-      console.log('WebSocket connected for notifications');
+
+    newSocket.on("connect", () => {
+      console.log("WebSocket connected for notifications page");
     });
-    
-    newSocket.on('connect_error', (error) => {
-      console.error('WebSocket connection error:', error);
+
+    newSocket.on("connect_error", (error) => {
+      console.error("WebSocket connection error:", error);
     });
-    
-    newSocket.on(`notification_update_${auth?.userId}`, (data) => {
-      console.log('Received notification update:', data);
-      if (data && data.unread_count !== undefined) {
+
+    newSocket.on(`notification_update_${userId}`, (data) => {
+      console.log("Received notification update:", data);
+      if (data.unread_count !== undefined) {
         setUnreadCount(data.unread_count);
       }
       loadNotifications();
     });
-    
-    newSocket.on(`new_notification_${auth?.userId}`, (data) => {
-      console.log('Received new notification:', data);
-      if (data) {
-        loadNotifications();
-      }
-    });
-    
-    setSocket(newSocket);
-  };
-  
-  const toIST = (utc) => {
-    const date = new Date(utc);
-    try {
-      return date.toLocaleString("en-IN", {
-        timeZone: "Asia/Kolkata",
-        hour12: true,
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch (error) {
-      console.error("Error converting to IST:", error);
-      return date.toLocaleString(); // Fallback to browser's locale
-    }
-  }
 
-  
+    newSocket.on(`new_notification_${userId}`, (data) => {
+      console.log("Received new notification:", data);
+      loadNotifications();
+      toast.success("New notification received!");
+    });
+
+    socketRef.current = newSocket;
+  };
   const loadNotifications = async (pageNum = 1, reset = true) => {
     try {
       setLoading(true);
@@ -161,7 +151,9 @@ const NotificationBell = () => {
       // Update local state
       setNotifications((prev) =>
         prev.map((notif) =>
-          notif._id === notificationId ? { ...notif, read: true } : notif
+          notif._id === notificationId
+            ? { ...notif, read_by: [...(notif.read_by || []), userId] }
+            : notif
         )
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
@@ -182,10 +174,14 @@ const NotificationBell = () => {
         }
       );
 
-      // Update local state
       setNotifications((prev) =>
-        prev.map((notif) => ({ ...notif, read: true }))
+        prev.map((notif) =>
+          notif.read_by?.includes(userId)
+            ? notif
+            : { ...notif, read_by: [...(notif.read_by || []), userId] }
+        )
       );
+    
       setUnreadCount(0);
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
@@ -207,9 +203,14 @@ const NotificationBell = () => {
         prev.filter((notif) => notif._id !== notificationId)
       );
 
-      if (deletedNotif && !deletedNotif.read) {
-        setUnreadCount((prev) => Math.max(0, prev - 1));
-      }
+    if (
+      deletedNotif &&
+      (!notification.read_by?.includes(userId) ||
+        deletedNotif.read_by.length === 0)
+    ) {
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    }
+
     } catch (error) {
       console.error("Error deleting notification:", error);
     }
@@ -244,8 +245,6 @@ const NotificationBell = () => {
   const formatTimeAgo = (dateString) => {
     const now = new Date();
     const date = new Date(dateString);
-    // Convert to IST for display
-    const istDate = new Date(date.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
     const diffInSeconds = Math.floor((now - date) / 1000);
 
     if (diffInSeconds < 60) return "Just now";
@@ -261,7 +260,6 @@ const NotificationBell = () => {
     setShowDropdown(false);
     navigate("/notifications");
   };
-
   if (!token) return null;
 
   return (
@@ -304,10 +302,10 @@ const NotificationBell = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute right-0 top-full mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 max-h-[32rem] overflow-hidden"
+              className="absolute right-0 top-full mt-2 w-96 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 z-50 max-h-[32rem] overflow-hidden"
             >
               {/* Header */}
-              <div className="p-4 border-b border-gray-200 bg-gray-50">
+              <div className="p-4 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-gray-800 ">
                     Notifications
@@ -319,7 +317,7 @@ const NotificationBell = () => {
                         disabled={loading}
                         variant="ghost"
                         size="sm"
-                        className="text-xs"
+                        className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                       >
                         <FiCheck className="w-3 h-3 mr-1" />
                         Mark all read
@@ -327,7 +325,7 @@ const NotificationBell = () => {
                     )}
                     <button
                       onClick={() => setShowDropdown(false)}
-                      className="p-1 hover:bg-gray-200 rounded"
+                      className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
                     >
                       <FiX className="w-4 h-4" />
                     </button>
@@ -343,16 +341,28 @@ const NotificationBell = () => {
                     loadNotifications(1, true);
                   }}
                 >
-                  <SelectTrigger className="w-full h-8">
+                  <SelectTrigger className="w-full h-8 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
                     <SelectValue
                       placeholder={
-                        filter === "all" ? "All notifications" : "Unread only"
+                        filter === "all" ? (
+                          <span className="text-gray-700 dark:text-gray-200">
+                            All notifications
+                          </span>
+                        ) : (
+                          <span className="text-gray-700 dark:text-gray-200">
+                            Unread only
+                          </span>
+                        )
                       }
                     />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All notifications</SelectItem>
-                    <SelectItem value="unread">Unread only</SelectItem>
+                  <SelectContent className="dark:bg-gray-800 dark:text-gray-200">
+                    <SelectItem value="all" className="dark:text-gray-200">
+                      All notifications
+                    </SelectItem>
+                    <SelectItem value="unread" className="dark:text-gray-200">
+                      Unread only
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -389,13 +399,15 @@ const NotificationBell = () => {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 20 }}
                             transition={{ delay: index * 0.05 }}
-                            className={`p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors group ${
-                              !notification.read ? "bg-blue-50/50" : ""
+                            className={`p-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors group ${
+                              !!notification.read_by?.includes(userId)
+                                ? "bg-blue-50/50 dark:bg-slate-800"
+                                : "dark:bg-gray-900"
                             }`}
                           >
                             <div className="flex items-start gap-3">
                               <div
-                                className={`p-1.5 rounded-full ${iconColor}`}
+                                className={`p-1.5 rounded-full ${iconColor} dark:bg-blue-900/60 dark:text-blue-400`}
                               >
                                 <Icon className="w-4 h-4" />
                               </div>
@@ -404,21 +416,25 @@ const NotificationBell = () => {
                                 <div className="flex items-start justify-between mb-1">
                                   <h4
                                     className={`text-sm font-medium truncate ${
-                                      !notification.read
-                                        ? "text-gray-900"
-                                        : "text-gray-700"
+                                      !notification.read_by?.includes(userId)
+                                        ? "text-gray-900 dark:text-white"
+                                        : "text-gray-700 dark:text-gray-200"
                                     }`}
                                   >
                                     {notification.title}
                                   </h4>
 
                                   <div className="flex items-center gap-1 ml-2">
-                                    {!notification.read && (
+                                    {!notification.read_by?.includes(
+                                      userId
+                                    ) && (
                                       <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" />
                                     )}
 
                                     <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                                      {!notification.read && (
+                                      {!notification.read_by?.includes(
+                                        userId
+                                      ) && (
                                         <button
                                           onClick={(e) => {
                                             e.stopPropagation();
@@ -443,13 +459,16 @@ const NotificationBell = () => {
                                     </div>
                                   </div>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-2">
-                                  {notification.message || ""}
+
+                                <p className="text-xs text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
+                                  {notification.message}
                                 </p>
 
                                 <div className="flex items-center justify-between">
-                                  <span className="text-xs text-gray-400">
-                                    {notification.created_at ? formatTimeAgo(notification.created_at) : ""}
+                                  <span className="text-xs text-gray-400 dark:text-gray-400">
+                                    {formatTimeAgo(
+                                      toIST(notification.created_at)
+                                    )}
                                   </span>
 
                                   <Badge
@@ -504,10 +523,10 @@ const NotificationBell = () => {
 
               {/* Footer */}
               {notifications.length > 0 && (
-                <div className="p-3 border-t border-gray-200 bg-gray-50">
+                <div className="p-3 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800">
                   <button
                     onClick={handleViewAllClick}
-                    className="w-full flex items-center justify-center gap-2 text-sm text-blue-600 hover:text-blue-700 py-1"
+                    className="w-full flex items-center justify-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 py-1"
                   >
                     <FiList className="w-4 h-4" />
                     View all notifications
@@ -522,4 +541,4 @@ const NotificationBell = () => {
   );
 };
 
-export default NotificationBell;
+export { NotificationBell, toIST };

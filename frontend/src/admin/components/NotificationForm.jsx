@@ -63,7 +63,7 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
   };
 
   const handleUserSelection = (userId) => {
-    if (form.target_type === "single") {
+    if (form.target_type === "user") {
       setSelectedUsers([userId]);
     } else {
       setSelectedUsers(prev => 
@@ -145,12 +145,12 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
               className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
             >
               <option value="all">All Users</option>
-              <option value="single">Single User</option>
+              <option value="user">Single User</option>
               <option value="multiple">Multiple Users</option>
             </select>
           </div>
 
-          {(form.target_type === "single" || form.target_type === "multiple") && (
+          {(form.target_type === "user" || form.target_type === "multiple") && (
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-sm font-medium text-gray-700">
@@ -200,7 +200,7 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
                       className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
                     >
                       <input
-                        type={form.target_type === "single" ? "radio" : "checkbox"}
+                        type={form.target_type === "user" ? "radio" : "checkbox"}
                         name="selectedUser"
                         checked={selectedUsers.includes(user._id)}
                         onChange={() => handleUserSelection(user._id)}
@@ -237,7 +237,7 @@ const NotificationForm = ({ form, setForm, onSubmit, onClose }) => {
               disabled={
                 !form.title || 
                 !form.message || 
-                ((form.target_type === "single" || form.target_type === "multiple") && selectedUsers.length === 0)
+                ((form.target_type === "user" || form.target_type === "multiple") && selectedUsers.length === 0)
               }
             >
               Send Notification

@@ -1942,44 +1942,39 @@
             },
             "L3": {
                 "type": "None",
-                "content": " - Existing guidelines from professional bodies, clinical resources, and intergovernmental"
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span> Existing guidelines from professional bodies, clinical resources, and intergovernmental"
             },
             "L4": {
                 "type": "None",
-                "content": " - resources for the management of pneumonia in resource-limited settings"
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\"></span> resources for the management of pneumonia in resource-limited settings"
             },
             "L5": {
-                "type": "Link",
-                "content": " - ATS/IDSA 2019 guidelines",
-                "link": "https://www.atsjournals.org/doi/pdf/10.1164/rccm.201908-1581ST"
+                "type": "None",
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span><a style='color: #2463eb; text-decoration: underline; margin-left: 0px; margin-right:5px' href='https://www.atsjournals.org/doi/pdf/10.1164/rccm.201908-1581SThttps://pubmed.ncbi.nlm.nih.gov/29167296/' target='_blank'>ATS/IDSA 2019 guidelines</a>"
             },
             "L6": {
                 "type": "None",
-                "content": " - UpToDate"
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span>UpToDate"
             },
             "L7": {
-                "type": "Link",
-                "content": " - Indian guidelines",
-                "link": "https://journals.lww.com/lungindia/Fulltext/2012/29052/Guidelines_for_diagnosis_and_management_of.1.aspx"
+                "type": "None",
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span><a style='color: #2463eb; text-decoration: underline; margin-left: 0px; margin-right:5px' href='https://journals.lww.com/lungindia/Fulltext/2012/29052/Guidelines_for_diagnosis_and_management_of.1.aspx' target='_blank'>Indian guidelines</a>"
             },
             "L8": {
                 "type": "sub_child",
                 "content": "Joint ICS/NCCP(I) recommendations 2012"
             },
             "L9": {
-                "type": "Link",
-                "content": " - MSF",
-                "link": "https://medicalguidelines.msf.org/en"
+                "type": "None",
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span><a style='color: #2463eb; text-decoration: underline; margin-left: 0px; margin-right:5px' href='https://medicalguidelines.msf.org/en' target='_blank'>MSF</a>"
             },
             "L10": {
-                "type": "Link",
-                "content": " - Indian Council of Medical Research antimicrobial guidelines",
-                "link": "https://main.icmr.nic.in/sites/default/files/guidelines/Treatment_Guidelines_2019_Final.pdf"
+                "type": "None",
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span><a style='color: #2463eb; text-decoration: underline; margin-left: 0px; margin-right:5px' href='https://main.icmr.nic.in/sites/default/files/guidelines/Treatment_Guidelines_2019_Final.pdf' target='_blank'>Indian Council of Medical Research antimicrobial guidelines</a>"
             },
             "L11": {
-                "type": "Link",
-                "content": " - British Thoracic Society",
-                "link": "https://thorax.bmj.com/content/64/Suppl_3/iii1"
+                "type": "None",
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span><a style='color: #2463eb; text-decoration: underline; margin-left: 0px; margin-right:5px' href='https://thorax.bmj.com/content/64/Suppl_3/iii1' target='_blank'>British Thoracic Society</a>"
             },
             "L12": {
                 "type": "Heading",
@@ -1987,7 +1982,7 @@
             },
             "L13": {
                 "type": "None",
-                "content": " - Adults presenting to CSA clinics<br><br>"
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span>Adults presenting to CSA clinics<br><br>"
             },
             "L14": {
                 "type": "Heading",
@@ -1995,7 +1990,7 @@
             },
             "L15": {
                 "type": "None",
-                "content": " - Assess stability"
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span>Assess stability"
             },
             "L16": {
                 "type": "sub_child",
@@ -2003,11 +1998,11 @@
             },
             "L17": {
                 "type": "None",
-                "content": " - Consider differential diagnoses"
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span>Consider differential diagnoses"
             },
             "L18": {
                 "type": "None",
-                "content": " - Obtain pulse oximetry<br><br>"
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\">•</span>Obtain pulse oximetry<br><br>"
             },
             "L19": {
                 "type": "Heading",
@@ -5345,7 +5340,7 @@
             },
             "L19": {
                 "type": "None",
-                "content": "  - <span style=\"font-size: 1.5rem; margin-left: 35px; width: 1.5rem;\">▪</span> Current standard practice in India  dx based on symptom complex"
+                "content": "  - <span style=\"font-size: 1.5rem; margin-left: 35px; width: 1.5rem;\">▪</span> Current standard practice in India dx based on symptom complex"
             },
             "L20": {
                 "type": "None",
@@ -5689,15 +5684,15 @@
             },
             "L105": {
                 "type": "sub_child",
-                "content": "If on LABA or LAMA  LAMA + LAMA"
+                "content": "If on LABA or LAMA LAMA + LAMA"
             },
             "L106": {
                 "type": "sub_child",
-                "content": "If on LABA + LAMA and if eosinophils > 300  LABA + LAMA + ICS"
+                "content": "If on LABA + LAMA and if eosinophils > 300 LABA + LAMA + ICS"
             },
             "L107": {
                 "type": "sub_child",
-                "content": "If on LABA + LAMA and if eosinophils > 100 and if 2+ exacerbations a year "
+                "content": "If on LABA + LAMA and if eosinophils > 100 and if 2+ exacerbations a year"
             },
             "L108": {
                 "type": "None",
@@ -6338,7 +6333,7 @@
             },
             "L17": {
                 "type": "None",
-                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\"></span> ischaemic and haemorrhagic causes of stroke)  determines ongoing management<br><br>"
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\"></span> ischaemic and haemorrhagic causes of stroke) determines ongoing management<br><br>"
             },
             "L18": {
                 "type": "Heading",
@@ -7099,7 +7094,7 @@
             },
             "L33": {
                 "type": "None",
-                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\"></span> diarrhoea  lack of stewardship"
+                "content": " - <span style=\"font-size: 2rem; margin-top: -3px; margin-left: -5px; width: 1.5rem;\"></span> diarrhoea lack of stewardship"
             },
             "L34": {
                 "type": "None",

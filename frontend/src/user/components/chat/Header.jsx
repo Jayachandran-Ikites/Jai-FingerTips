@@ -1,9 +1,18 @@
-import { FiEdit, FiMenu, FiSettings, FiUser } from "react-icons/fi";
+import {
+  FiEdit,
+  FiMenu,
+  FiSettings,
+  FiUser,
+  FiSun,
+  FiMoon,
+} from "react-icons/fi";
 import { HiOutlineFingerPrint } from "react-icons/hi";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
-import NotificationBell from "../NotificationBell";
+import { NotificationBell } from "../NotificationBell";
 import ProfileDropdown from "../ProfileDropdown";
+import { useTheme } from "../../context/ThemeContext";
+import { useLocation, useRoutes, useSearchParams } from "react-router-dom";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -15,6 +24,8 @@ const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
   const profileIconRef = useRef(null);
   const dropdownRef = useRef(null);
   const editDropdownRef = useRef(null);
+  const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -84,38 +95,59 @@ const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
     }
   };
 
-  console.log("showDropdown", showDropdown);
+  console.log("showDropdown", showDropdown, userRole);
+  console.log("search params", location.pathname);
+
   return (
-    <header className="py-2 px-4 md:py-4 md:px-6 bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100 sticky top-0 z-30 flex-shrink-0">
+    <header className="py-2 no-print px-4 md:py-4 md:px-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm border-b border-blue-100 dark:border-gray-800 sticky top-0 z-30 flex-shrink-0">
       <div className="flex items-center justify-between">
         {/* Left: Hamburger + Branding */}
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className={`p-2 rounded-lg hover:bg-gray-100 transition-colors ${
-              sidebarOpen ? "lg:hidden" : ""
-            }`}
+          {location?.pathname?.includes("/chat") && (
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
+                sidebarOpen ? "lg:hidden" : ""
+              }`}
+            >
+              <FiMenu className="w-5 h-5 text-foreground dark:text-gray-200" />
+            </button>
+          )}
+          <h1
+            className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-1 md:gap-2 cursor-pointer"
+            onClick={() => navigate("/chat")}
+            title="Go to Home"
           >
-            <FiMenu className="w-5 h-5 text-foreground" />
-          </button>
-          <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-1 md:gap-2">
-            <HiOutlineFingerPrint className="w-6 h-6 md:w-7 md:h-7 text-blue-600" />
-            <span class="hidden sm:block">FingerTips</span>
+            <HiOutlineFingerPrint className="w-6 h-6 md:w-7 md:h-7 text-blue-600 dark:text-blue-400" />
+            <span className="hidden sm:block">FingerTips</span>
           </h1>
         </div>
 
         {/* Right: Logout Button and Profile Icon */}
         <div className="flex items-center gap-0 sm:gap-0 md:gap-2 lg:gap-3 2xl:gap-3">
-          {/* <ThemeToggleButton /> */}
-
+          {/* Theme Toggle Button */}
+          {/* <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            title={
+              theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"
+            }
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? (
+              <FiSun className="w-5 h-5 text-yellow-500" />
+            ) : (
+              <FiMoon className="w-5 h-5 text-gray-600 dark:text-gray-200" />
+            )}
+          </button> */}
           {/* Prompt Editor Button - Only show for power users and admins */}
           {/* {(userRole === "power_user" || userRole === "admin") && (
             <button
               onClick={() => navigate("/prompts")}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               title="Prompt Management"
             >
-              <FiEdit className="w-5 h-5 text-gray-600" />
+              <FiEdit className="w-5 h-5 text-gray-600 dark:text-gray-200" />
             </button>
           )} */}
 
@@ -124,20 +156,20 @@ const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
           {(userRole === "admin" || userRole === "reviewer") && (
             <button
               onClick={() => navigate("/admin")}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               title="Admin Panel"
             >
-              <FiSettings className="w-5 h-5 text-gray-600" />
+              <FiSettings className="w-5 h-5 text-gray-600 dark:text-gray-200" />
             </button>
           )}
           {/* Pathways Button */}
           <button
             onClick={() => navigate("/pathways")}
-            className="p-2 rounded-lg hover:bg-blue-100 transition-colors"
+            className="p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
             title="Pathways"
           >
             <svg
-              className="w-5 h-5 text-blue-600"
+              className="w-5 h-5 text-blue-600 dark:text-blue-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -153,7 +185,7 @@ const Header = ({ sidebarOpen, setSidebarOpen, auth, navigate, userRole }) => {
           <button
             onClick={() => setShowDropdown((prev) => !prev)}
             ref={profileIconRef}
-            className="ml-2 p-2 rounded-full bg-gray-100 hover:bg-blue-100 text-blue-600 transition flex items-center justify-center"
+            className="ml-2 p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-blue-600 dark:text-blue-400 transition flex items-center justify-center"
             title="View Profile"
           >
             <FiUser className="w-5 h-5" />

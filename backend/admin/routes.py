@@ -1,13 +1,12 @@
 from flask import Blueprint, request, jsonify, current_app
 from datetime import datetime, timedelta
 from bson import ObjectId
+from ..auth.utils import verify_token
 from ..database import get_db
 import logging
 from ..routes.reviews import require_reviewer_or_admin
 from collections import defaultdict
-
-# Import verify_token function
-from ..auth.utils import verify_token
+from ..socketio_instance import socketio
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -413,150 +412,227 @@ def get_conversation_details(conversation_id):
         logging.error(f"Get conversation details error: {e}")
         return jsonify({"error": "Failed to fetch conversation details"}), 500
 
+
 @admin_bp.route("/notifications", methods=["POST"])
 @admin_required
 def send_notification(admin_user_id):
-    """Send notification to users"""
+    """Send a notification to users (all, user, or multiple)."""
     try:
         data = request.get_json()
         title = data.get("title")
         message = data.get("message")
         notification_type = data.get("type", "info")  # info, warning, success, error
-        target_type = data.get("target_type", "all")  # all, single, multiple
+        target_type = data.get("target_type", "all")  # all, user, multiple
         target_users = data.get("target_users", [])
-        
+
         if not title or not message:
             return jsonify({"error": "Title and message are required"}), 400
-        
+
         db = get_db()
         notifications = db["notifications"]
         users = db["users"]
-        
-        # Get admin info
+
         admin = users.find_one({"_id": ObjectId(admin_user_id)})
         admin_name = admin.get("name", "") if admin else ""
         admin_email = admin.get("email", "") if admin else ""
-        
-        # Determine target users
+
+        # Create base notification document
+        notification = {
+            "title": title,
+            "message": message,
+            "type": notification_type,
+            "target": target_type,
+            "created_by": ObjectId(admin_user_id),
+            "created_by_name": admin_name or admin_email,
+            "created_at": datetime.utcnow(),
+            "read_by": [],
+            "hidden_by": [],
+        }
+
+        # Assign target users
         if target_type == "all":
-            user_list = list(users.find({}, {"_id": 1}))
-            target_user_ids = [str(user["_id"]) for user in user_list]
-        elif target_type == "single" and target_users:
-            target_user_ids = [target_users[0]]
+            pass
+        elif target_type == "user" and len(target_users) == 1:
+            notification["user_id"] = ObjectId(target_users[0])
         elif target_type == "multiple" and target_users:
-            target_user_ids = target_users
+            notification["user_ids"] = [ObjectId(uid) for uid in target_users]
         else:
             return jsonify({"error": "Invalid target configuration"}), 400
-        
-        # Create notifications
-        notification_docs = []
-        for user_id in target_user_ids:
-            notification_docs.append({
-            # Import socketio here to avoid circular import
-            from ..app import socketio
-                "user_id": ObjectId(user_id),
-                "title": title,
-                "message": message,
-                "type": notification_type,
-                "read": False,
-                "created_at": datetime.utcnow(),
-                "created_by": ObjectId(admin_user_id),
-                "created_by_name": admin_name or admin_email  # Store admin name
-            })
-        
-        if notification_docs:
-            result = notifications.insert_many(notification_docs)
-            
-            # Emit WebSocket events for each user
-            for user_id in target_user_ids:
-                unread_count = notifications.count_documents({"user_id": ObjectId(user_id), "read": False})
-                notification_data = {
-                    "title": title,
-                    "message": message,
-                    "type": notification_type,
-                    "created_at": datetime.utcnow().isoformat(),
-                    "unread_count": unread_count
-                }
-                socketio.emit(f'notification_update_{user_id}', notification_data)
-                socketio.emit(f'new_notification_{user_id}', notification_data)
-            
-            return jsonify({
-                "message": f"Notification sent to {len(target_user_ids)} users",
-                "notification_ids": [str(id) for id in result.inserted_ids]
-            })
+
+        result = notifications.insert_one(notification)
+
+        # Emit via socket
+        if target_type == "all":
+            for user in users.find({}, {"_id": 1}):
+                uid = str(user["_id"])
+                socketio.emit(
+                    f"new_notification_{uid}",
+                    {
+                        "title": title,
+                        "message": message,
+                        "type": notification_type,
+                        "created_at": notification["created_at"].isoformat(),
+                        "unread_count": None,  # Optionally compute
+                    },
+                )
+
         else:
-            return jsonify({"error": "No users to notify"}), 400
-            
+            target_ids = (
+                [ObjectId(target_users[0])]
+                if target_type == "user"
+                else [ObjectId(uid) for uid in target_users]
+            )
+            for user_id in target_ids:
+                socketio.emit(
+                    f"new_notification_{str(user_id)}",
+                    {
+                        "title": title,
+                        "message": message,
+                        "type": notification_type,
+                        "created_at": notification["created_at"].isoformat(),
+                        "unread_count": None,
+                    },
+                )
+
+        return jsonify(
+            {
+                "message": "Notification sent successfully",
+                "notification_id": str(result.inserted_id),
+            }
+        )
+
     except Exception as e:
         logging.error(f"Send notification error: {e}")
         return jsonify({"error": "Failed to send notification"}), 500
-
+    
 @admin_bp.route("/notifications", methods=["GET"])
 @admin_required
 def get_notifications(admin_user_id):
-    """Get all notifications with pagination"""
+    """Fetch notifications with pagination and optional filters."""
     try:
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 20))
-        user_id = request.args.get("user_id", "")  # Optional filter by user ID
-        type = request.args.get("type", "")  # Optional filter by type
+        filter_user_id = request.args.get("user_id", "")
+        notif_type = request.args.get("type", "")
+
         db = get_db()
         notifications = db["notifications"]
         users = db["users"]
-        
-        # Get total count
-        total = notifications.count_documents({})
-        
-        # Get notifications with pagination
+
+        query = {}
+
+        # Optional: Filter by user ID
+        if filter_user_id:
+            user_obj_id = ObjectId(filter_user_id)
+            query["$or"] = [
+                {"target": "all"},
+                {"target": "user", "user_id": user_obj_id},
+                {"target": "multiple", "user_ids": user_obj_id},
+            ]
+
+        if notif_type:
+            query["type"] = notif_type
+
         skip = (page - 1) * limit
-        notif_list = list(notifications.find({}).sort("created_at", -1).skip(skip).limit(limit))
-        
-        # Enrich with user data
+        notif_cursor = (
+            notifications.find(query).sort("created_at", -1).skip(skip).limit(limit)
+        )
+        notif_list = list(notif_cursor)
+
+        total = notifications.count_documents(query)
+
+        # Enhance each notification
         for notif in notif_list:
             notif["_id"] = str(notif["_id"])
-            notif["user_id"] = str(notif["user_id"])
             notif["created_by"] = str(notif["created_by"])
-            
-            # Get target user info
-            user = users.find_one({"_id": notif["user_id"]}, {"email": 1, "name": 1})
-            notif["user"] = {
-                "email": user.get("email", "Unknown") if user else "Unknown",
-                "name": user.get("name", "") if user else ""
-            }
-            
-            # Get creator info
-            creator = users.find_one({"_id": notif["created_by"]}, {"email": 1, "name": 1})
-            notif["creator"] = {
-                "email": creator.get("email", "Unknown") if creator else "Unknown",
-                "name": creator.get("name", "") if creator else ""
-            }
-            
-            # Format date
+            notif["user_id"] = str(notif.get("user_id", ""))
+            notif["user_ids"] = [str(uid) for uid in notif.get("user_ids", [])]
+            notif["read_by"] = [str(uid) for uid in notif.get("read_by", [])]
+            notif["hidden_by"] = [str(uid) for uid in notif.get("hidden_by", [])]
             if "created_at" in notif:
                 notif["created_at"] = notif["created_at"].isoformat()
-        
-        # Filter by user ID if provided
-        if user_id:
-            notif_list = [n for n in notif_list if n["user_id"] == user_id]
-            total = len(notif_list)  # Update total count after filtering
-        else:
-            total = notifications.count_documents({})
-        # Return paginated response
-        
-        if type:
-            notif_list = [n for n in notif_list if n["type"] == type]
-            total = len(notif_list)
-            
-        
-        return jsonify({
-            "notifications": notif_list,
-            "total": total,
-            "page": page,
-            "pages": (total + limit - 1) // limit
-        })
+
+            # Add creator info
+            creator = users.find_one(
+                {"_id": ObjectId(notif["created_by"])}, {"email": 1, "name": 1}
+            )
+            notif["creator"] = {
+                "email": creator.get("email", "Unknown") if creator else "Unknown",
+                "name": creator.get("name", "") if creator else "",
+            }
+            # Add target user(s) info
+            if notif["target"] == "user" and notif.get("user_id"):
+                user = users.find_one(
+                    {"_id": ObjectId(notif["user_id"])}, {"name": 1}
+                )
+                notif["user"] = user["name"] if user else "Unknown"
+
+            elif notif["target"] == "multiple" and notif.get("user_ids"):
+                user_objs = users.find({"_id": {"$in": [ObjectId(uid) for uid in notif["user_ids"]]}}, {"name": 1})
+                notif["users"] = [u.get("name", "Unknown") for u in user_objs]
+
+        print("Notification",notif)
+        return jsonify(
+            {
+                "notifications": notif_list,
+                "total": total,
+                "page": page,
+                "pages": (total + limit - 1) // limit,
+            }
+        )
+
     except Exception as e:
         logging.error(f"Get notifications error: {e}")
         return jsonify({"error": "Failed to fetch notifications"}), 500
+
+@admin_bp.route("/notifications/<notification_id>", methods=["DELETE"])
+@admin_required
+def delete_admin_notification(admin_user_id, notification_id):
+    """Admin deletes a notification"""
+    try:
+        db = get_db()
+        notifications = db["notifications"]
+
+        notification = notifications.find_one({"_id": ObjectId(notification_id)})
+
+        if not notification:
+            return jsonify({"error": "Notification not found"}), 404
+
+        # Delete the notification
+        result = notifications.delete_one({"_id": ObjectId(notification_id)})
+
+        # Notify affected users via socket
+        users = db["users"]
+
+        if notification["target"] == "all":
+            user_ids = [str(user["_id"]) for user in users.find({}, {"_id": 1})]
+        elif notification["target"] == "user":
+            user_ids = [str(notification.get("user_id"))]
+        elif notification["target"] == "multiple":
+            user_ids = [str(uid) for uid in notification.get("user_ids", [])]
+        else:
+            user_ids = []
+
+        # Emit WebSocket to all affected users to refresh their notifications
+        for uid in user_ids:
+            unread_count = notifications.count_documents(
+                {
+                    "$or": [
+                        {"target": "all"},
+                        {"target": "user", "user_id": ObjectId(uid)},
+                        {"target": "multiple", "user_ids": ObjectId(uid)},
+                    ],
+                    "read_by": {"$ne": ObjectId(uid)},
+                }
+            )
+            socketio.emit(f"notification_update_{uid}", {"unread_count": unread_count})
+
+        return jsonify({"message": "Notification deleted successfully"})
+
+    except Exception as e:
+        logging.error(f"Admin delete notification error: {e}")
+        return jsonify({"error": "Failed to delete notification"}), 500
+
 
 @admin_bp.route("/users/<user_id>/role", methods=["POST"])
 @admin_required

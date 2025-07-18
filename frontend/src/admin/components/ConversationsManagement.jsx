@@ -164,31 +164,40 @@ const ConversationsManagement = ({
   // Updated convertToXML with ignoreSources support
  
 
-  const generateXML = (obj, indent = "", ignoreSources = true) => {
-    let xml = "";
-    for (let key in obj) {
-      if (ignoreSources && key === "sources") continue;
+const escapeXml = (unsafe) => {
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+};
 
-      if (Array.isArray(obj[key])) {
-        obj[key].forEach((item) => {
-          xml += `${indent}<${key}>\n${generateXML(
-            item,
-            indent + "  ",
-            ignoreSources
-          )}${indent}</${key}>\n`;
-        });
-      } else if (typeof obj[key] === "object" && obj[key] !== null) {
+const generateXML = (obj, indent = "", ignoreSources = true) => {
+  let xml = "";
+  for (let key in obj) {
+    if (ignoreSources && key === "sources") continue;
+
+    if (Array.isArray(obj[key])) {
+      obj[key].forEach((item) => {
         xml += `${indent}<${key}>\n${generateXML(
-          obj[key],
+          item,
           indent + "  ",
           ignoreSources
         )}${indent}</${key}>\n`;
-      } else {
-        xml += `${indent}<${key}>${obj[key]}</${key}>\n`;
-      }
+      });
+    } else if (typeof obj[key] === "object" && obj[key] !== null) {
+      xml += `${indent}<${key}>\n${generateXML(
+        obj[key],
+        indent + "  ",
+        ignoreSources
+      )}${indent}</${key}>\n`;
+    } else {
+      xml += `${indent}<${key}>${escapeXml(obj[key])}</${key}>\n`;
     }
-    return xml;
-  };
+  }
+  return xml;
+};
 
   // Helper to remove sources recursively from an object
   const removeSources = (obj) => {

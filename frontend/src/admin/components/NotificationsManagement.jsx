@@ -11,6 +11,7 @@ import {
   FiCalendar,
   FiSearch,
   FiX,
+  FiTrash2,
 } from "react-icons/fi";
 import { Card, CardHeader, CardTitle, CardContent } from "../../user/components/ui/card";
 import { Button } from "../../user/components/ui/button";
@@ -60,6 +61,7 @@ const NotificationsManagement = ({
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
+  const [expandedNotificationId, setExpandedNotificationId] = useState(null);
 
   useEffect(() => {
     setNotifications(initialNotifications || []);
@@ -120,6 +122,23 @@ const NotificationsManagement = ({
       setLoading(false);
     }
   };
+const deleteNotification = async (notificationId) => {
+  try {
+    const token = localStorage.getItem("token");
+    await api.delete(`/admin/notifications/${notificationId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // Optional: show success toast
+    toast.success("Notification deleted successfully");
+
+    // Refresh the list
+    loadNotifications();
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+    toast.error("Failed to delete notification");
+  }
+};
 
   const handleSendNotification = async (e) => {
     e.preventDefault();
@@ -370,7 +389,9 @@ const NotificationsManagement = ({
                             {notification.title}
                           </h3>
                           <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <span>{notification.read ? "Read" : "Unread"}</span>
+                            <span>
+                              {notification.read_by?.length || 0} Reads
+                            </span>
                             <span>•</span>
                             <span>
                               {new Date(
@@ -384,30 +405,89 @@ const NotificationsManagement = ({
                           {notification.message}
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                          <div className="flex items-center gap-1">
-                            <FiUser className="w-4 h-4" />
-                            <span>
-                              To:{" "}
-                              {targetUser?.name ||
-                                targetUser?.email ||
-                                notification.user?.email ||
-                                "Unknown"}
-                            </span>
-                          </div>
+                        <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-gray-500">
+                          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                            <div className="flex items-center gap-1">
+                              <FiUser className="w-4 h-4" />
+                              <span>
+                                To:{" "}
+                                {notification.target === "all" ? (
+                                  "All Users"
+                                ) : notification.target === "multiple" &&
+                                  Array.isArray(notification.users) ? (
+                                  <>
+                                    {notification.users.length === 0
+                                      ? "Unknown Users"
+                                      : notification.users.length === 1
+                                      ? notification.users[0]
+                                      : `${notification.users[0]}, ${
+                                          notification.users.length > 2
+                                            ? `${notification.users[1]} and ${
+                                                notification.users.length - 2
+                                              } more`
+                                            : notification.users[1]
+                                        }`}
+                                    <button
+                                      onClick={() =>
+                                        setExpandedNotificationId(
+                                          expandedNotificationId ===
+                                            notification._id
+                                            ? null
+                                            : notification._id
+                                        )
+                                      }
+                                      className="ml-2 text-blue-600 text-xs underline"
+                                    >
+                                      {expandedNotificationId ===
+                                      notification._id
+                                        ? "Hide users"
+                                        : "Show users"}
+                                    </button>
+                                    {expandedNotificationId ===
+                                      notification._id && (
+                                      <div className="mt-2 ml-6 text-gray-600 text-xs bg-gray-100 p-2 rounded shadow-sm max-w-md">
+                                        {notification.users.map(
+                                          (name, index) => (
+                                            <div key={index}>
+                                              {name || "Unknown"}
+                                            </div>
+                                          )
+                                        )}
+                                      </div>
+                                    )}
+                                  </>
+                                ) : (
+                                  notification.user || "Unknown"
+                                )}
+                              </span>
+                            </div>
 
-                          <div className="flex items-center gap-1">
-                            <FiCalendar className="w-4 h-4" />
-                            <span>
-                              {new Date(
-                                notification.created_at
-                              ).toLocaleTimeString()}
-                            </span>
-                          </div>
+                            <div className="flex items-center gap-1">
+                              <FiCalendar className="w-4 h-4" />
+                              <span>
+                                {new Date(
+                                  notification.created_at
+                                ).toLocaleTimeString()}
+                              </span>
+                            </div>
 
-                          <Badge variant="secondary" className={colorClass}>
-                            {notification.type.toUpperCase()}
-                          </Badge>
+                            <Badge variant="secondary" className={colorClass}>
+                              {notification.type.toUpperCase()}
+                            </Badge>
+                          </div>
+                          <div>
+                            <Button
+                              onClick={() =>
+                                deleteNotification(notification._id)
+                              }
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <FiTrash2 className="w-4 h-4 mr-1" />
+                              Delete
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>

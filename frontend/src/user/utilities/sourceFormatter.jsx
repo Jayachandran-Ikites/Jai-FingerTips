@@ -213,12 +213,12 @@ export const renderSourceDocument = (filesData, topic, sources = null) => {
             </tbody>
           </table>
         </div>
-        {sources?.tables?.[tableKey] && sources.tables[tableKey].length > 0 && (
+        {/* {sources?.tables?.[tableKey] && sources.tables[tableKey].length > 0 && (
           <div className="mt-2 text-xs sm:text-sm text-gray-600">
             <span className="font-medium">Highlighted cells:</span>{" "}
             {sources.tables[tableKey].join(", ")}
           </div>
-        )}
+        )} */}
       </div>
     );
   };

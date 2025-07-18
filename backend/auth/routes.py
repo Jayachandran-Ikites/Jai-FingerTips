@@ -1,7 +1,8 @@
 from flask import Blueprint, request, Flask, jsonify, make_response
 from ..models.user import create_user, get_user_by_email, verify_password, create_google_user, get_user_by_google_id, get_user_by_id, update_user_password
 from ..auth.utils import generate_token
-from ..auth.utils import verify_token 
+from ..auth.utils import verify_token
+from ..admin.routes import get_user_role
 from ..config import SECRET_KEY
 import jwt
 from jwt import ExpiredSignatureError, InvalidTokenError
@@ -10,6 +11,7 @@ from google.auth.transport import requests
 import os
 import time
 from dotenv import load_dotenv  
+
 load_dotenv() 
 
 # Google OAuth Configuration
@@ -240,8 +242,6 @@ def verify():
         # Use the updated verify_token function with leeway
         user_id = verify_token(token)
         if user_id:
-            # Import get_user_role here to avoid circular import
-            from ..admin.routes import get_user_role
             response = jsonify(
                 {
                     "success": True,
