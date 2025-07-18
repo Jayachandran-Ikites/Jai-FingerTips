@@ -427,28 +427,38 @@ const deleteNotification = async (notificationId) => {
                                               } more`
                                             : notification.users[1]
                                         }`}
-                                    <button
-                                      onClick={() =>
-                                        setExpandedNotificationId(
-                                          expandedNotificationId === notification._id
-                                            ? null
-                                            : notification._id
-                                        )
-                                      }
-                                      className="ml-2 text-blue-600 text-xs underline hover:text-blue-800"
-                                    >
-                                      {expandedNotificationId === notification._id
-                                        ? "Hide users"
-                                        : "Show users"}
-                                    </button>
-                                    {expandedNotificationId === notification._id && (
-                                      <div className="mt-2 ml-6 text-gray-600 text-xs bg-gray-50 p-3 rounded border max-w-md">
-                                        {notification.users.map((name, index) => (
-                                          <div key={index} className="py-1">
-                                            {name || "Unknown"}
-                                          </div>
-                                        ))}
-                                      </div>
+                                    {notification.users.length > 2 && (
+                                      <button
+                                        onClick={() =>
+                                          setExpandedNotificationId(
+                                            expandedNotificationId === notification._id
+                                              ? null
+                                              : notification._id
+                                          )
+                                        }
+                                        className="ml-2 text-blue-600 text-sm hover:text-blue-800 transition-colors flex items-center gap-1"
+                                      >
+                                        {expandedNotificationId === notification._id
+                                          ? "View Less"
+                                          : "View More"}
+                                        <svg
+                                          className={`w-4 h-4 transition-transform ${
+                                            expandedNotificationId === notification._id
+                                              ? "rotate-180"
+                                              : ""
+                                          }`}
+                                          fill="none"
+                                          stroke="currentColor"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M19 9l-7 7-7-7"
+                                          />
+                                        </svg>
+                                      </button>
                                     )}
                                   </>
                                 ) : (
@@ -456,6 +466,24 @@ const deleteNotification = async (notificationId) => {
                                 )}
                               </span>
                             </div>
+
+                            {/* Expanded user list */}
+                            {expandedNotificationId === notification._id && 
+                             notification.target === "multiple" && 
+                             Array.isArray(notification.users) && (
+                              <div className="mt-3 pt-3 border-t border-gray-200">
+                                <div className="text-sm text-gray-600">
+                                  <strong>All Recipients:</strong>
+                                </div>
+                                <div className="mt-2 space-y-1">
+                                  {notification.users.map((name, index) => (
+                                    <div key={index} className="text-sm text-gray-700">
+                                      {index + 1}. {name || "Unknown"}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
                             <div className="flex items-center gap-1">
                               <FiCalendar className="w-4 h-4" />
