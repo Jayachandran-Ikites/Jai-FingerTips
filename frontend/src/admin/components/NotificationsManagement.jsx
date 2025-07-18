@@ -408,9 +408,15 @@ const deleteNotification = async (notificationId) => {
                         <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-gray-500">
                           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                             <div className="flex items-center gap-1">
+                              
+                                <div className="flex gap-2">
                               <FiUser className="w-4 h-4" />
-                              <span>
+                                  <div>
+                                    <p>
+                                      
                                 To:{" "}
+                                    </p>
+                                  </div>
                                 {notification.target === "all" ? (
                                   <Badge variant="info" className="bg-blue-100 text-blue-800 font-medium">
                                     All Users
@@ -459,12 +465,7 @@ const deleteNotification = async (notificationId) => {
                                         transition={{ duration: 0.2 }}
                                         className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 shadow-sm max-w-md"
                                       >
-                                        <div className="flex items-center gap-2 mb-3">
-                                          <FiUser className="w-4 h-4 text-blue-600" />
-                                          <span className="text-sm font-medium text-blue-800">
-                                            Target Users ({notification.users.length})
-                                          </span>
-                                        </div>
+                                        
                                         <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto">
                                           {notification.users.map((name, index) => (
                                             <div
@@ -488,7 +489,7 @@ const deleteNotification = async (notificationId) => {
                                     {notification.user || "Unknown User"}
                                   </Badge>
                                 )}
-                              </span>
+                              </div>
                             </div>
 
                             <div className="flex items-center gap-1">
