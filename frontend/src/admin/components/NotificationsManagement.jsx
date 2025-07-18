@@ -412,52 +412,81 @@ const deleteNotification = async (notificationId) => {
                               <span>
                                 To:{" "}
                                 {notification.target === "all" ? (
-                                  "All Users"
+                                  <Badge variant="info" className="bg-blue-100 text-blue-800 font-medium">
+                                    All Users
+                                  </Badge>
                                 ) : notification.target === "multiple" &&
                                   Array.isArray(notification.users) ? (
-                                  <>
+                                  <div className="flex flex-col gap-2">
+                                    <div className="flex items-center gap-2">
+                                      <Badge variant="secondary" className="bg-purple-100 text-purple-800 font-medium">
                                     {notification.users.length === 0
                                       ? "Unknown Users"
                                       : notification.users.length === 1
                                       ? notification.users[0]
-                                      : `${notification.users[0]}, ${
-                                          notification.users.length > 2
-                                            ? `${notification.users[1]} and ${
-                                                notification.users.length - 2
-                                              } more`
-                                            : notification.users[1]
-                                        }`}
-                                    <button
-                                      onClick={() =>
-                                        setExpandedNotificationId(
-                                          expandedNotificationId ===
-                                            notification._id
-                                            ? null
-                                            : notification._id
-                                        )
-                                      }
-                                      className="ml-2 text-blue-600 hover:text-blue-700 text-xs underline hover:no-underline transition-colors"
-                                    >
-                                      {expandedNotificationId ===
-                                      notification._id
-                                        ? "Hide users"
-                                        : "Show users"}
-                                    </button>
-                                    {expandedNotificationId ===
-                                      notification._id && (
-                                      <div className="mt-3 ml-6 text-gray-600 text-xs bg-white border border-gray-200 p-3 rounded-lg shadow-sm max-w-md animate-fadeIn">
-                                        {notification.users.map(
-                                          (name, index) => (
-                                            <div key={index} className="py-1 border-b border-gray-100 last:border-b-0">
-                                              {name || "Unknown"}
+                                          : `${notification.users.length} Users`}
+                                      </Badge>
+                                      {notification.users.length > 1 && (
+                                        <button
+                                          onClick={() =>
+                                            setExpandedNotificationId(
+                                              expandedNotificationId === notification._id
+                                                ? null
+                                                : notification._id
+                                            )
+                                          }
+                                          className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition-all duration-200 hover:shadow-sm"
+                                        >
+                                          {expandedNotificationId === notification._id ? (
+                                            <>
+                                              <FiX className="w-3 h-3" />
+                                              Hide
+                                            </>
+                                          ) : (
+                                            <>
+                                              <FiUser className="w-3 h-3" />
+                                              View All
+                                            </>
+                                          )}
+                                        </button>
+                                      )}
+                                    </div>
+                                    {expandedNotificationId === notification._id && (
+                                      <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 shadow-sm max-w-md"
+                                      >
+                                        <div className="flex items-center gap-2 mb-3">
+                                          <FiUser className="w-4 h-4 text-blue-600" />
+                                          <span className="text-sm font-medium text-blue-800">
+                                            Target Users ({notification.users.length})
+                                          </span>
+                                        </div>
+                                        <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto">
+                                          {notification.users.map((name, index) => (
+                                            <div
+                                              key={index}
+                                              className="flex items-center gap-2 px-3 py-2 bg-white rounded-md border border-gray-200 text-sm"
+                                            >
+                                              <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-medium">
+                                                {(name || "U")[0].toUpperCase()}
+                                              </div>
+                                              <span className="text-gray-700 font-medium">
+                                                {name || "Unknown User"}
+                                              </span>
                                             </div>
-                                          )
-                                        )}
-                                      </div>
+                                          ))}
+                                        </div>
+                                      </motion.div>
                                     )}
-                                  </>
+                                  </div>
                                 ) : (
-                                  notification.user || "Unknown"
+                                  <Badge variant="outline" className="border-green-200 text-green-800 bg-green-50 font-medium">
+                                    {notification.user || "Unknown User"}
+                                  </Badge>
                                 )}
                               </span>
                             </div>
