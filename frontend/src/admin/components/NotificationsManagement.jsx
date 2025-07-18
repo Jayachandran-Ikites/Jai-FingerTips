@@ -436,7 +436,7 @@ const deleteNotification = async (notificationId) => {
                                             : notification._id
                                         )
                                       }
-                                      className="ml-2 text-blue-600 text-xs underline"
+                                      className="ml-2 text-blue-600 hover:text-blue-700 text-xs underline hover:no-underline transition-colors"
                                     >
                                       {expandedNotificationId ===
                                       notification._id
@@ -445,10 +445,10 @@ const deleteNotification = async (notificationId) => {
                                     </button>
                                     {expandedNotificationId ===
                                       notification._id && (
-                                      <div className="mt-2 ml-6 text-gray-600 text-xs bg-gray-100 p-2 rounded shadow-sm max-w-md">
+                                      <div className="mt-3 ml-6 text-gray-600 text-xs bg-white border border-gray-200 p-3 rounded-lg shadow-sm max-w-md animate-fadeIn">
                                         {notification.users.map(
                                           (name, index) => (
-                                            <div key={index}>
+                                            <div key={index} className="py-1 border-b border-gray-100 last:border-b-0">
                                               {name || "Unknown"}
                                             </div>
                                           )
